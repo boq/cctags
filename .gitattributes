@@ -1,0 +1,6 @@
+*.java  text
+*.xml   text
+*.png   -text
+*.info  text
+.* text
+.settings/* text

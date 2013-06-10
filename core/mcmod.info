@@ -1,0 +1,19 @@
+[
+{
+  "modid": "cctags",
+  "name": "CC Tags",
+  "description": "NFC tags",
+  "version": "Alpha 0",
+  "mcversion": "1.5.2",
+  "url": "xn--jxe.net",
+  "updateUrl": "",
+  "authors": [
+    "boq"
+  ],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "parent":"",
+  "dependencies": []
+}
+]
