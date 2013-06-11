@@ -9,6 +9,7 @@ import net.minecraft.item.*;
 import net.minecraft.nbt.*;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
+import boq.cctags.client.TagIcons;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -98,6 +99,8 @@ public class ItemTag extends Item {
 
         for (TagSize size : sizes)
             size.icon = registry.registerIcon(size.iconId);
+
+        TagIcons.instance.registerIcons(registry);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })

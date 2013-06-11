@@ -3,12 +3,14 @@ package boq.utils.render;
 import java.util.EnumSet;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderEngine;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.util.Icon;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+
+import org.lwjgl.opengl.GL11;
 
 public final class BoxHelper {
     private BoxHelper() {}
@@ -127,5 +129,19 @@ public final class BoxHelper {
 
     public static void bindTexture(String texture) {
         getRender().bindTexture(texture);
+    }
+
+    public static void setLightmapForBlock(World world, int x, int y, int z) {
+        int l = world.getLightBrightnessForSkyBlocks(x, y, z, 0);
+        int i1 = l % 65536;
+        int j1 = l / 65536;
+        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, i1, j1);
+    }
+
+    public static void setColor(int color) {
+        byte red = (byte)(color >> 16);
+        byte green = (byte)(color >> 8);
+        byte blue = (byte)(color);
+        GL11.glColor3ub(red, green, blue);
     }
 }

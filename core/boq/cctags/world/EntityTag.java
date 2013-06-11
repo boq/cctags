@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
+import boq.cctags.Constants;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -86,5 +87,13 @@ public class EntityTag extends Entity {
 
     private void dropItemStack() {
         entityDropItem(new ItemStack(Item.painting), 0.0F);
+    }
+
+    public int getColor() {
+        return Constants.COLOR_GREEN;
+    }
+
+    public String getIconName() {
+        return "spiral";
     }
 }
