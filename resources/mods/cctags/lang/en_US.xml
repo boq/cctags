@@ -3,6 +3,6 @@
 <properties version="1.0">
 	<comment>English (EN) Localization File</comment>
 	<entry key="item.cctag.name">Tag</entry>
-	<entry key="cctag.size">Size: %dK</entry>
+	<entry key="cctag.size">Size: %s</entry>
 	<entry key="cctag.name">Name: %s</entry>
 </properties>

@@ -5,12 +5,10 @@ import java.util.List;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.nbt.*;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
-import boq.cctags.Constants;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -19,7 +17,32 @@ public class ItemTag extends Item {
 
     public static final String TAG_COLOR = "Color";
 
-    public final static int[] DEFAULT_SIZES = { 1, 4, 16, 64 };
+    public enum TagSize {
+        TAG_BROKEN(false, "cctags:tag-broken", 0, "\u00A7kKAPUT\u00A7r"),
+        TAG_4G(true, "cctags:tag-inf", -1, "Almost unlimited"),
+        TAG_64(true, "cctags:tag-64", 64, "64"),
+        TAG_256(true, "cctags:tag-256", 256, "256"),
+        TAG_1K(true, "cctags:tag-1k", 1024, "1k"),
+        TAG_4K(true, "cctags:tag-4k", 4096, "4k");
+
+        public final boolean visible;
+        public final String iconId;
+        private Icon icon;
+
+        public final int size;
+        public final String name;
+
+        private TagSize(boolean visible, String iconId, int size, String name) {
+            this.visible = visible;
+            this.iconId = iconId;
+            this.size = size;
+            this.name = name;
+        }
+    }
+
+    public static final TagSize[] sizes = TagSize.values();
+
+    private Icon backgroundIcon;
 
     public static NBTTagCompound getItemTag(ItemStack stack) {
         NBTTagCompound result = stack.getTagCompound();
@@ -48,8 +71,15 @@ public class ItemTag extends Item {
         return (value != null) ? value.data : def;
     }
 
-    public static int getSizeInK(ItemStack stack) {
-        return stack.getItemDamage();
+    public static TagSize getSize(int damage) {
+        if (damage > sizes.length)
+            return TagSize.TAG_BROKEN;
+
+        return sizes[damage];
+    }
+
+    public static TagSize getSize(ItemStack stack) {
+        return getSize(stack.getItemDamage());
     }
 
     public ItemTag(int par1) {
@@ -63,20 +93,18 @@ public class ItemTag extends Item {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister registry) {
-        itemIcon = registry.registerIcon("cctags:tag");
-    }
+        itemIcon = registry.registerIcon("cctags:tag-marker");
+        backgroundIcon = registry.registerIcon("cctags:tag-background");
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public int getColorFromItemStack(ItemStack stack, int renderPass) {
-        return getTag(stack, TAG_COLOR, Constants.COLOR_WHITE);
+        for (TagSize size : sizes)
+            size.icon = registry.registerIcon(size.iconId);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List description, boolean extended) {
-        int size = getSizeInK(stack);
+        TagSize size = getSize(stack);
         String name = getTag(stack, "Name", null);
 
         final LanguageRegistry reg = LanguageRegistry.instance();
@@ -86,24 +114,53 @@ public class ItemTag extends Item {
         }
 
         String sizeTemplate = reg.getStringLocalization("cctag.size");
-        description.add(String.format(sizeTemplate, size));
+        description.add(String.format(sizeTemplate, size.name));
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubItems(int id, CreativeTabs tab, List results) {
-        for (int size : DEFAULT_SIZES)
-            results.add(new ItemStack(id, 1, size));
+        for (TagSize size : sizes)
+            if (size.visible)
+                results.add(new ItemStack(id, 1, size.ordinal()));
     }
 
-    public Icon getIcon(String id) {
-        return itemIcon;
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean requiresMultipleRenderPasses() {
+        return true;
+    }
+
+    @Override
+    public int getRenderPasses(int metadata) {
+        return 3;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public int getColorFromItemStack(ItemStack stack, int renderPass) {
+        final int white = ItemDye.dyeColors[15];
+        return (renderPass == 1) ? getTag(stack, TAG_COLOR, white) : white;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public Icon getIconFromDamageForRenderPass(int damage, int pass) {
+        switch (pass) {
+            case 0:
+                return backgroundIcon;
+            case 2:
+                return getSize(damage).icon;
+            default:
+                return itemIcon;
+
+        }
     }
 
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float xOffset, float yOffset, float zOffset) {
-        if (!player.canPlayerEdit(x, y, z, side, stack))
+        if (!player.canPlayerEdit(x, y, z, side, stack) || world.isRemote)
             return false;
 
         EntityTag tag = new EntityTag(world);

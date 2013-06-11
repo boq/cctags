@@ -7,11 +7,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class EntityTag extends Entity {
 
     public EntityTag(World world) {
         super(world);
+        yOffset = 0.0F;
+        setSize(0.5F, 0.5F);
     }
 
     @Override
@@ -47,8 +51,14 @@ public class EntityTag extends Entity {
     }
 
     @Override
-    public boolean func_85031_j(Entity entity)
-    {
+    @SideOnly(Side.CLIENT)
+    public void setPositionAndRotation2(double par1, double par3, double par5, float par7, float par8, int par9) {
+        // super method checks for collisions...
+        super.setPositionAndRotation(par1, par3, par5, par7, par8);
+    }
+
+    @Override
+    public boolean func_85031_j(Entity entity) {
         if (entity instanceof EntityPlayer)
             return attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer)entity), 0);
 
@@ -56,8 +66,7 @@ public class EntityTag extends Entity {
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource source, int amount)
-    {
+    public boolean attackEntityFrom(DamageSource source, int amount) {
         if (!isDead && !worldObj.isRemote)
         {
             setDead();
@@ -71,6 +80,9 @@ public class EntityTag extends Entity {
 
         return true;
     }
+
+    @Override
+    public void onUpdate() {}
 
     private void dropItemStack() {
         entityDropItem(new ItemStack(Item.painting), 0.0F);
