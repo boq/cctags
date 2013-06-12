@@ -66,9 +66,9 @@ public class EntityTagRenderer extends Render {
         GL11.glPushMatrix();
         GL11.glTranslated(x, y, z);
 
-        BoxHelper.setColor(entity.getColor());
+        BoxHelper.setColor(entity.data.color);
         BoxHelper.setLightmapForBlock(renderManager.worldObj, (int)entity.posX, (int)entity.posY, (int)entity.posZ);
-        iconModels.compile(entity.getIconName());
+        iconModels.compile(entity.data.icon);
         GL11.glPopMatrix();
     }
 

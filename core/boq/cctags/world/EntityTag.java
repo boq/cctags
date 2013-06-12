@@ -1,6 +1,5 @@
 package boq.cctags.world;
 
-import net.minecraft.entity.DataWatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -8,24 +7,31 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
+import boq.cctags.TagData;
+
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteArrayDataOutput;
+
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class EntityTag extends Entity {
+public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
 
     public EntityTag(World world) {
         super(world);
+        data = new TagData();
     }
 
-    private final int ID_COLOR = 10;
-    private final int ID_ICON = 11;
+    public EntityTag(World world, TagData data) {
+        super(world);
+        this.data = data;
+    }
+
+    public final TagData data;
 
     @Override
-    protected void entityInit() {
-        final DataWatcher watcher = getDataWatcher();
-        watcher.addObjectByDataType(ID_COLOR, 2);
-        watcher.addObjectByDataType(ID_ICON, 4);
-    }
+    protected void entityInit() {}
 
     @Override
     protected void readEntityFromNBT(NBTTagCompound nbttagcompound) {}
@@ -94,19 +100,29 @@ public class EntityTag extends Entity {
         entityDropItem(new ItemStack(Item.painting), 0.0F);
     }
 
-    public int getColor() {
-        return getDataWatcher().getWatchableObjectInt(ID_COLOR);
+    @Override
+    public void writeSpawnData(ByteArrayDataOutput data) {
+        this.data.writeToStream(data);
     }
 
-    public void setColor(int color) {
-        getDataWatcher().updateObject(ID_COLOR, color);
+    @Override
+    public void readSpawnData(ByteArrayDataInput data) {
+        this.data.readFromStream(data);
     }
 
-    public String getIconName() {
-        return getDataWatcher().getWatchableObjectString(ID_ICON);
+    @Override
+    public void writeToNBT(NBTTagCompound tag) {
+        super.writeToNBT(tag);
+        NBTTagCompound tagData = new NBTTagCompound();
+        data.writeToNBT(tagData);
+        tag.setTag("TagData", tagData);
     }
 
-    public void setIconName(String iconName) {
-        getDataWatcher().updateObject(ID_ICON, iconName);
+    @Override
+    public void readFromNBT(NBTTagCompound tag) {
+        super.readFromNBT(tag);
+        NBTTagCompound tagData = tag.getCompoundTag("TagData");
+        data.readFromNBT(tagData);
     }
+
 }

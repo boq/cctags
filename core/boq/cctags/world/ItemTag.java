@@ -1,5 +1,6 @@
 package boq.cctags.world;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -10,37 +11,15 @@ import net.minecraft.nbt.*;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import boq.cctags.Constants;
+import boq.cctags.TagData;
 import boq.cctags.client.TagIcons;
+import boq.utils.serializable.ISelectableSerializableData.IFieldSelector;
+import boq.utils.serializable.SerializableField;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemTag extends Item {
-
-    public static final String TAG_COLOR = "Color";
-
-    public enum TagSize {
-        TAG_BROKEN(false, "cctags:tag-broken", 0, "\u00A7kKAPUT\u00A7r"),
-        TAG_4G(true, "cctags:tag-inf", -1, "Almost unlimited"),
-        TAG_64(true, "cctags:tag-64", 64, "64"),
-        TAG_256(true, "cctags:tag-256", 256, "256"),
-        TAG_1K(true, "cctags:tag-1k", 1024, "1k"),
-        TAG_4K(true, "cctags:tag-4k", 4096, "4k");
-
-        public final boolean visible;
-        public final String iconId;
-        private Icon icon;
-
-        public final int size;
-        public final String name;
-
-        private TagSize(boolean visible, String iconId, int size, String name) {
-            this.visible = visible;
-            this.iconId = iconId;
-            this.size = size;
-            this.name = name;
-        }
-    }
 
     public static final TagSize[] sizes = TagSize.values();
 
@@ -55,6 +34,12 @@ public class ItemTag extends Item {
         }
 
         return result;
+    }
+
+    public static void setupDefaultTags(ItemStack stack) {
+        NBTTagCompound tag = getItemTag(stack);
+        tag.setInteger(TagData.TAG_COLOR, Constants.COLOR_GREEN);
+        tag.setString(TagData.TAG_ICON, Constants.DEFAULT_ICON);
     }
 
     @SuppressWarnings({ "unchecked" })
@@ -86,7 +71,7 @@ public class ItemTag extends Item {
 
     public static int getColor(ItemStack stack) {
         final int white = ItemDye.dyeColors[15];
-        return getTag(stack, TAG_COLOR, white);
+        return getTag(stack, TagData.TAG_COLOR, white);
     }
 
     public ItemTag(int par1) {
@@ -131,8 +116,11 @@ public class ItemTag extends Item {
     @SideOnly(Side.CLIENT)
     public void getSubItems(int id, CreativeTabs tab, List results) {
         for (TagSize size : sizes)
-            if (size.visible)
-                results.add(new ItemStack(id, 1, size.ordinal()));
+            if (size.visible) {
+                ItemStack stack = new ItemStack(id, 1, size.ordinal());
+                setupDefaultTags(stack);
+                results.add(stack);
+            }
     }
 
     @Override
@@ -166,24 +154,32 @@ public class ItemTag extends Item {
         }
     }
 
+    private final static IFieldSelector createSelector = new IFieldSelector() {
+
+        @Override
+        public boolean canVisit(Field field, int flags) {
+            boolean isNBT = (flags & SerializableField.NBT_SERIALIZABLE) != 0;
+            boolean notExcluded = (flags & TagData.EXCLUDE_FROM_INITIAL) == 0;
+            return isNBT && notExcluded;
+        }
+    };
+
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float xOffset, float yOffset, float zOffset) {
         if (!player.canPlayerEdit(x, y, z, side, stack) || world.isRemote)
             return false;
 
-        EntityTag tag = new EntityTag(world);
+        TagData data = new TagData();
+        data.readFromNBT(getItemTag(stack), createSelector);
+        data.tagSize = getSize(stack);
+
+        EntityTag tag = new EntityTag(world, data);
 
         tag.posX = x;
         tag.posY = y;
         tag.posZ = z;
 
-        tag.setColor(getColor(stack));
-
-        String iconName = getTag(stack, "Icon", Constants.DEFAULT_ICON);
-        tag.setIconName(iconName);
-
         world.spawnEntityInWorld(tag);
-
         return true;
     }
 

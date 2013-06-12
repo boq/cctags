@@ -14,4 +14,15 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<filteredResources>
+		<filter>
+			<id>1371066832909</id>
+			<name>utils</name>
+			<type>6</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-.git*</arguments>
+			</matcher>
+		</filter>
+	</filteredResources>
 </projectDescription>
