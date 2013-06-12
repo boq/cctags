@@ -9,6 +9,7 @@ import net.minecraft.item.*;
 import net.minecraft.nbt.*;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
+import boq.cctags.Constants;
 import boq.cctags.client.TagIcons;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -83,6 +84,11 @@ public class ItemTag extends Item {
         return getSize(stack.getItemDamage());
     }
 
+    public static int getColor(ItemStack stack) {
+        final int white = ItemDye.dyeColors[15];
+        return getTag(stack, TAG_COLOR, white);
+    }
+
     public ItemTag(int par1) {
         super(par1);
         setUnlocalizedName("cctag");
@@ -143,8 +149,7 @@ public class ItemTag extends Item {
     @Override
     @SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack stack, int renderPass) {
-        final int white = ItemDye.dyeColors[15];
-        return (renderPass == 1) ? getTag(stack, TAG_COLOR, white) : white;
+        return (renderPass == 1) ? getColor(stack) : Constants.COLOR_WHITE;
     }
 
     @Override
@@ -171,6 +176,11 @@ public class ItemTag extends Item {
         tag.posX = x;
         tag.posY = y;
         tag.posZ = z;
+
+        tag.setColor(getColor(stack));
+
+        String iconName = getTag(stack, "Icon", Constants.DEFAULT_ICON);
+        tag.setIconName(iconName);
 
         world.spawnEntityInWorld(tag);
 

@@ -1,5 +1,6 @@
 package boq.cctags.world;
 
+import net.minecraft.entity.DataWatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -7,7 +8,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
-import boq.cctags.Constants;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -15,12 +15,17 @@ public class EntityTag extends Entity {
 
     public EntityTag(World world) {
         super(world);
-        yOffset = 0.0F;
-        setSize(0.5F, 0.5F);
     }
 
+    private final int ID_COLOR = 10;
+    private final int ID_ICON = 11;
+
     @Override
-    protected void entityInit() {}
+    protected void entityInit() {
+        final DataWatcher watcher = getDataWatcher();
+        watcher.addObjectByDataType(ID_COLOR, 2);
+        watcher.addObjectByDataType(ID_ICON, 4);
+    }
 
     @Override
     protected void readEntityFromNBT(NBTTagCompound nbttagcompound) {}
@@ -90,10 +95,18 @@ public class EntityTag extends Entity {
     }
 
     public int getColor() {
-        return Constants.COLOR_GREEN;
+        return getDataWatcher().getWatchableObjectInt(ID_COLOR);
+    }
+
+    public void setColor(int color) {
+        getDataWatcher().updateObject(ID_COLOR, color);
     }
 
     public String getIconName() {
-        return "spiral";
+        return getDataWatcher().getWatchableObjectString(ID_ICON);
+    }
+
+    public void setIconName(String iconName) {
+        getDataWatcher().updateObject(ID_ICON, iconName);
     }
 }

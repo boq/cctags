@@ -4,6 +4,7 @@ import java.util.Map;
 
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
+import boq.cctags.Constants;
 
 import com.google.common.collect.Maps;
 
@@ -23,7 +24,7 @@ public class TagIcons {
         addIconName("left");
         addIconName("right");
         addIconName("forward");
-        addIconName("spiral");
+        addIconName(Constants.DEFAULT_ICON);
     }
 
     public void addIconName(String name) {

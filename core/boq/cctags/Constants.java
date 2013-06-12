@@ -16,4 +16,6 @@ public class Constants {
     public static final int COLOR_BLACK = 0x00000000;
 
     public static final int ENTITY_TAG = 0;
+
+    public static final String DEFAULT_ICON = "spiral";
 }
