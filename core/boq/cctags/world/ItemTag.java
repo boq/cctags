@@ -10,9 +10,12 @@ import net.minecraft.item.*;
 import net.minecraft.nbt.*;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 import boq.cctags.Constants;
 import boq.cctags.TagData;
 import boq.cctags.client.TagIcons;
+import boq.utils.misc.PlayerOrientation;
+import boq.utils.misc.Rotation;
 import boq.utils.serializable.ISelectableSerializableData.IFieldSelector;
 import boq.utils.serializable.SerializableField;
 import cpw.mods.fml.common.registry.LanguageRegistry;
@@ -171,7 +174,28 @@ public class ItemTag extends Item {
 
         TagData data = new TagData();
         data.readFromNBT(getItemTag(stack), createSelector);
+
         data.tagSize = getSize(stack);
+
+        ForgeDirection sideId = ForgeDirection.VALID_DIRECTIONS[side];
+        data.side = sideId.getOpposite();
+
+        switch (sideId) {
+            case UP: {
+                PlayerOrientation orientation = PlayerOrientation.getEntityOrientation(player);
+                data.rotation = Rotation.playerToSwitchOrientation(orientation, false).opposite();
+                break;
+            }
+
+            case DOWN: {
+                PlayerOrientation orientation = PlayerOrientation.getEntityOrientation(player);
+                data.rotation = Rotation.playerToSwitchOrientation(orientation, true);
+                break;
+            }
+
+            default:
+                data.rotation = Rotation.R0;
+        }
 
         EntityTag tag = new EntityTag(world, data);
 
@@ -182,5 +206,4 @@ public class ItemTag extends Item {
         world.spawnEntityInWorld(tag);
         return true;
     }
-
 }

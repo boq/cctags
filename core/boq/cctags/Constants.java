@@ -17,5 +17,5 @@ public class Constants {
 
     public static final int ENTITY_TAG = 0;
 
-    public static final String DEFAULT_ICON = "spiral";
+    public static final String DEFAULT_ICON = "coord";
 }
