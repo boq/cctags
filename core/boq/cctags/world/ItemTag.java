@@ -197,10 +197,7 @@ public class ItemTag extends Item {
         }
 
         EntityTag tag = new EntityTag(world, data);
-
-        tag.posX = x + 0.5;
-        tag.posY = y + 0.5;
-        tag.posZ = z + 0.5;
+        tag.setPosition(x + 0.5, y + 0.5, z + 0.5);
 
         world.spawnEntityInWorld(tag);
         return true;

@@ -2,6 +2,7 @@ package boq.cctags.client;
 
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
@@ -69,6 +70,13 @@ public class EntityTagRenderer extends Render {
         GL11.glPushMatrix();
         GL11.glTranslated(x, y, z);
 
+        if (RenderManager.field_85095_o) {
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            GL11.glColor4f(1, 1, 1, 1);
+            renderOffsetAABB(entity.boundingBox, -entity.posX, -entity.posY, -entity.posZ);
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+        }
+
         final TagData data = entity.data;
         final ForgeDirection side = data.side;
 
@@ -76,9 +84,9 @@ public class EntityTagRenderer extends Render {
         CenterRotationHelper.setupRotation(data.rotation);
         GL11.glTranslated(0, 0, 0.5);
 
+        BoxHelper.setLightmapForEntity(entity);
         BoxHelper.setColor(data.color);
 
-        BoxHelper.setLightmapForBlock(renderManager.worldObj, (int)(entity.posX + side.offsetX), (int)(entity.posY + side.offsetY), (int)(entity.posZ + side.offsetZ));
         iconModels.render(data.icon);
         GL11.glPopMatrix();
     }

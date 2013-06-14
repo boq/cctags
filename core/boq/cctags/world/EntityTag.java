@@ -6,8 +6,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import boq.cctags.TagData;
+import boq.utils.coord.Bounds;
+import boq.utils.coord.BoundsRotator;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
@@ -18,14 +21,24 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
 
+    public static double AABB_THICKNESS = 0.05;
+    public static double AABB_MARGIN = 0.05;
+
+    private final static Bounds canonicalBounds = new Bounds(-0.25 - AABB_MARGIN, -0.25 - AABB_MARGIN, 0.5 - AABB_THICKNESS,
+            0.25 + AABB_MARGIN, 0.25 + AABB_MARGIN, 0.5 + AABB_THICKNESS);
+
     public EntityTag(World world) {
         super(world);
         data = new TagData();
+        noClip = true;
+        setSize(0.2f, 0.2f);
     }
 
     public EntityTag(World world, TagData data) {
         super(world);
         this.data = data;
+        noClip = true;
+        setSize(0.2f, 0.2f);
     }
 
     public final TagData data;
@@ -60,6 +73,23 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
     @Override
     public void addVelocity(double vx, double vy, double vz) {
         checkMovement(vx, vy, vz);
+    }
+
+    private void updateAABB() {
+        Bounds b = canonicalBounds.copy();
+        BoundsRotator.flipDirection(b, data.side);
+        b.setAABB(boundingBox, posX, posY, posZ);
+    }
+
+    @Override
+    public void setPosition(double x, double y, double z) {
+        posX = x;
+        posY = y;
+        posZ = z;
+
+        // possible in Entity constructor or before additional data is received
+        if (data != null && data.side != null)
+            updateAABB();
     }
 
     @Override
@@ -108,6 +138,7 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
     @Override
     public void readSpawnData(ByteArrayDataInput data) {
         this.data.readFromStream(data);
+        updateAABB();
     }
 
     @Override
@@ -123,6 +154,26 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
         super.readFromNBT(tag);
         NBTTagCompound tagData = tag.getCompoundTag("TagData");
         data.readFromNBT(tagData);
+    }
+
+    @Override
+    public float getBrightness(float par1) {
+        return 1.0f;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public int getBrightnessForRender(float par1) {
+        if (data.side != null) {
+            int x = MathHelper.floor_double(posX + data.side.offsetX);
+            int z = MathHelper.floor_double(posZ + data.side.offsetZ);
+
+            if (worldObj.blockExists(x, 0, z)) {
+                int y = MathHelper.floor_double(posY + data.side.offsetZ);
+                return worldObj.getLightBrightnessForSkyBlocks(x, y, z, 0);
+            }
+        }
+        return 0;
     }
 
 }
