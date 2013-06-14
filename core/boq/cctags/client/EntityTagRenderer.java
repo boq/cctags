@@ -14,7 +14,7 @@ import boq.utils.render.*;
 
 public class EntityTagRenderer extends Render {
 
-    private static final double Z_FIGHTER = -0.0001;
+    private static final double Z_FIGHTER = 0.0001;
 
     private static void drawRectangle(Tessellator tes, double xm, double ym, double xp, double yp, Icon icon) {
         final double um = icon.getMinU();
@@ -42,7 +42,7 @@ public class EntityTagRenderer extends Render {
             tes.startDrawingQuads();
             tes.setNormal(0.0F, 0.0F, -1.0F);
             tes.setTranslation(0, 0, 2 * Z_FIGHTER);
-            drawRectangle(tes, 0.25, 0.25, 0.75, 0.75, icons.iconMarker);
+            drawRectangle(tes, -0.25, -0.25, 0.25, 0.25, icons.iconMarker);
             tes.draw();
 
             GL11.glColor3d(1, 1, 1);
@@ -50,13 +50,13 @@ public class EntityTagRenderer extends Render {
             tes.startDrawingQuads();
             tes.setNormal(0.0F, 0.0F, -1.0F);
             tes.setTranslation(0, 0, 2 * Z_FIGHTER);
-            drawRectangle(tes, 0.25, 0.25, 0.75, 0.75, icons.iconBackground);
+            drawRectangle(tes, -0.25, -0.25, 0.25, 0.25, icons.iconBackground);
 
             Icon front = icons.getIcon(param);
 
             if (front != null) {
                 tes.setTranslation(0, 0, 3 * Z_FIGHTER);
-                drawRectangle(tes, 0.75, 0.25, 0.25, 0.75, front);
+                drawRectangle(tes, -0.25, -0.25, 0.25, 0.25, front);
             }
 
             tes.draw();
@@ -72,12 +72,13 @@ public class EntityTagRenderer extends Render {
         final TagData data = entity.data;
         final ForgeDirection side = data.side;
 
-        RotationHelper.setupSide(side);
-        RotationHelper.setupRotation(data.rotation);
+        CenterRotationHelper.setupSide(side);
+        CenterRotationHelper.setupRotation(data.rotation);
+        GL11.glTranslated(0, 0, 0.5);
 
         BoxHelper.setColor(data.color);
 
-        BoxHelper.setLightmapForBlock(renderManager.worldObj, (int)entity.posX + side.offsetX, (int)entity.posY + side.offsetY, (int)entity.posZ + side.offsetZ);
+        BoxHelper.setLightmapForBlock(renderManager.worldObj, (int)(entity.posX + side.offsetX), (int)(entity.posY + side.offsetY), (int)(entity.posZ + side.offsetZ));
         iconModels.render(data.icon);
         GL11.glPopMatrix();
     }

@@ -177,19 +177,18 @@ public class ItemTag extends Item {
 
         data.tagSize = getSize(stack);
 
-        ForgeDirection sideId = ForgeDirection.VALID_DIRECTIONS[side];
-        data.side = sideId.getOpposite();
+        data.side = ForgeDirection.VALID_DIRECTIONS[side];
 
-        switch (sideId) {
+        switch (data.side) {
             case UP: {
                 PlayerOrientation orientation = PlayerOrientation.getEntityOrientation(player);
-                data.rotation = Rotation.playerToSwitchOrientation(orientation, false).opposite();
+                data.rotation = Rotation.playerToSwitchOrientation(orientation, false);
                 break;
             }
 
             case DOWN: {
                 PlayerOrientation orientation = PlayerOrientation.getEntityOrientation(player);
-                data.rotation = Rotation.playerToSwitchOrientation(orientation, true);
+                data.rotation = Rotation.playerToSwitchOrientation(orientation, true).opposite();
                 break;
             }
 
@@ -199,9 +198,9 @@ public class ItemTag extends Item {
 
         EntityTag tag = new EntityTag(world, data);
 
-        tag.posX = x;
-        tag.posY = y;
-        tag.posZ = z;
+        tag.posX = x + 0.5;
+        tag.posY = y + 0.5;
+        tag.posZ = z + 0.5;
 
         world.spawnEntityInWorld(tag);
         return true;
