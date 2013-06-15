@@ -11,6 +11,7 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import boq.cctags.world.EntityTag;
+import boq.cctags.world.TagData;
 import boq.utils.serializable.ISelectableSerializableData.IFieldSelector;
 
 import com.google.common.base.Preconditions;

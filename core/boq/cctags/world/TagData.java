@@ -1,7 +1,6 @@
-package boq.cctags;
+package boq.cctags.world;
 
 import net.minecraftforge.common.ForgeDirection;
-import boq.cctags.world.TagSize;
 import boq.utils.misc.Rotation;
 import boq.utils.serializable.SerializableData;
 import boq.utils.serializable.SerializableField;

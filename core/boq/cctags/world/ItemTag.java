@@ -12,7 +12,6 @@ import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import boq.cctags.Constants;
-import boq.cctags.TagData;
 import boq.cctags.client.TagIcons;
 import boq.utils.misc.PlayerOrientation;
 import boq.utils.misc.Rotation;
@@ -167,9 +166,17 @@ public class ItemTag extends Item {
         }
     };
 
+    public boolean isBlockSideAvailable(ForgeDirection dir, World world, int x, int y, int z) {
+        for (EntityTag e : TagUtils.getBlockTags(world, x, y, z))
+            if (e.data.side == dir)
+                return false;
+
+        return true;
+    }
+
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float xOffset, float yOffset, float zOffset) {
-        if (!player.canPlayerEdit(x, y, z, side, stack) || world.isRemote)
+        if (world.isRemote || !player.canPlayerEdit(x, y, z, side, stack))
             return false;
 
         TagData data = new TagData();
@@ -178,6 +185,9 @@ public class ItemTag extends Item {
         data.tagSize = getSize(stack);
 
         data.side = ForgeDirection.VALID_DIRECTIONS[side];
+
+        if (!isBlockSideAvailable(data.side, world, x, y, z))
+            return false;
 
         switch (data.side) {
             case UP: {

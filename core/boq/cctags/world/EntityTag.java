@@ -10,7 +10,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import boq.cctags.EntityPacketHandler;
-import boq.cctags.TagData;
 import boq.utils.coord.Bounds;
 import boq.utils.coord.BoundsRotator;
 
@@ -156,6 +155,7 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
         super.readFromNBT(tag);
         NBTTagCompound tagData = tag.getCompoundTag("TagData");
         data.readFromNBT(tagData);
+        updateAABB();
     }
 
     @Override

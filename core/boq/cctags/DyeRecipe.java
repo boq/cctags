@@ -10,6 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 import boq.cctags.world.ItemTag;
+import boq.cctags.world.TagData;
 
 import com.google.common.collect.Maps;
 
