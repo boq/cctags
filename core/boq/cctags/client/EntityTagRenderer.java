@@ -84,7 +84,6 @@ public class EntityTagRenderer extends Render {
         CenterRotationHelper.setupRotation(data.rotation);
         GL11.glTranslated(0, 0, 0.5);
 
-        BoxHelper.setLightmapForEntity(entity);
         BoxHelper.setColor(data.color);
 
         iconModels.render(data.icon);

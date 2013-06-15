@@ -1,7 +1,7 @@
 package boq.cctags;
 
 public class Constants {
-    public static final String CHANNEL_ID = "cctags";
+    public static final String ENITIY_CHANNEL_ID = "cctags-e";
 
     public static final int COLOR_WHITE = 0x00FFFFFF;
 

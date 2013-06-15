@@ -9,6 +9,7 @@ import boq.utils.serializable.SerializableField;
 public class TagData extends SerializableData {
 
     public static final int EXCLUDE_FROM_INITIAL = SerializableField.USER_DEFINED_0;
+    public static final int CLIENT_UPDATE = SerializableField.USER_DEFINED_1;
 
     @SerializableField
     public int color;
@@ -27,6 +28,6 @@ public class TagData extends SerializableData {
     @SerializableField(flags = EXCLUDE_FROM_INITIAL | SerializableField.SERIALIZABLE)
     public ForgeDirection side;
 
-    @SerializableField(flags = EXCLUDE_FROM_INITIAL | SerializableField.SERIALIZABLE)
+    @SerializableField(flags = EXCLUDE_FROM_INITIAL | SerializableField.SERIALIZABLE | CLIENT_UPDATE)
     public Rotation rotation;
 }

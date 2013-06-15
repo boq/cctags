@@ -8,6 +8,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
+import boq.cctags.EntityPacketHandler;
 import boq.cctags.TagData;
 import boq.utils.coord.Bounds;
 import boq.utils.coord.BoundsRotator;
@@ -164,16 +166,26 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
     @Override
     @SideOnly(Side.CLIENT)
     public int getBrightnessForRender(float par1) {
-        if (data.side != null) {
-            int x = MathHelper.floor_double(posX + data.side.offsetX);
-            int z = MathHelper.floor_double(posZ + data.side.offsetZ);
+        final ForgeDirection side = data.side;
+        if (side != null) {
+            int x = MathHelper.floor_double(posX + side.offsetX);
+            int z = MathHelper.floor_double(posZ + side.offsetZ);
 
             if (worldObj.blockExists(x, 0, z)) {
-                int y = MathHelper.floor_double(posY + data.side.offsetZ);
+                int y = MathHelper.floor_double(posY + side.offsetY);
                 return worldObj.getLightBrightnessForSkyBlocks(x, y, z, 0);
             }
         }
         return 0;
+    }
+
+    @Override
+    public boolean interact(EntityPlayer player) {
+        if (!worldObj.isRemote) {
+            data.rotation = data.rotation.rotateCCW();
+            EntityPacketHandler.sendUpdateToAllTrackers(this);
+        }
+        return true;
     }
 
 }

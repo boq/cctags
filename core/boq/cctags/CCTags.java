@@ -13,7 +13,7 @@ import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.network.NetworkMod;
 
 @Mod(modid = "cctags", name = "CC tags", dependencies = "required-after:ComputerCraft;after:CCTurtle;required-after:Forge@[7.0,);required-after:FML@[5.0.5,)")
-@NetworkMod(channels = { Constants.CHANNEL_ID }, clientSideRequired = true, serverSideRequired = false)
+@NetworkMod(channels = { Constants.ENITIY_CHANNEL_ID }, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class CCTags {
 
     @Instance("cctags")
