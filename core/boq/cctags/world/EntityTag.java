@@ -2,13 +2,12 @@ package boq.cctags.world;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import boq.cctags.CCTags;
 import boq.cctags.EntityPacketHandler;
 import boq.utils.coord.Bounds;
 import boq.utils.coord.BoundsRotator;
@@ -127,8 +126,24 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
     @Override
     public void onUpdate() {}
 
+    private ItemStack toItemStack() {
+        int damage = data.tagSize.ordinal();
+        ItemStack result = new ItemStack(CCTags.instance.itemTag, 1, damage);
+        NBTTagCompound tag = ItemTag.getItemTag(result);
+
+        data.writeToNBT(tag, ItemTag.nbtOnlySelector);
+        return result;
+    }
+
+    @Override
+    public ItemStack getPickedResult(MovingObjectPosition target) {
+        // return toItemStack(); // called on client side, so we don't have all data...
+        return null;
+    }
+
     private void dropItemStack() {
-        entityDropItem(new ItemStack(Item.painting), 0.0F);
+        ItemStack stack = toItemStack();
+        entityDropItem(stack, 0);
     }
 
     @Override

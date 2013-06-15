@@ -7,7 +7,7 @@ import boq.utils.serializable.SerializableField;
 
 public class TagData extends SerializableData {
 
-    public static final int EXCLUDE_FROM_INITIAL = SerializableField.USER_DEFINED_0;
+    public static final int EXCLUDE_IN_ITEM_NBT = SerializableField.USER_DEFINED_0;
     public static final int CLIENT_UPDATE = SerializableField.USER_DEFINED_1;
 
     @SerializableField
@@ -21,12 +21,12 @@ public class TagData extends SerializableData {
     @SerializableField(nullable = true, flags = SerializableField.NBT_SERIALIZABLE)
     public String name;
 
-    @SerializableField(flags = SerializableField.NBT_SERIALIZABLE | EXCLUDE_FROM_INITIAL)
+    @SerializableField(flags = SerializableField.NBT_SERIALIZABLE | EXCLUDE_IN_ITEM_NBT)
     public TagSize tagSize;
 
-    @SerializableField(flags = EXCLUDE_FROM_INITIAL | SerializableField.SERIALIZABLE)
+    @SerializableField(flags = EXCLUDE_IN_ITEM_NBT | SerializableField.SERIALIZABLE)
     public ForgeDirection side;
 
-    @SerializableField(flags = EXCLUDE_FROM_INITIAL | SerializableField.SERIALIZABLE | CLIENT_UPDATE)
+    @SerializableField(flags = EXCLUDE_IN_ITEM_NBT | SerializableField.SERIALIZABLE | CLIENT_UPDATE)
     public Rotation rotation;
 }

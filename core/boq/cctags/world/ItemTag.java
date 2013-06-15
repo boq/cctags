@@ -156,12 +156,12 @@ public class ItemTag extends Item {
         }
     }
 
-    private final static IFieldSelector createSelector = new IFieldSelector() {
+    public final static IFieldSelector nbtOnlySelector = new IFieldSelector() {
 
         @Override
         public boolean canVisit(Field field, int flags) {
             boolean isNBT = (flags & SerializableField.NBT_SERIALIZABLE) != 0;
-            boolean notExcluded = (flags & TagData.EXCLUDE_FROM_INITIAL) == 0;
+            boolean notExcluded = (flags & TagData.EXCLUDE_IN_ITEM_NBT) == 0;
             return isNBT && notExcluded;
         }
     };
@@ -180,7 +180,7 @@ public class ItemTag extends Item {
             return false;
 
         TagData data = new TagData();
-        data.readFromNBT(getItemTag(stack), createSelector);
+        data.readFromNBT(getItemTag(stack), nbtOnlySelector);
 
         data.tagSize = getSize(stack);
 
@@ -210,6 +210,8 @@ public class ItemTag extends Item {
         tag.setPosition(x + 0.5, y + 0.5, z + 0.5);
 
         world.spawnEntityInWorld(tag);
+
+        stack.stackSize--;
         return true;
     }
 }
