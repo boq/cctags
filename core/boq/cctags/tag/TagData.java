@@ -18,7 +18,7 @@ public class TagData extends SerializableData {
     public String label;
     public static final String TAG_LABEL = "label";
 
-    @SerializableField(nullable = true)
+    @SerializableField(nullable = true, flags = SerializableField.SERIALIZABLE | CLIENT_UPDATE)
     public String icon;
     public static final String TAG_ICON = "icon";
 

@@ -3,7 +3,6 @@ package boq.cctags.cc;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
-import boq.cctags.cc.BlockTagPeripheral.PeripheralType;
 
 public class ItemPeripheral extends ItemBlock {
 

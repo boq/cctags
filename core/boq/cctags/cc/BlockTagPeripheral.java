@@ -21,34 +21,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockTagPeripheral extends BlockContainer {
 
-    public enum PeripheralType {
-        WRITER("tile.tag_writer", "cctags:writer_front", "tag writer", TileEntityWriter.class),
-        PRINTER("tile.tag_printer", "cctags:printer_front", "tag printer", TileEntityPrinter.class);
-
-        public final String unlocalizedName;
-        private final String iconName;
-        public Icon icon;
-        public final String peripheralType;
-        private final Class<? extends TileEntityPeripheral<?>> teClass;
-
-        private PeripheralType(String unlocalizedName, String iconName, String peripheralType, Class<? extends TileEntityPeripheral<?>> teClass) {
-            this.unlocalizedName = unlocalizedName;
-            this.iconName = iconName;
-            this.peripheralType = peripheralType;
-            this.teClass = teClass;
-        }
-
-        public TileEntityPeripheral<?> createNewTileEntity() {
-            try {
-                return teClass.newInstance();
-            } catch (Throwable t) {
-                throw new RuntimeException(t);
-            }
-        }
-    }
-
-    public static final PeripheralType[] TYPES = PeripheralType.values();
-
     public BlockTagPeripheral(int id) {
         super(id, Material.rock);
         setHardness(2.0F);
@@ -74,7 +46,7 @@ public class BlockTagPeripheral extends BlockContainer {
 
     public static PeripheralType getType(int metadata) {
         int type = metadata & 3;
-        return TYPES[type];
+        return PeripheralType.TYPES[type];
     }
 
     public static int calculateMeta(ForgeDirection side, PeripheralType type) {
@@ -91,7 +63,7 @@ public class BlockTagPeripheral extends BlockContainer {
 
         if (side == front) {
             PeripheralType type = getType(metadata);
-            return type.icon;
+            return type.blockIcon;
         }
 
         return blockIcon;
@@ -102,8 +74,8 @@ public class BlockTagPeripheral extends BlockContainer {
     public void registerIcons(IconRegister registry) {
         blockIcon = registry.registerIcon("cctags:peripheral_top");
 
-        for (PeripheralType type : TYPES)
-            type.icon = registry.registerIcon(type.iconName);
+        for (PeripheralType type : PeripheralType.TYPES)
+            type.registerIcons(registry);
 
     }
 
@@ -122,7 +94,7 @@ public class BlockTagPeripheral extends BlockContainer {
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubBlocks(int id, CreativeTabs tab, List result) {
-        for (PeripheralType type : TYPES) {
+        for (PeripheralType type : PeripheralType.TYPES) {
             int meta = calculateMeta(ForgeDirection.SOUTH, type);
             result.add(new ItemStack(id, 1, meta));
         }
@@ -180,7 +152,7 @@ public class BlockTagPeripheral extends BlockContainer {
 
         if (te instanceof TileEntityPeripheral<?>) {
             ItemStack is = ((TileEntityPeripheral<?>)te).getDroppedItem();
-            
+
             if (is != null)
                 Utils.dropItem(world, x, y, z, is);
         }

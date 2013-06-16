@@ -1,10 +1,10 @@
 package boq.cctags.cc;
 
+import static boq.utils.misc.Utils.wrap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import boq.cctags.cc.BlockTagPeripheral.PeripheralType;
 import boq.cctags.tag.ItemTag;
 import boq.cctags.tag.TagData;
 import boq.utils.misc.Utils;
@@ -12,13 +12,6 @@ import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
 public abstract class TileEntityPeripheral<T extends WriterData> extends TileEntity implements IPeripheral {
-
-    protected static Object[] wrap(Object... args) {
-        return args;
-    }
-
-    protected final static Object[] FALSE = wrap(false);
-    protected final static Object[] TRUE = wrap(true);
 
     protected TagData readData() {
         if (data.tag == null)
@@ -89,7 +82,7 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
                 if (data == null)
                     return null;
 
-                return wrap(data.tagSize.size);
+                return wrap(data.tagSize.size, data.tagSize.name);
             }
             case 4: // eject
                 return wrap(ejectTag());

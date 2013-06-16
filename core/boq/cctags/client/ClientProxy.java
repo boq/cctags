@@ -13,7 +13,6 @@ public class ClientProxy implements IProxy {
     @Override
     public void registerRenderers() {
         RenderingRegistry.registerEntityRenderingHandler(EntityTag.class, new EntityTagRenderer());
-
         TagIcons.instance.addIconNames();
     }
 
