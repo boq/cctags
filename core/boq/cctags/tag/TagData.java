@@ -15,6 +15,10 @@ public class TagData extends SerializableData {
     public static final String TAG_COLOR = "color";
 
     @SerializableField(nullable = true)
+    public String label;
+    public static final String TAG_LABEL = "label";
+
+    @SerializableField(nullable = true)
     public String icon;
     public static final String TAG_ICON = "icon";
 

@@ -180,7 +180,9 @@ public class BlockTagPeripheral extends BlockContainer {
 
         if (te instanceof TileEntityPeripheral<?>) {
             ItemStack is = ((TileEntityPeripheral<?>)te).getDroppedItem();
-            Utils.dropItem(world, x, y, z, is);
+            
+            if (is != null)
+                Utils.dropItem(world, x, y, z, is);
         }
 
         super.breakBlock(world, x, y, z, blockId, metadata);

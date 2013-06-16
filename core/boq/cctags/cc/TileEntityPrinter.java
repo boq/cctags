@@ -6,6 +6,7 @@ import boq.cctags.CCTags;
 import boq.cctags.client.TagIcons;
 import boq.cctags.tag.TagData;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ObjectArrays;
 
 import dan200.computer.api.IComputerAccess;
@@ -37,6 +38,10 @@ public class TileEntityPrinter extends TileEntityPeripheral<PrinterData> {
         else if (method == ownMethodStart + 1) {// print
             String type = arguments[0].toString();
             String descr = arguments[1].toString();
+            String label = null;
+
+            if (arguments.length > 2)
+                label = arguments[2].toString();
 
             if ("predefined".equals(type)) {
                 if (!TagIcons.instance.isValidIconName(descr))
@@ -51,6 +56,8 @@ public class TileEntityPrinter extends TileEntityPeripheral<PrinterData> {
                     return wrap(false, "No ink");
 
                 data.icon = descr;
+                data.label = Strings.isNullOrEmpty(label) ? null : label;
+
                 writeData(data);
             } else
                 return wrap(false, "Unknown icon type: " + type);

@@ -8,5 +8,4 @@
 	<entry key="tile.tag_printer.name">Tag Printer</entry>
 	
 	<entry key="cctag.size">Size: %s</entry>
-	<entry key="cctag.name">Name: %s</entry>
 </properties>

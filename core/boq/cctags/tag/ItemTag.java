@@ -17,6 +17,9 @@ import boq.utils.misc.PlayerOrientation;
 import boq.utils.misc.Rotation;
 import boq.utils.serializable.ISelectableSerializableData.IFieldSelector;
 import boq.utils.serializable.SerializableField;
+
+import com.google.common.base.Strings;
+
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -119,16 +122,20 @@ public class ItemTag extends Item {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List description, boolean extended) {
         TagSize size = getSize(stack);
-        String name = getTag(stack, "Name", null);
 
         final LanguageRegistry reg = LanguageRegistry.instance();
-        if (name != null) {
-            String nameTemplate = reg.getStringLocalization("cctag.name");
-            description.add(String.format(nameTemplate, "name"));
-        }
-
         String sizeTemplate = reg.getStringLocalization("cctag.size");
         description.add(String.format(sizeTemplate, size.name));
+    }
+
+    @Override
+    public String getItemDisplayName(ItemStack stack) {
+        String label = getTag(stack, TagData.TAG_LABEL, null);
+
+        if (Strings.isNullOrEmpty(label))
+            return super.getItemDisplayName(stack);
+
+        return label;
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
