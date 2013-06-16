@@ -1,4 +1,4 @@
-package boq.cctags.world;
+package boq.cctags.tag;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -74,6 +74,24 @@ public class ItemTag extends Item {
     public static int getColor(ItemStack stack) {
         final int white = ItemDye.dyeColors[15];
         return getTag(stack, TagData.TAG_COLOR, white);
+    }
+
+    public static TagData readData(ItemStack stack) {
+        NBTTagCompound tag = stack.stackTagCompound;
+        if (tag == null)
+            return null;
+
+        TagData result = new TagData();
+        result.readFromNBT(tag, nbtOnlySelector);
+
+        result.tagSize = getSize(stack);
+        return result;
+    }
+
+    public static void writeData(ItemStack stack, TagData data) {
+        NBTTagCompound tag = new NBTTagCompound("tag");
+        data.writeToNBT(tag, nbtOnlySelector);
+        stack.stackTagCompound = tag;
     }
 
     public ItemTag(int par1) {

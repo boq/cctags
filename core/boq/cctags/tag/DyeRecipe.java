@@ -1,4 +1,4 @@
-package boq.cctags;
+package boq.cctags.tag;
 
 import java.util.Map;
 
@@ -9,8 +9,6 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
-import boq.cctags.world.ItemTag;
-import boq.cctags.world.TagData;
 
 import com.google.common.collect.Maps;
 

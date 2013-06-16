@@ -1,4 +1,4 @@
-package boq.cctags.world;
+package boq.cctags.tag;
 
 import java.util.List;
 

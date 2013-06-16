@@ -9,8 +9,8 @@ import net.minecraftforge.common.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
-import boq.cctags.world.EntityTag;
-import boq.cctags.world.TagData;
+import boq.cctags.tag.EntityTag;
+import boq.cctags.tag.TagData;
 import boq.utils.render.*;
 
 public class EntityTagRenderer extends Render {

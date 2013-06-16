@@ -1,4 +1,4 @@
-package boq.cctags.world;
+package boq.cctags.tag;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;

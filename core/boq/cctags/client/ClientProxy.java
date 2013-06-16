@@ -4,7 +4,7 @@ import net.minecraft.server.ServerListenThread;
 import net.minecraft.server.ThreadMinecraftServer;
 import net.minecraft.world.World;
 import boq.cctags.IProxy;
-import boq.cctags.world.EntityTag;
+import boq.cctags.tag.EntityTag;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 

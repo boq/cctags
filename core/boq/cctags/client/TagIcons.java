@@ -49,4 +49,8 @@ public class TagIcons {
     public Icon getIcon(String name) {
         return tagIcons.get(name);
     }
+
+    public boolean isValidIconName(String name) {
+        return tagIcons.containsKey(name);
+    }
 }

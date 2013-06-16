@@ -1,4 +1,4 @@
-package boq.cctags.world;
+package boq.cctags.tag;
 
 import net.minecraftforge.common.ForgeDirection;
 import boq.utils.misc.Rotation;
@@ -19,7 +19,7 @@ public class TagData extends SerializableData {
     public static final String TAG_ICON = "icon";
 
     @SerializableField(nullable = true, flags = SerializableField.NBT_SERIALIZABLE)
-    public String name;
+    public String contents;
 
     @SerializableField(flags = SerializableField.NBT_SERIALIZABLE | EXCLUDE_IN_ITEM_NBT)
     public TagSize tagSize;

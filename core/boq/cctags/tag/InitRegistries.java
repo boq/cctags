@@ -1,4 +1,4 @@
-package boq.cctags;
+package boq.cctags.tag;
 
 import java.util.List;
 
@@ -6,7 +6,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-import boq.cctags.world.*;
+import boq.cctags.CCTags;
+import boq.cctags.Constants;
 import cpw.mods.fml.common.registry.EntityRegistry;
 
 public class InitRegistries {
