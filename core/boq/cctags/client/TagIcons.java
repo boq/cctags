@@ -25,8 +25,8 @@ public class TagIcons {
         addIconName("forward");
         addIconName("spiral");
         addIconName("coord");
-        addIconName("vertical");
-        addIconName("horizontal");
+        addIconName("line");
+        addIconName("cross");
     }
 
     public void addIconName(String name) {

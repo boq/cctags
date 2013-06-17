@@ -1,17 +1,26 @@
 package boq.cctags.cc;
 
 import static boq.utils.misc.Utils.wrap;
+
+import java.util.Map;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import boq.cctags.tag.ItemTag;
 import boq.cctags.tag.TagData;
+import boq.utils.log.Log;
 import boq.utils.misc.Utils;
+
+import com.google.common.collect.Maps;
+
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IPeripheral;
 
-public abstract class TileEntityPeripheral<T extends WriterData> extends TileEntity implements IPeripheral {
+public abstract class TileEntityPeripheral<T extends WriterData> extends TileEntity implements IPeripheral, IInventory {
 
     protected TagData readData() {
         if (data.tag == null)
@@ -29,6 +38,8 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
     }
 
     protected final T data;
+
+    protected Map<IComputerAccess, String> computers = Maps.newIdentityHashMap();
 
     public TileEntityPeripheral(T data) {
         this.data = data;
@@ -99,10 +110,16 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
     }
 
     @Override
-    public void attach(IComputerAccess computer) {}
+    public void attach(IComputerAccess computer) {
+        computers.put(computer, computer.getAttachmentName());
+    }
 
     @Override
-    public void detach(IComputerAccess computer) {}
+    public void detach(IComputerAccess computer) {
+        String removed = computers.remove(computer);
+        if (removed == null)
+            Log.warning("Detached unknown computer %s from tag peripheral (%d,%d,%d)", computer, xCoord, yCoord, zCoord);
+    }
 
     public boolean ejectTag() {
         if (data.tag == null)
@@ -115,12 +132,18 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
         return true;
     }
 
+    protected void onTagInsert() {
+        for (Map.Entry<IComputerAccess, String> access : computers.entrySet())
+            access.getKey().queueEvent("tag", wrap(access.getValue()));
+    }
+
     public boolean insertTag(ItemStack equipped) {
         if (data.tag != null && !ejectTag())
             return false;
 
         data.tag = equipped.copy();
         data.tag.stackSize = 1;
+        onTagInsert();
         return true;
     }
 
@@ -139,4 +162,73 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
     public ItemStack getDroppedItem() {
         return data.tag;
     }
+
+    @Override
+    public int getSizeInventory() {
+        return 1;
+    }
+
+    @Override
+    public ItemStack getStackInSlot(int slot) {
+        return (slot == 0) ? data.tag : null;
+    }
+
+    @Override
+    public ItemStack decrStackSize(int slot, int amount) {
+        if (slot != 0)
+            return null;
+
+        ItemStack stack = data.tag;
+        data.tag = null;
+        onInventoryChanged();
+        return stack;
+    }
+
+    @Override
+    public ItemStack getStackInSlotOnClosing(int slot) {
+        return null;
+    }
+
+    @Override
+    public void setInventorySlotContents(int slot, ItemStack stack) {
+        if (slot == 0) {
+            data.tag = stack;
+            onTagInsert();
+        }
+    }
+
+    @Override
+    public String getInvName() {
+        return "peripheral-tag";
+    }
+
+    @Override
+    public boolean isInvNameLocalized() {
+        return false;
+    }
+
+    @Override
+    public int getInventoryStackLimit() {
+        return 1;
+    }
+
+    @Override
+    public boolean isUseableByPlayer(EntityPlayer entityplayer) {
+        return true;
+    }
+
+    @Override
+    public void openChest() {}
+
+    @Override
+    public void closeChest() {}
+
+    @Override
+    public boolean isStackValidForSlot(int i, ItemStack stack) {
+        return (i == 0) &&
+                (data.tag == null) && // only one item allowed
+                (stack != null) &&
+                (stack.getItem() instanceof ItemTag);
+    }
+
 }

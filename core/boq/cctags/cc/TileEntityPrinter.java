@@ -60,7 +60,12 @@ public class TileEntityPrinter extends TileEntityPeripheral<PrinterData> {
     }
 
     public boolean addInk(ItemStack stack) {
-        return helper.addInk(stack);
+        if (helper.addInk(stack)) {
+            onInventoryChanged();
+            return true;
+        }
+
+        return false;
     }
 
 }
