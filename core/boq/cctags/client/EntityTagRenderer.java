@@ -4,11 +4,11 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
+import boq.cctags.client.TagIcons.IconRender;
 import boq.cctags.tag.EntityTag;
 import boq.cctags.tag.TagData;
 import boq.utils.render.*;
@@ -16,20 +16,6 @@ import boq.utils.render.*;
 public class EntityTagRenderer extends Render {
 
     private static final double Z_FIGHTER = 0.0001;
-
-    private static void drawRectangle(Tessellator tes, double xm, double ym, double xp, double yp, Icon icon) {
-        final double um = icon.getMinU();
-        final double up = icon.getMaxU();
-
-        final double vm = icon.getMinV();
-        final double vp = icon.getMaxV();
-
-        // v and y are reversed
-        tes.addVertexWithUV(xm, ym, 0, um, vp);
-        tes.addVertexWithUV(xp, ym, 0, up, vp);
-        tes.addVertexWithUV(xp, yp, 0, up, vm);
-        tes.addVertexWithUV(xm, yp, 0, um, vm);
-    }
 
     private final static ParameterModel<String> iconModels = new ParameterModel<String>() {
 
@@ -43,7 +29,7 @@ public class EntityTagRenderer extends Render {
             tes.startDrawingQuads();
             tes.setNormal(0.0F, 0.0F, -1.0F);
             tes.setTranslation(0, 0, 2 * Z_FIGHTER);
-            drawRectangle(tes, -0.25, -0.25, 0.25, 0.25, icons.iconMarker);
+            RenderUtils.drawRectangle(tes, -0.25, -0.25, 0.25, 0.25, icons.iconMarker);
             tes.draw();
 
             GL11.glColor3d(1, 1, 1);
@@ -51,13 +37,13 @@ public class EntityTagRenderer extends Render {
             tes.startDrawingQuads();
             tes.setNormal(0.0F, 0.0F, -1.0F);
             tes.setTranslation(0, 0, 2 * Z_FIGHTER);
-            drawRectangle(tes, -0.25, -0.25, 0.25, 0.25, icons.iconBackground);
+            RenderUtils.drawRectangle(tes, -0.25, -0.25, 0.25, 0.25, icons.iconBackground);
 
-            Icon front = icons.getIcon(param);
+            IconRender render = TagIcons.parseIconString(param);
 
-            if (front != null) {
+            if (render != null) {
                 tes.setTranslation(0, 0, 3 * Z_FIGHTER);
-                drawRectangle(tes, -0.25, -0.25, 0.25, 0.25, front);
+                render.render(tes, -0.25, -0.25, 0.25, 0.25);
             }
 
             tes.draw();

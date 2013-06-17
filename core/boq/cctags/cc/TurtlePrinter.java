@@ -74,12 +74,11 @@ public class TurtlePrinter extends TurtlePeripheral implements PrinterHelper.Pri
             if (!isSelectedTagValid())
                 return wrap(false, "No tag");
 
-            String type = arguments[0].toString();
-            String description = arguments[1].toString();
-            String label = (arguments.length > 2) ? arguments[2].toString() : null;
+            String icon = arguments[0].toString();
+            String label = (arguments.length > 1) ? arguments[1].toString() : null;
 
             TagData data = tagAccess.readData();
-            Object[] result = helper.printTag(data, type, description, label);
+            Object[] result = helper.printTag(data, icon, label);
             if (result[0].equals(true))
                 tagAccess.writeData(data, true);
 

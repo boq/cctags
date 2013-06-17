@@ -52,18 +52,15 @@ public class PrinterHelper {
         return false;
     }
 
-    public Object[] printTag(TagData data, String type, String descr, String label) {
-        if ("predefined".equals(type)) {
-            if (!TagIcons.instance.isValidIconName(descr))
-                return wrap(false, "Unknown predefined icon: " + descr);
+    public Object[] printTag(TagData data, String icon, String label) {
+        if (!TagIcons.instance.isValidIconString(icon))
+            return wrap(false, "Unknown icon: " + icon);
 
-            if (!tryPrint())
-                return wrap(false, "No ink");
+        if (!tryPrint())
+            return wrap(false, "No ink");
 
-            data.icon = descr;
-            data.label = Strings.isNullOrEmpty(label) ? null : label;
-        } else
-            return wrap(false, "Unknown icon type: " + type);
+        data.icon = icon;
+        data.label = Strings.isNullOrEmpty(label) ? null : label;
 
         return TRUE;
     }

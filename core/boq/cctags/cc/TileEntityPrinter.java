@@ -41,14 +41,10 @@ public class TileEntityPrinter extends TileEntityPeripheral<PrinterData> {
             if (data == null)
                 return wrap(false, "No tag");
 
-            String type = arguments[0].toString();
-            String description = arguments[1].toString();
-            String label = null;
+            String icon = arguments[0].toString();
+            String label = (arguments.length > 1) ? arguments[1].toString() : null;
 
-            if (arguments.length > 2)
-                label = arguments[2].toString();
-
-            Object[] result = helper.printTag(data, type, description, label);
+            Object[] result = helper.printTag(data, icon, label);
 
             if (result[0].equals(true))
                 writeData(data);
