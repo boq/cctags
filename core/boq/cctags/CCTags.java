@@ -69,6 +69,7 @@ public class CCTags {
 
     @PostInit
     public void modsLoaded(FMLPostInitializationEvent evt) {
+        LuaInit.instance.setupFiles();
         for (PeripheralType type : PeripheralType.TYPES)
             TurtleAPI.registerUpgrade(type);
     }

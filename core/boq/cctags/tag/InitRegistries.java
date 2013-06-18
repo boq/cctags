@@ -22,19 +22,19 @@ public class InitRegistries {
 
         ItemStack itemTag64 = new ItemStack(mod.itemTag, 16, TagSize.TAG_64.ordinal());
         ItemTag.setupDefaultTags(itemTag64);
-        recipes.add(new ShapedOreRecipe(itemTag64, "PPP", "PRP", "PIP", 'P', Item.paper, 'R', Item.redstone, 'I', Item.ingotIron));
+        recipes.add(new ShapedOreRecipe(itemTag64, "PSP", "PRP", "PIP", 'S', Item.slimeBall, 'P', Item.paper, 'R', Item.redstone, 'I', Item.ingotIron));
 
-        ItemStack itemTag256 = new ItemStack(mod.itemTag, 16, TagSize.TAG_256.ordinal());
+        ItemStack itemTag256 = new ItemStack(mod.itemTag, 8, TagSize.TAG_256.ordinal());
         ItemTag.setupDefaultTags(itemTag256);
-        recipes.add(new ShapedOreRecipe(itemTag256, "PPP", "RRR", "PIP", 'P', Item.paper, 'R', Item.redstone, 'I', Item.ingotIron));
+        recipes.add(new ShapedOreRecipe(itemTag256, "PSP", "RRR", "PIP", 'S', Item.slimeBall, 'P', Item.paper, 'R', Item.redstone, 'I', Item.ingotIron));
 
-        ItemStack itemTag1K = new ItemStack(mod.itemTag, 16, TagSize.TAG_1K.ordinal());
+        ItemStack itemTag1K = new ItemStack(mod.itemTag, 4, TagSize.TAG_1K.ordinal());
         ItemTag.setupDefaultTags(itemTag1K);
-        recipes.add(new ShapedOreRecipe(itemTag1K, "PPP", "RRR", "PGP", 'P', Item.paper, 'R', Item.redstone, 'G', Item.goldNugget));
+        recipes.add(new ShapedOreRecipe(itemTag1K, "PSP", "RRR", "PGP", 'S', Item.slimeBall, 'P', Item.paper, 'R', Item.redstone, 'G', Item.goldNugget));
 
-        ItemStack itemTag64K = new ItemStack(mod.itemTag, 16, TagSize.TAG_4K.ordinal());
+        ItemStack itemTag64K = new ItemStack(mod.itemTag, 8, TagSize.TAG_4K.ordinal());
         ItemTag.setupDefaultTags(itemTag64K);
-        recipes.add(new ShapedOreRecipe(itemTag64K, "PPP", "RRR", "PGP", 'P', Item.paper, 'R', Item.redstone, 'G', Item.ingotGold));
+        recipes.add(new ShapedOreRecipe(itemTag64K, "PSP", "RRR", "PGP", 'S', Item.slimeBall, 'P', Item.paper, 'R', Item.redstone, 'G', Item.ingotGold));
     }
 
     private static void registerEntities() {

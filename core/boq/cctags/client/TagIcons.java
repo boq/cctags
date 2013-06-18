@@ -1,12 +1,17 @@
 package boq.cctags.client;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
+import java.util.Properties;
 
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
+import boq.utils.log.Log;
 
 import com.google.common.collect.Maps;
+import com.google.common.io.Closer;
 
 public class TagIcons {
 
@@ -57,14 +62,25 @@ public class TagIcons {
         }
     }
 
-    public void addIconNames() {
-        addIconName("left");
-        addIconName("right");
-        addIconName("forward");
-        addIconName("spiral");
-        addIconName("coord");
-        addIconName("line");
-        addIconName("cross");
+    public void loadPredefinedIcons() {
+        try {
+            Closer closer = Closer.create();
+            try {
+                InputStream is = closer.register(TagIcons.class.getResourceAsStream("/mods/cctags/textures/items/icons.properties"));
+                Properties p = new Properties();
+                p.load(is);
+
+                for (String s : p.stringPropertyNames())
+                    addIconName(s);
+
+            } finally {
+                closer.close();
+            }
+
+        } catch (IOException e) {
+            Log.warning(e, "Can't load file 'icons.properties'. No predefined icons");
+            return;
+        }
     }
 
     public void addIconName(String name) {

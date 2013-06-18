@@ -3,6 +3,7 @@
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="src" path="core"/>
 	<classpathentry kind="src" path="utils"/>
+	<classpathentry kind="src" path="lua"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Minecraft-1.5.2-forge"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/cc-api"/>

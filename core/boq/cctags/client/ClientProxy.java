@@ -1,5 +1,8 @@
 package boq.cctags.client;
 
+import java.io.File;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.server.ServerListenThread;
 import net.minecraft.server.ThreadMinecraftServer;
 import net.minecraft.world.World;
@@ -13,7 +16,7 @@ public class ClientProxy implements IProxy {
     @Override
     public void registerRenderers() {
         RenderingRegistry.registerEntityRenderingHandler(EntityTag.class, new EntityTagRenderer());
-        TagIcons.instance.addIconNames();
+        TagIcons.instance.loadPredefinedIcons();
     }
 
     @Override
@@ -25,5 +28,10 @@ public class ClientProxy implements IProxy {
     public boolean isServer() {
         Thread thr = Thread.currentThread();
         return thr instanceof ThreadMinecraftServer || thr instanceof ServerListenThread;
+    }
+
+    @Override
+    public File getMcFolder() {
+        return Minecraft.getMinecraftDir();
     }
 }

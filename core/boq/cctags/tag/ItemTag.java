@@ -143,7 +143,7 @@ public class ItemTag extends Item {
     @SideOnly(Side.CLIENT)
     public void getSubItems(int id, CreativeTabs tab, List results) {
         for (TagSize size : sizes)
-            if (size.visible) {
+            if (size.visible()) {
                 ItemStack stack = new ItemStack(id, 1, size.ordinal());
                 setupDefaultTags(stack);
                 results.add(stack);
