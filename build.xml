@@ -2,6 +2,8 @@
 <project name="cctags" default="build">
 	<description>CC NFC Tags</description>
 
+	<target name="build" depends="copy-to-mcp, recompile, reobfuscate, build-jar, clean-mcp" />
+
 	<target name="buildenvsetup">
 		<property environment="env" />
 		<property name="modname" value="cctags" />
@@ -19,9 +21,8 @@
 		<property name="deploy.dir" location="${user.home}/.minecraft/mods" />
 		<property name="resource.dir" location="${basedir}/resources" />
 		<property name="jar.dir" location="${basedir}/target" />
+		<property name="lua.dir" location="${basedir}/lua" />
 	</target>
-
-	<target name="build" depends="copy-to-mcp, recompile, reobfuscate, build-jar, clean-mcp" />
 
 	<target name="copy-to-mcp" depends="buildenvsetup">
 		<copy todir="${mcp.srcdir}" overwrite="true" verbose="true">
@@ -48,24 +49,39 @@
 		<exec executable="${python.exe}" dir="${basedir}" failonerror="true">
 			<arg value="${basedir}/helper.py" />
 			<arg value="${mcp.home}" />
+			<arg value="${jar.dir}" />
+			<arg value="${modname}" />
 		</exec>
 	</target>
 
-	<target name="build-jar" depends="buildenvsetup, run-python">
+	<target name="build-jar" depends="buildenvsetup">
 		<property file="version.properties" />
 		<property name="jarname" value="${modname}-${cctags.version.tag}" />
+
+		<property name="icon.package" value="mods/cctags/textures/items" />
+		<property name="icon.filelist" value="icons.properties" />
+		<property name="icon.filelist.full" value="${icon.package}/icons.properties" />
+
+		<property name="lua.package" value="boq/cctags/lua" />
+		<property name="lua.filelist" value="files.properties" />
+		<property name="lua.filelist.full" value="${lua.package}/files.properties" />
+
 		<delete dir="${jar.dir}" />
 		<mkdir dir="${jar.dir}" />
+		<antcall target="run-python" />
 		<jar destfile="${basedir}/target/${jarname}.jar">
 			<fileset dir="${mcp.obfoutput.classes}" includes="**/*.class" excludes="net/**/*" />
-			<!-- zipfileset dir="${basedir}" includes="version.properties" / -->
 			<fileset dir="${basedir}/core" includes="mcmod.info" />
 			<fileset dir="${basedir}" includes="version.properties" />
+
+			<fileset dir="${lua.dir}" excludes="${lua.filelist.full}" />
+			<zipfileset file="${jar.dir}/${lua.filelist}" fullpath="${lua.filelist.full}" />
+
 			<fileset dir="${resource.dir}">
 				<include name="**/*.png" />
-				<include name="**/*.properties" />
 				<include name="**/*.xml" />
 			</fileset>
+			<zipfileset file="${jar.dir}/${icon.filelist}" fullpath="${icon.filelist.full}" />
 		</jar>
 	</target>
 
