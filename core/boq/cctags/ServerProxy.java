@@ -23,5 +23,4 @@ public class ServerProxy implements IProxy {
     public File getMcFolder() {
         return new File(".");
     }
-
 }

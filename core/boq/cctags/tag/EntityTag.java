@@ -59,9 +59,12 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
     }
 
     private void checkMovement(double x, double y, double z) {
-        if (!worldObj.isRemote && !isDead && (x != 0 || y != 0 || z != 0)) {
+        if (!isDead && (x != 0 || y != 0 || z != 0)) {
+            if (worldObj.isRemote)
+                spawnParticles();
+            else
+                dropItemStack();
             setDead();
-            dropItemStack();
         }
     }
 
@@ -109,18 +112,31 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
 
     @Override
     public boolean attackEntityFrom(DamageSource source, int amount) {
-        if (!isDead && !worldObj.isRemote)
-        {
+        if (!isDead) {
             setDead();
-            setBeenAttacked();
-            Entity entity = source.getEntity();
-            boolean isCreative = entity instanceof EntityPlayer && ((EntityPlayer)entity).capabilities.isCreativeMode;
+            if (worldObj.isRemote)
+                spawnParticles();
+            else {
+                setBeenAttacked();
 
-            if (!isCreative)
-                dropItemStack();
+                Entity entity = source.getEntity();
+                boolean isCreative = entity instanceof EntityPlayer && ((EntityPlayer)entity).capabilities.isCreativeMode;
+
+                if (!isCreative)
+                    dropItemStack();
+            }
+
         }
 
         return true;
+    }
+
+    private void spawnParticles() {
+        double x = (boundingBox.maxX + boundingBox.minX) / 2.0;
+        double y = (boundingBox.maxY + boundingBox.minY) / 2.0;
+        double z = (boundingBox.maxZ + boundingBox.minZ) / 2.0;
+        for (int i = 0; i < 5; i++)
+            worldObj.spawnParticle("slime", x, y, z, 0, 0, 0);
     }
 
     @Override

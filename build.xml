@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="cctags" default="build">
+	<description>CC NFC Tags</description>
+
+	<target name="buildenvsetup">
+		<property environment="env" />
+		<property name="modname" value="cctags" />
+		<property file="local.properties" />
+
+		<fail message="mcp.home not defined in 'local.properties'" unless="mcp.home" />
+		<fail message="cc-api.src not defined in 'local.properties'" unless="cc-api.src" />
+
+		<condition property="python.exe" value="${mcp.home}/runtime/bin/python/python_mcp" else="python">
+			<os family="Windows" />
+		</condition>
+		<property name="mcp.obfoutput" location="${mcp.home}/reobf" />
+		<property name="mcp.obfoutput.classes" location="${mcp.obfoutput}/minecraft" />
+		<property name="mcp.srcdir" location="${mcp.home}/src/minecraft" />
+		<property name="deploy.dir" location="${user.home}/.minecraft/mods" />
+		<property name="resource.dir" location="${basedir}/resources" />
+		<property name="jar.dir" location="${basedir}/target" />
+	</target>
+
+	<target name="build" depends="copy-to-mcp, recompile, reobfuscate, build-jar, clean-mcp" />
+
+	<target name="copy-to-mcp" depends="buildenvsetup">
+		<copy todir="${mcp.srcdir}" overwrite="true" verbose="true">
+			<fileset dir="${basedir}/core" includes="**/*.java" />
+			<fileset dir="${basedir}/utils" includes="**/*.java" />
+			<fileset dir="${cc-api.src}" includes="**/*.java" />
+		</copy>
+	</target>
+
+	<target name="recompile" depends="buildenvsetup">
+		<exec executable="${python.exe}" dir="${mcp.home}" failonerror="true">
+			<arg value="${mcp.home}/runtime/recompile.py" />
+		</exec>
+	</target>
+
+	<target name="reobfuscate" depends="buildenvsetup">
+		<exec executable="${python.exe}" dir="${mcp.home}">
+			<arg value="${mcp.home}/runtime/reobfuscate.py" />
+			<arg value="--srgnames" />
+		</exec>
+	</target>
+
+	<target name="run-python" depends="buildenvsetup">
+		<exec executable="${python.exe}" dir="${basedir}" failonerror="true">
+			<arg value="${basedir}/helper.py" />
+			<arg value="${mcp.home}" />
+		</exec>
+	</target>
+
+	<target name="build-jar" depends="buildenvsetup, run-python">
+		<property file="version.properties" />
+		<property name="jarname" value="${modname}-${cctags.version.tag}" />
+		<delete dir="${jar.dir}" />
+		<mkdir dir="${jar.dir}" />
+		<jar destfile="${basedir}/target/${jarname}.jar">
+			<fileset dir="${mcp.obfoutput.classes}" includes="**/*.class" excludes="net/**/*" />
+			<!-- zipfileset dir="${basedir}" includes="version.properties" / -->
+			<fileset dir="${basedir}/core" includes="mcmod.info" />
+			<fileset dir="${basedir}" includes="version.properties" />
+			<fileset dir="${resource.dir}">
+				<include name="**/*.png" />
+				<include name="**/*.properties" />
+				<include name="**/*.xml" />
+			</fileset>
+		</jar>
+	</target>
+
+	<target name="clean-mcp" depends="buildenvsetup">
+		<delete verbose="true" includeEmptyDirs="true">
+			<fileset dir="${mcp.srcdir}/boq" />
+			<fileset dir="${mcp.srcdir}/dan200" />
+		</delete>
+	</target>
+</project>
