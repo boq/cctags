@@ -22,6 +22,14 @@
 		<property name="resource.dir" location="${basedir}/resources" />
 		<property name="jar.dir" location="${basedir}/target" />
 		<property name="lua.dir" location="${basedir}/lua" />
+
+		<property name="icon.package" value="mods/cctags/textures/items" />
+		<property name="icon.dir" value="${resource.dir}/${icon.package}" />
+
+		<property name="lua.package" value="boq/cctags/lua" />
+		<property name="lua.files.dir" value="${lua.dir}/${lua.package}" />
+		<property name="lua.filelist" value="files.properties" />
+		<property name="lua.filelist.full" value="${lua.package}/${lua.filelist}" />
 	</target>
 
 	<target name="copy-to-mcp" depends="buildenvsetup">
@@ -51,20 +59,14 @@
 			<arg value="${mcp.home}" />
 			<arg value="${jar.dir}" />
 			<arg value="${modname}" />
+			<arg value="${lua.files.dir}" />
+			<arg value="${icon.dir}" />
 		</exec>
 	</target>
 
 	<target name="build-jar" depends="buildenvsetup">
 		<property file="version.properties" />
 		<property name="jarname" value="${modname}-${cctags.version.tag}" />
-
-		<property name="icon.package" value="mods/cctags/textures/items" />
-		<property name="icon.filelist" value="icons.properties" />
-		<property name="icon.filelist.full" value="${icon.package}/icons.properties" />
-
-		<property name="lua.package" value="boq/cctags/lua" />
-		<property name="lua.filelist" value="files.properties" />
-		<property name="lua.filelist.full" value="${lua.package}/files.properties" />
 
 		<delete dir="${jar.dir}" />
 		<mkdir dir="${jar.dir}" />
@@ -80,8 +82,8 @@
 			<fileset dir="${resource.dir}">
 				<include name="**/*.png" />
 				<include name="**/*.xml" />
+				<include name="**/*.properties" />
 			</fileset>
-			<zipfileset file="${jar.dir}/${icon.filelist}" fullpath="${icon.filelist.full}" />
 		</jar>
 	</target>
 

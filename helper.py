@@ -7,13 +7,20 @@ import ConfigParser
 from datetime import datetime
 
 mcp_dir = path.abspath(sys.argv[1])
-print(mcp_dir)
+print("MCP dir: " + mcp_dir)
 
 tmp_dir = path.abspath(sys.argv[2])
-print(tmp_dir)
+print("Output dir: " + tmp_dir)
 sys.path.append(mcp_dir)
 
 mod_name = sys.argv[3]
+print("Mod: " + mod_name) 
+
+lua_dir = path.abspath(sys.argv[4])
+print("Lua dir: " + lua_dir)
+
+icon_dir = path.abspath(sys.argv[5])
+print("Icon dir: " + icon_dir)
 
 import runtime.commands as commands 
 from runtime.commands import Commands
@@ -26,37 +33,43 @@ def iterate_property_keys(filename):
             if match:
                 yield match.group(1).strip()
 
+def iterate_lua_files(filename):
+    for key in iterate_property_keys(filename):
+        lua_file = path.join(lua_dir, key)
+        try:
+            stat = os.stat(lua_file)
+            yield (key, stat.st_mtime)
+        except os.error, desc:
+            print("Can't stat lua file %s: %s" % (lua_file, desc))
+
 def update_lua_list():
-    lua_dir = path.abspath("./lua/boq/cctags/lua")
     input_file = path.join(lua_dir, "files.properties")
     output_file = path.join(tmp_dir, "files.properties")
-    print("Rewriting %s to %s" % (input_file, output_file))
+    print("Rewriting lua list %s to %s" % (input_file, output_file))
     with open(output_file, "wb") as output:
-        for key in iterate_property_keys(input_file):
-            lua_file = path.join(lua_dir, key)
-            try:
-                stat = os.stat(lua_file)
-                output.write("%s=%d\n" % (key, stat.st_mtime))
-            except os.error, desc:
-                print("Can't stat lua file %s: %s" % (lua_file, desc))
-    
+        timestamps = iterate_lua_files(input_file)
+        lines = map(lambda (name, timestamp) : "%s=%d" % (name, timestamp), timestamps)
+        output.write("\n".join(lines))
 
 def update_icon_list():
-    icon_dir = path.abspath("./resources/mods/cctags/textures/items")
-    output_file = path.join(tmp_dir, "icons.properties")
-    
+    icon_file = path.join(icon_dir, "icons.properties")
+    print("Rewriting icon list %s " % icon_file)
     icon_regex = re.compile("^icon-([-_a-zA-Z0-9]+)\.png$");
     
-    with open(output_file, 'wb') as output:
-        for entry in os.listdir(icon_dir):
+    icons = list()
+    
+    for entry in os.listdir(icon_dir):
             if path.isdir(entry):
                 continue
                 
             match = icon_regex.match(entry)
             
             if match: 
-                name = match.group(1)
-                output.write(name + "\n")
+                icons.append(match.group(1))
+                 
+    with open(icon_file, 'wb') as output:
+        icons.sort()
+        output.write("\n".join(icons))
                 
 def get_mcp_versions():
     config = ConfigParser.SafeConfigParser()
