@@ -1,0 +1,22 @@
+local argv = { ... }
+
+print("Insert initial tag or press any key to abort.")
+_, contents = tags.waitForTag()
+
+if contents then
+    print("Initial tag read done. Writing '" .. contents .."' to any inserted tag. Press any key to abort.")
+    
+    if #argv >= 1 then
+        icon = argv[1] or ""
+        label = argv[2] or ""
+        if label == '?' then
+            print("Label?")
+            label = read()
+        end
+        
+        print("Printing icon '" .. icon .. "' and label '" ..  label .. "' on new tags")
+        tags.writeLoop(contents, icon, label)
+    else
+        tags.writeLoop(contents)
+    end
+end

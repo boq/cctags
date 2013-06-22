@@ -180,7 +180,7 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
             case 3: {// contents
                 String contents = tagAccess.readData().contents;
                 if (isSelectedTagValid())
-                    return wrap(contents, contents.length());
+                    return wrap(contents, contents == null ? 0 : contents.length());
                 return null;
             }
             case 4: {// write

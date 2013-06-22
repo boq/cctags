@@ -1,0 +1,16 @@
+print("Reading any inserted tag. Press any key to abort")
+while true do
+    side, contents, size, _, tag_size = tags.waitForTag()
+    if not side then
+        break
+    end
+
+    if contents then
+        print("Tag read, side ='" .. side .. "' contents = '" .. contents .. "' (" .. size .. ") size = " .. tag_size)
+    else
+        print("Empty tag, side = '" .. side .. "' size = " .. tag_size)
+    end
+
+    p = tags.getPeripheral(side)
+    p.eject()
+end

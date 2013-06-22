@@ -17,6 +17,14 @@ public class LuaInit {
 
     private LuaInit() {}
 
+    private Map<String, String> relPaths = Maps.newHashMap();
+
+    public String getRelPath(String fileName) {
+        String result = relPaths.get(fileName);
+        Preconditions.checkNotNull(result, "Lua file %s cannot be found", fileName);
+        return result;
+    }
+
     public void setupFiles() {
         Map<String, Long> files;
         try {
@@ -26,7 +34,9 @@ public class LuaInit {
         }
 
         File mcFolder = CCTags.proxy.getMcFolder();
-        File luaFolder = new File(mcFolder, "cctags" + File.separatorChar + "lua");
+
+        String relative = "cctags" + File.separatorChar + "lua";
+        File luaFolder = new File(mcFolder, relative);
 
         Preconditions.checkState(!luaFolder.exists() || luaFolder.isDirectory(), "Path '%s' is not directort", luaFolder);
         if (!luaFolder.exists() && !luaFolder.mkdirs())
@@ -37,6 +47,7 @@ public class LuaInit {
             Long timestamp = entry.getValue();
 
             File luaFile = new File(luaFolder, fileName);
+            String relPath = relative + File.separatorChar + fileName;
 
             if (timestamp != null && luaFile.exists()) {
                 long currentTimestamp = luaFile.lastModified();
@@ -45,6 +56,8 @@ public class LuaInit {
                         Log.info("File '%s' is newer (%s) than resource (%s)", luaFile,
                                 new Date(currentTimestamp).toString(),
                                 new Date(timestamp).toString());
+
+                    relPaths.put(fileName, relPath);
                     break;
                 }
             }
@@ -54,6 +67,7 @@ public class LuaInit {
 
             try {
                 copyResourceToDist(classpathName, luaFile);
+                relPaths.put(fileName, relPath);
             } catch (IOException e) {
                 throw new RuntimeException("Failed to copy file", e);
             }

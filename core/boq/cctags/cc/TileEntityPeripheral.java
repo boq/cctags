@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
+import boq.cctags.LuaInit;
 import boq.cctags.tag.ItemTag;
 import boq.cctags.tag.TagData;
 import boq.utils.log.Log;
@@ -73,7 +74,7 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
                     return null;
 
                 String contents = data.contents;
-                return wrap(contents, contents.length());
+                return wrap(contents, contents == null ? 0 : contents.length());
             }
             case 2: { // write
                 String newContents = arguments[0].toString();
@@ -111,7 +112,12 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
 
     @Override
     public void attach(IComputerAccess computer) {
+        final LuaInit reg = LuaInit.instance;
         computers.put(computer, computer.getAttachmentName());
+        computer.mountFixedDir("rom/programs/clonetag", reg.getRelPath("clonetag"), true, 0);
+        computer.mountFixedDir("rom/programs/writetag", reg.getRelPath("writetag"), true, 0);
+        computer.mountFixedDir("rom/programs/readtag", reg.getRelPath("readtag"), true, 0);
+        computer.mountFixedDir("rom/apis/tags", reg.getRelPath("tags"), true, 0);
     }
 
     @Override

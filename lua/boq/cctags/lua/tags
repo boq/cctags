@@ -1,0 +1,63 @@
+function getPeripheral(side)
+    local type = peripheral.getType(side)
+    if  type ~= "tag_writer" and type~= "tag_printer" then
+        error("Invalid peripheral type " .. type .. " on side " .. side)
+    end
+    return peripheral.wrap(side), type
+end
+
+function waitForTag(verbose)
+    while true do
+        event, arg = os.pullEvent()
+    
+        if event == 'tag' then
+            p = getPeripheral(arg)
+            contents,size = p.contents()
+            size_val, size_name = p.size()
+            p.eject()
+            return arg, contents, size, size_val, size_name
+        elseif event == 'key' then
+            print("Aborting")
+            return nil
+        end
+    end
+end
+
+function writeLoop(contents, icon, label)
+    if icon then
+        print_mode = true
+    end
+    
+    while true do
+        event, side = os.pullEvent()
+        if event == 'key' then
+            break
+        elseif event == 'tag' then
+            print("New tag in peripheral  '" .. side .. "'")
+            p, p_type = getPeripheral(side)
+
+            result, err = p.write(contents)
+            if not result then
+                print("Error while writing on '" .. side .. "' : " .. err)
+                break
+            end
+            
+            if print_mode then
+                if p_type ~= "tag_printer" then
+                    print("Program is in printing mode, but peripheral '" .. side .. "' is not printer")
+                else
+                    result, err = p.print(icon, label)
+                   
+                    if not result then
+                        print("Error while printing on '" .. side .. "' : " .. err)
+                        break
+                    else
+                        print("Ink level in " .. side .. " = " .. p.inkLevel())
+                    end
+               end
+            end
+    
+            p.eject()
+        end
+    end
+end

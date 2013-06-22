@@ -1,0 +1,19 @@
+local argv = { ... }
+
+print("Tag contents?")
+contents = read()
+
+if #argv >= 1 then
+    icon = argv[1] or ""
+    label = argv[2] or ""
+    if label == '?' then
+        print("Label?")
+        label = read()
+    end
+    
+    print("Printing icon '" .. icon .. "' and label '" ..  label .. "' on new tags. Press any key to abort")
+    tags.writeLoop(contents, icon, label)
+else
+    print("Writing contents to new tags. Press any key to abort")
+    tags.writeLoop(contents)
+end
