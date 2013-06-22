@@ -39,7 +39,7 @@ public class InitRegistries {
 
     private static void registerEntities() {
         final CCTags mod = CCTags.instance;
-        EntityRegistry.registerModEntity(EntityTag.class, "CCTag", Constants.ENTITY_TAG, mod, 50, Integer.MAX_VALUE, false);
+        EntityRegistry.registerModEntity(EntityTag.class, "CCTag", Constants.ENTITY_TAG, mod, 160, Integer.MAX_VALUE, false);
     }
 
     public static void registerAllTheThings() {

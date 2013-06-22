@@ -15,7 +15,7 @@ import boq.utils.render.*;
 
 public class EntityTagRenderer extends Render {
 
-    private static final double Z_FIGHTER = 0.0001;
+    private static final double Z_FIGHTER = 0.0005;
 
     private final static ParameterModel<String> iconModels = new ParameterModel<String>() {
 

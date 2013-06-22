@@ -47,10 +47,18 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
     protected void entityInit() {}
 
     @Override
-    protected void readEntityFromNBT(NBTTagCompound nbttagcompound) {}
+    protected void readEntityFromNBT(NBTTagCompound tag) {
+        NBTTagCompound tagData = tag.getCompoundTag("TagData");
+        data.readFromNBT(tagData);
+        updateAABB();
+    }
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound nbttagcompound) {}
+    protected void writeEntityToNBT(NBTTagCompound tag) {
+        NBTTagCompound tagData = new NBTTagCompound();
+        data.writeToNBT(tagData);
+        tag.setTag("TagData", tagData);
+    }
 
     @Override
     public boolean canBeCollidedWith()
@@ -174,24 +182,14 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tag) {
-        super.writeToNBT(tag);
-        NBTTagCompound tagData = new NBTTagCompound();
-        data.writeToNBT(tagData);
-        tag.setTag("TagData", tagData);
-    }
-
-    @Override
-    public void readFromNBT(NBTTagCompound tag) {
-        super.readFromNBT(tag);
-        NBTTagCompound tagData = tag.getCompoundTag("TagData");
-        data.readFromNBT(tagData);
-        updateAABB();
-    }
-
-    @Override
     public float getBrightness(float par1) {
         return 1.0f;
+    }
+
+    @Override
+    public boolean isInRangeToRenderDist(double distanceSquared) {
+        final double limit = 16 * 64;
+        return distanceSquared < limit * limit;
     }
 
     @Override
@@ -218,5 +216,4 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
         }
         return true;
     }
-
 }
