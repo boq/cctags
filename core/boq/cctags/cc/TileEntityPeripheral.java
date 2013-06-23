@@ -117,7 +117,8 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
         computer.mountFixedDir("rom/programs/clonetag", reg.getRelPath("clonetag"), true, 0);
         computer.mountFixedDir("rom/programs/writetag", reg.getRelPath("writetag"), true, 0);
         computer.mountFixedDir("rom/programs/readtag", reg.getRelPath("readtag"), true, 0);
-        computer.mountFixedDir("rom/apis/tags", reg.getRelPath("tags"), true, 0);
+        computer.mountFixedDir("rom/programs/progtag", reg.getRelPath("program"), true, 0);
+        computer.mountFixedDir("rom/apis/tags", reg.getRelPath("tags-computer"), true, 0);
     }
 
     @Override

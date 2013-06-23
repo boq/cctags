@@ -1,5 +1,6 @@
 package boq.cctags.cc;
 
+import static boq.utils.misc.Utils.checkArg;
 import static boq.utils.misc.Utils.wrap;
 import net.minecraft.item.ItemStack;
 import boq.cctags.tag.TagData;
@@ -46,7 +47,7 @@ public class TileEntityPrinter extends TileEntityPeripheral<PrinterData> {
 
             String icon = arguments[0].toString();
 
-            String label = (arguments.length > 1 && arguments[1] != null) ? arguments[1].toString() : null;
+            String label = checkArg(arguments, 1) ? arguments[1].toString() : null;
 
             Object[] result = helper.printTag(data, icon, label);
 

@@ -58,7 +58,7 @@ public class LuaInit {
                                 new Date(timestamp).toString());
 
                     relPaths.put(fileName, relPath);
-                    break;
+                    continue;
                 }
             }
 

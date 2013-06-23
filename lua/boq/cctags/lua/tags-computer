@@ -1,7 +1,7 @@
 function getPeripheral(side)
     local type = peripheral.getType(side)
     if  type ~= "tag_writer" and type~= "tag_printer" then
-        error("Invalid peripheral type " .. type .. " on side " .. side)
+        error(string.format("Invalid peripheral type '%s' on side '%s'", type, side))
     end
     return peripheral.wrap(side), type
 end
@@ -38,21 +38,21 @@ function writeLoop(contents, icon, label)
 
             result, err = p.write(contents)
             if not result then
-                print("Error while writing on '" .. side .. "' : " .. err)
+                print(string.format("Error while writing on '%s' : '%s'", side, err))
                 break
             end
             
             if print_mode then
-                if p_type ~= "tag_printer" then
-                    print("Program is in printing mode, but peripheral '" .. side .. "' is not printer")
+                if not p.print then
+                    print("Program is in printing mode, but peripheral '" .. side .. "' has no printing capabilities")
                 else
                     result, err = p.print(icon, label)
                    
                     if not result then
-                        print("Error while printing on '" .. side .. "' : " .. err)
+                        print(string.format("Error while printing on '%s' : '%s'", side, err))
                         break
                     else
-                        print("Ink level in " .. side .. " = " .. p.inkLevel())
+                        print(string.format("Ink level in %s = %d", side, p.inkLevel()))
                     end
                end
             end

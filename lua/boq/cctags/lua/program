@@ -1,0 +1,83 @@
+local function parseLine(line)
+    if line:sub(1,2) == "--" then
+        return nil, 0
+    end
+     
+    local sep = line:find(":")
+    if sep == nil then
+        return line, 1
+    end
+    
+    local params = line:sub(1, sep - 1)
+    local contents = string.match(line:sub(sep + 1), "^%s*(.+)" )
+    if not contents then
+        return nil, 0
+    end
+    
+    local it = params:gmatch("[%w_]+")
+    local quantity = it()
+    local icon = it()
+    local label = it()
+    
+    return contents, quantity, icon, label
+end
+
+local function writeTag(contents, icon, label)
+    print("Writing '".. contents .. "'. Insert tag, press space to skip or other key to abort")
+    while true do
+        local event, arg = os.pullEvent()
+        
+        if event == "tag" then
+            local p, t = tags.getPeripheral(arg)
+            local result, err = p.write(contents)
+            if not result then
+                error(err)
+            end
+            
+            if icon then
+                if not p.print then
+                    print(string.format("Peripheral on side %s has no printing capabilities", arg))
+                else            
+                    local  result, err = p.print(icon, label)
+                    if not result then
+                        error(err)
+                    end
+                end
+            end
+            
+            p.eject()
+            return true
+        elseif event == "key" then
+            return arg == keys.space
+        end
+    end
+end
+
+local args = { ... }
+if #args <= 0 then
+    print("Usage: progtag <path>")
+    return
+end
+
+local path = shell.resolve(args[1])
+
+if not fs.exists(path) or fs.isDir(path) then
+    print("File " .. path .. " is directory")
+    return
+end
+
+local file = io.open(path, "r")
+local line = file:read()
+local finished = false
+while line and not finished do
+    local command, quantity, icon, label = parseLine(line)
+    for i = 1,quantity do
+        if not writeTag(command, icon, label) then
+            finished = true
+            break
+        end
+    end
+    line = file:read()
+end
+file:close()
+print("Finished")

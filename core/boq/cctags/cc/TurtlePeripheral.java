@@ -8,8 +8,10 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import boq.cctags.EntityPacketHandler;
+import boq.cctags.LuaInit;
 import boq.cctags.tag.*;
 import boq.utils.coord.Bounds;
+import boq.utils.log.Log;
 
 import com.google.common.base.Preconditions;
 
@@ -107,7 +109,7 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
         return true;
     }
 
-    protected ForgeDirection geDirection(String direction) {
+    protected ForgeDirection getDirection(String direction) {
         int turtleDir = turtle.getFacingDir();
         ForgeDirection result = ForgeDirection.VALID_DIRECTIONS[turtleDir];
 
@@ -132,11 +134,11 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
         throw new IllegalArgumentException("Invalid direction, must be one of: up, down, front, back, left, right");
     }
 
-    private final static Bounds searchBounds = new Bounds(-1.1, -1.1, -1.1, 1.1, 1.1, 1.1);
+    private final static double DELTA = 0.05;
+    private final static Bounds searchBounds = new Bounds(-DELTA, -DELTA, -DELTA, 1 + DELTA, 1 + DELTA, 1 + DELTA);
 
     protected boolean selectTag(ForgeDirection direction) {
         Vec3 position = turtle.getPosition();
-
         AxisAlignedBB unitBox = searchBounds.getAabbFromPool(position.xCoord, position.yCoord, position.zCoord);
         World w = turtle.getWorld();
 
@@ -145,11 +147,11 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
             EntityTag tag = (EntityTag)o;
             if (tag.data.side == tagDirection) {
                 tagAccess = new EntityTagAccess(tag);
+                Log.info("Found in dir %s", direction);
                 return true;
             }
         }
         return false;
-
     }
 
     protected final static String[] commonMethods = { "isTagValid", "scanForTag", "selectFromSlot", "contents", "write", "size" };
@@ -160,14 +162,11 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
             case 0: // isTagValid
                 return wrap(isSelectedTagValid());
             case 1: { // scanForTag
-                String directionName = null;
-                if (arguments.length > 0)
-                    directionName = arguments[0].toString();
-
-                return wrap(selectTag(geDirection(directionName)));
+                String directionName = checkArg(arguments, 0) ? arguments[0].toString() : null;
+                return wrap(selectTag(getDirection(directionName)));
             }
             case 2: {// selectFromSlot
-                int slotId = (arguments.length > 0) ? toInt(arguments[0]) : turtle.getSelectedSlot();
+                int slotId = checkArg(arguments, 0) ? toInt(arguments[0]) : turtle.getSelectedSlot();
                 TagAccess access = new ItemTagAccess(slotId);
                 if (access.isValid()) {
                     tagAccess = access;
@@ -213,7 +212,12 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
     }
 
     @Override
-    public void attach(IComputerAccess computer) {}
+    public void attach(IComputerAccess computer) {
+        final LuaInit reg = LuaInit.instance;
+        computer.mountFixedDir("rom/programs/follow", reg.getRelPath("follow"), true, 0);
+        computer.mountFixedDir("rom/programs/loadink", reg.getRelPath("loadink"), true, 0);
+        computer.mountFixedDir("rom/apis/tags", reg.getRelPath("tags-turtle"), true, 0);
+    }
 
     @Override
     public void detach(IComputerAccess computer) {}

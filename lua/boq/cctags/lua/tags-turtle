@@ -1,0 +1,146 @@
+local function isReader(t)
+    return t == "tag_writer" or t == "tag_printer"
+end
+
+function getPeripheral(side)
+    local t = peripheral.getType(side)
+    if not isReader(t) then
+        error("Invalid peripheral type " .. t .. " on side " .. side)
+    end
+    return peripheral.wrap(side), t
+end
+
+DIRECTIONS = {"up", "down", "front", "back", "left", "right"}
+function scanForTags(side, dirs)
+    dirs = dirs or DIRECTIONS
+    p = getPeripheral(side)
+    for _,dir in pairs(DIRECTIONS) do
+        if p.scanForTag(dir) then
+            contents, size = p.contents()
+            return dir, contents, size, p.size()
+        end
+    end
+end
+
+local function subset(source, ...)
+    result = {}
+    names = { ... }
+    for _,name in pairs(names) do
+        result[name] = source[name]
+    end
+    
+    return result
+end
+
+safest = {
+    print = print,
+    read = read
+}
+
+safe = {
+    pullEvent = os.pullEvent,
+    scan = scanForTags
+}
+
+function safe.writeTag(side, contents)
+    p = getPeripheral(side)
+    p.write(contents)
+end
+
+function safe.readTag(side)
+    p = getPeripheral(side)
+    contents, size = p.contents()
+    return contents, size, p.size()
+end
+
+function moveUntilTag(action)
+    return function(reader)
+        while true do
+            if not action() then
+                print("Error during movement. Aborting!")
+                break
+            end
+            
+            sleep(0.5)
+            dir, contents = scanForTags(reader)
+            if dir then
+                break
+            end
+        end
+    end
+end
+
+move = {
+    forward = moveUntilTag(turtle.forward),
+    back = moveUntilTag(turtle.back),
+    up = moveUntilTag(turtle.up),
+    down = moveUntilTag(turtle.down)
+}
+
+turtle_safe_hidden = subset(turtle, "forward", "back", "up", "down")
+
+turtle_safe_global = subset(turtle, 
+    
+    "turnLeft",
+    "turnRight",
+    
+    "detect",
+    "detectUp",
+    "detectDown",
+    
+    "select",
+    "transferTo",
+    "getItemCount",
+    "getItemSpace",
+    
+    "compare",
+    "compareUp",
+    "compareDown",
+    "compareTo",
+    
+    "drop",
+    "dropUp",
+    "dropDown",
+    
+    "suck",
+    "suckUp",
+    "suckDown",
+    
+    "refuel",
+    "getFuelLevel"
+)
+
+-- delay list creation until all APIs are installed
+local envs_table
+local function envs_delay()
+    -- Warning: following table is probably horribly unaccurate and arbitrary
+    envs_table = {
+        -- probably safe
+        safest = {safest, 0, true},
+        term = {term, 0},
+        colors = {colors, 0},
+        colours = {colours, 0},
+        vector = {vector, 0},
+        keys = {keys, 0},
+        
+        -- may block/slow down execution (?)
+        safe = {safe, 1, true},
+        textutils = {textutils, 1},
+        gps = {gps, 1},
+        
+        -- minor world interaction
+        rednet = {rednet, 2},
+        turtleSafe = {turtle_safe_hidden, 2},
+        turtle_safe_global = {turtle_safe_global, 2, true},
+        move = {move, 2, true},
+        
+        -- full world interaction
+        turtle = {turtle, 3}
+    }
+    
+    return envs_table
+end
+
+function envs()
+    return envs_table or envs_delay()
+end

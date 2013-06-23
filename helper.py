@@ -92,7 +92,7 @@ def run_command(command):
     return stdout
     
 def get_mod_version():
-    tag_part = run_command('git describe') or 'x.x'
+    tag_part = run_command('git describe --abbrev=0 --tags') or 'x.x'
     hash_part = run_command('git show-ref --heads --hash=8 master')  or "sadperson"
     
     return (tag_part.strip(), hash_part.strip())

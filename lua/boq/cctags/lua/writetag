@@ -11,7 +11,7 @@ if #argv >= 1 then
         label = read()
     end
     
-    print("Printing icon '" .. icon .. "' and label '" ..  label .. "' on new tags. Press any key to abort")
+    print(string.format("Printing icon '%s' and label '%s' on new tags. Press any key to abort", icon, label))
     tags.writeLoop(contents, icon, label)
 else
     print("Writing contents to new tags. Press any key to abort")

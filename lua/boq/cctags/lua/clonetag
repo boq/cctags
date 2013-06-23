@@ -14,7 +14,7 @@ if contents then
             label = read()
         end
         
-        print("Printing icon '" .. icon .. "' and label '" ..  label .. "' on new tags")
+        print(string.format("Printing icon '%s' and label '%s' on new tags", icon, label))
         tags.writeLoop(contents, icon, label)
     else
         tags.writeLoop(contents)

@@ -1,0 +1,20 @@
+local args = { ... }
+
+side = args[1]
+slot = args[2]
+
+if not side then
+    print("Usage: <side>, [<slot>]")
+    return
+end
+
+t = peripheral.getType(side)
+
+if t ~= "tag_printer" then
+    print("Invalid peripheral type: " .. (t or "none"))
+    return
+end
+
+p = peripheral.wrap(side)
+p.loadInk(slot)
+print("Ink level: " .. p.inkLevel())

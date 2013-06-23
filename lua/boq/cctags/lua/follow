@@ -1,0 +1,65 @@
+local args = { ... }
+
+local reader_side = args[1]
+if not reader_side then
+    print("Usage: reader peripheral side, (max security level = 2), (move forward on start = true)")
+    return
+end
+
+local max_level = args[2] or 2
+local forward_start = args[3] or true
+local work_env = {}
+
+for name,data in pairs(tags.envs()) do
+    env, level, is_global = unpack(data)
+    if level <= max_level then
+        if is_global then
+            for k,v in pairs(env) do
+                work_env[k] = v
+             end
+        else
+            work_env[name] = env
+        end
+    end 
+end
+
+work_env["reader"] = reader_side
+
+if forward_start then
+    if not turtle.forward() then
+        error("Can't move forward")
+    end
+end
+
+local step = 0;
+local finished = false
+
+function work_env.stop() 
+    finished = true
+    print("stop(): finished")
+end
+
+while not finished do
+    dir, contents = tags.scanForTags(reader_side)
+    if not dir then
+        error("No tag found")
+    end
+    
+    step = step + 1
+    print(string.format("Step %d: executing: '%s'", step, contents))
+    
+    local operation, e = loadstring(contents)
+    if not operation then
+        error(string.format("Invalid operation, error: '%s'", operation, err))
+    end
+    
+    work_env["tag_dir"] = dir
+    setfenv(operation, work_env)
+    local result = operation()
+    
+    if result then
+        print(string.format("%Step d: result: '%s'", step, result))
+    else
+        print(string.format("Step %d: done", step))
+    end
+end

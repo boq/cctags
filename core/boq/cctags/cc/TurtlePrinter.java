@@ -56,7 +56,7 @@ public class TurtlePrinter extends TurtlePeripheral implements PrinterHelper.Pri
             return wrap(inkLevel);
 
         if (method == ownMethodStart + 1) {// loadInk
-            int slot = (arguments.length > 0) ? toInt(arguments[0]) : turtle.getSelectedSlot();
+            int slot = checkArg(arguments, 0) ? toInt(arguments[0]) : turtle.getSelectedSlot();
 
             ItemStack stack = turtle.getSlotContents(slot);
             if (stack == null)
@@ -75,7 +75,7 @@ public class TurtlePrinter extends TurtlePeripheral implements PrinterHelper.Pri
                 return wrap(false, "No tag");
 
             String icon = arguments[0].toString();
-            String label = (arguments.length > 1) ? arguments[1].toString() : null;
+            String label = checkArg(arguments, 1) ? arguments[1].toString() : null;
 
             TagData data = tagAccess.readData();
             Object[] result = helper.printTag(data, icon, label);
