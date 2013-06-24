@@ -45,8 +45,20 @@ public class BlockTagPeripheral extends BlockContainer {
     }
 
     public static PeripheralType getType(int metadata) {
-        int type = metadata & 3;
+        int type = metadata & 1;
         return PeripheralType.TYPES[type];
+    }
+
+    public static boolean isActive(int metadata) {
+        return (metadata & 2) > 0;
+    }
+
+    public static int setActive(int metadata) {
+        return metadata | 2;
+    }
+
+    public static int clearActive(int metadata) {
+        return metadata & ~2;
     }
 
     public static int calculateMeta(ForgeDirection side, PeripheralType type) {
@@ -63,7 +75,7 @@ public class BlockTagPeripheral extends BlockContainer {
 
         if (side == front) {
             PeripheralType type = getType(metadata);
-            return type.blockIcon;
+            return isActive(metadata) ? type.activeBlockIcon : type.inactiveBlockIcon;
         }
 
         return blockIcon;
@@ -72,7 +84,7 @@ public class BlockTagPeripheral extends BlockContainer {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister registry) {
-        blockIcon = registry.registerIcon("cctags:peripheral_top");
+        blockIcon = registry.registerIcon("cctags:peripheral-top");
 
         for (PeripheralType type : PeripheralType.TYPES)
             type.registerIcons(registry);
@@ -94,10 +106,8 @@ public class BlockTagPeripheral extends BlockContainer {
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubBlocks(int id, CreativeTabs tab, List result) {
-        for (PeripheralType type : PeripheralType.TYPES) {
-            int meta = calculateMeta(ForgeDirection.SOUTH, type);
-            result.add(new ItemStack(id, 1, meta));
-        }
+        for (PeripheralType type : PeripheralType.TYPES)
+            result.add(getDefaultItem(type));
     }
 
     @Override
@@ -133,7 +143,7 @@ public class BlockTagPeripheral extends BlockContainer {
             if (isItemTag(equipped))
                 used = tep.insertTag(equipped);
             else
-                return tep.ejectTag();
+                return tep.ejectTag(true);
         }
 
         if (used) {
@@ -160,4 +170,19 @@ public class BlockTagPeripheral extends BlockContainer {
         super.breakBlock(world, x, y, z, blockId, metadata);
     }
 
+    public ItemStack getDefaultItem(PeripheralType type) {
+        int meta = calculateMeta(ForgeDirection.WEST, type);
+        return new ItemStack(this, 1, meta);
+    }
+
+    @Override
+    public boolean hasComparatorInputOverride() {
+        return true;
+    }
+
+    @Override
+    public int getComparatorInputOverride(World world, int x, int y, int z, int side) {
+        int meta = world.getBlockMetadata(x, y, z);
+        return isActive(meta) ? 15 : 0;
+    }
 }

@@ -217,6 +217,7 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
         computer.mountFixedDir("rom/programs/follow", reg.getRelPath("follow"), true, 0);
         computer.mountFixedDir("rom/programs/loadink", reg.getRelPath("loadink"), true, 0);
         computer.mountFixedDir("rom/apis/tags", reg.getRelPath("tags-turtle"), true, 0);
+        computer.mountFixedDir("rom/help/follow", reg.getRelPath("follow-help"), true, 0);
     }
 
     @Override

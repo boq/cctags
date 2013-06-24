@@ -97,7 +97,7 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
                 return wrap(data.tagSize.size, data.tagSize.name);
             }
             case 4: // eject
-                return wrap(ejectTag());
+                return wrap(ejectTag(true));
 
             default:
                 throw new IllegalArgumentException("Unknown method: " + method);
@@ -114,11 +114,13 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
     public void attach(IComputerAccess computer) {
         final LuaInit reg = LuaInit.instance;
         computers.put(computer, computer.getAttachmentName());
+        computer.mountFixedDir("rom/apis/tags", reg.getRelPath("tags-computer"), true, 0);
+
         computer.mountFixedDir("rom/programs/clonetag", reg.getRelPath("clonetag"), true, 0);
         computer.mountFixedDir("rom/programs/writetag", reg.getRelPath("writetag"), true, 0);
         computer.mountFixedDir("rom/programs/readtag", reg.getRelPath("readtag"), true, 0);
         computer.mountFixedDir("rom/programs/progtag", reg.getRelPath("program"), true, 0);
-        computer.mountFixedDir("rom/apis/tags", reg.getRelPath("tags-computer"), true, 0);
+        computer.mountFixedDir("rom/help/progtag", reg.getRelPath("program-help"), true, 0);
     }
 
     @Override
@@ -128,7 +130,7 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
             Log.warning("Detached unknown computer %s from tag peripheral (%d,%d,%d)", computer, xCoord, yCoord, zCoord);
     }
 
-    public boolean ejectTag() {
+    public boolean ejectTag(boolean update) {
         if (data.tag == null)
             return false;
 
@@ -136,16 +138,26 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
             Utils.dropItem(worldObj, xCoord, yCoord, zCoord, data.tag);
 
         data.tag = null;
+
+        if (update) {
+            int meta = BlockTagPeripheral.clearActive(getBlockMetadata());
+            worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, meta, 3);
+            onInventoryChanged();
+        }
         return true;
     }
 
     protected void onTagInsert() {
         for (Map.Entry<IComputerAccess, String> access : computers.entrySet())
             access.getKey().queueEvent("tag", wrap(access.getValue()));
+
+        int meta = BlockTagPeripheral.setActive(getBlockMetadata());
+        worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, meta, 3);
+        onInventoryChanged();
     }
 
     public boolean insertTag(ItemStack equipped) {
-        if (data.tag != null && !ejectTag())
+        if (data.tag != null && !ejectTag(false))
             return false;
 
         data.tag = equipped.copy();
@@ -237,5 +249,4 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
                 (stack != null) &&
                 (stack.getItem() instanceof ItemTag);
     }
-
 }

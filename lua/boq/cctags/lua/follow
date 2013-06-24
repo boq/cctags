@@ -2,12 +2,13 @@ local args = { ... }
 
 local reader_side = args[1]
 if not reader_side then
-    print("Usage: reader peripheral side, (max security level = 2), (move forward on start = true)")
+    print("Usage: reader <peripheral side>, [<move forward on start = true>], [<max security level = 2>]")
     return
 end
 
-local max_level = args[2] or 2
-local forward_start = args[3] or true
+--TODO: Get better
+local forward_start = not ((args[2] == '0') or (args[2] == 'false'))
+local max_level = tonumber(args[3]) or 2
 local work_env = {}
 
 for name,data in pairs(tags.envs()) do

@@ -4,6 +4,9 @@
 	<comment>English (EN) CCTags Localization File</comment>
 	<entry key="item.cctag.name">Tag</entry>
 	
+	<entry key="item.pcb-writer.name">Tag Writer Module</entry>
+    <entry key="item.pcb-printer.name">Tag Printer Module</entry>
+	
 	<entry key="tile.tag_writer.name">Tag Writer</entry>
 	<entry key="tile.tag_printer.name">Tag Printer</entry>
 	

@@ -2,7 +2,6 @@ package boq.cctags;
 
 import net.minecraftforge.common.Configuration;
 import boq.cctags.cc.*;
-import boq.cctags.tag.InitRegistries;
 import boq.cctags.tag.ItemTag;
 import boq.utils.lang.LangList;
 import boq.utils.log.Log;
@@ -28,6 +27,9 @@ public class CCTags {
 
     public static Config config;
 
+    private int itemMiscId;
+    public ItemMisc itemMisc;
+
     private int itemTagId;
     public ItemTag itemTag;
 
@@ -42,6 +44,7 @@ public class CCTags {
         try {
             cfg.load();
             itemTagId = cfg.getItem("itemTag", 27412).getInt();
+            itemMiscId = cfg.getItem("itemMisc", 27413).getInt();
             blockPeripheralId = cfg.getBlock("blockTagPeripheral", 2324).getInt();
 
             config = new Config(cfg);
@@ -57,6 +60,8 @@ public class CCTags {
         LangList.loadAll("/mods/cctags/lang/");
 
         itemTag = new ItemTag(itemTagId);
+
+        itemMisc = new ItemMisc(itemMiscId);
 
         blockPeripheral = new BlockTagPeripheral(blockPeripheralId);
         GameRegistry.registerBlock(blockPeripheral, ItemPeripheral.class, "tag-peripheral");
