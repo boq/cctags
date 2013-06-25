@@ -18,7 +18,7 @@ public class TileEntityPrinter extends TileEntityPeripheral<PrinterData> {
 
     private final PrinterHelper helper;
 
-    private final static String[] printerMethods = { "inkLevel", "print" };
+    private final static String[] printerMethods = { "inkLevel", "print", "listIcons" };
 
     private final static String[] methods = ObjectArrays.concat(commonMethods, printerMethods, String.class);
 
@@ -36,7 +36,8 @@ public class TileEntityPrinter extends TileEntityPeripheral<PrinterData> {
 
         if (method == ownMethodStart + 0) // intLevel
             return wrap(data.inkLevel);
-        else if (method == ownMethodStart + 1) {// print
+
+        if (method == ownMethodStart + 1) {// print
             TagData data = readData();
 
             if (data == null)
@@ -55,6 +56,11 @@ public class TileEntityPrinter extends TileEntityPeripheral<PrinterData> {
                 writeData(data);
 
             return result;
+        }
+
+        if (method == ownMethodStart + 2) { // listIcons
+            String iconType = checkArg(arguments, 0) ? arguments[0].toString() : "predefined";
+            return wrap(helper.printIconList(iconType));
         }
 
         throw new IllegalArgumentException("Unknown method: " + method);

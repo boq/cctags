@@ -10,13 +10,12 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import boq.cctags.cc.ItemMisc;
 import boq.cctags.cc.PeripheralType;
 import boq.cctags.tag.*;
-import cpw.mods.fml.common.registry.EntityRegistry;
 
-public class InitRegistries {
-    private InitRegistries() {}
+public class Recipes {
+    private Recipes() {}
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private static void registerRecipes() {
+    public static void registerRecipes() {
         final CCTags mod = CCTags.instance;
         final CraftingManager manager = CraftingManager.getInstance();
         List recipes = manager.getRecipeList();
@@ -51,15 +50,5 @@ public class InitRegistries {
 
         ItemStack itemPrinter = mod.blockPeripheral.getDefaultItem(PeripheralType.PRINTER);
         manager.addShapelessRecipe(itemPrinter, itemWriter, itemPrinterPcb);
-    }
-
-    private static void registerEntities() {
-        final CCTags mod = CCTags.instance;
-        EntityRegistry.registerModEntity(EntityTag.class, "CCTag", Constants.ENTITY_TAG, mod, 160, Integer.MAX_VALUE, false);
-    }
-
-    public static void registerAllTheThings() {
-        registerRecipes();
-        registerEntities();
     }
 }

@@ -48,8 +48,6 @@ public class EntityPacketHandler implements PacketHandler.SubHandler {
     }
 
     private static Packet createUpdatePacket(EntityTag tag) {
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = Constants.ENITIY_CHANNEL_ID;
         ByteArrayDataOutput output = ByteStreams.newDataOutput();
 
         try {
@@ -58,8 +56,7 @@ public class EntityPacketHandler implements PacketHandler.SubHandler {
             throw new RuntimeException(e);
         }
 
-        packet.data = output.toByteArray();
-        return packet;
+        return new Packet250CustomPayload(Constants.ENITIY_CHANNEL_ID, output.toByteArray());
     }
 
     public static void sendUpdateToAllTrackers(EntityTag tag) {

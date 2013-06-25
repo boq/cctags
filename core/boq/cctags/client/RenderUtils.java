@@ -5,7 +5,7 @@ import net.minecraft.util.Icon;
 
 public class RenderUtils {
 
-    static void drawRectangle(Tessellator tes, double xm, double ym, double xp, double yp, Icon icon) {
+    public static void drawRectangle(Tessellator tes, double xm, double ym, double xp, double yp, Icon icon) {
         final double um = icon.getMinU();
         final double up = icon.getMaxU();
 

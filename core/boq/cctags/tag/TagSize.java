@@ -26,7 +26,7 @@ public enum TagSize {
     TAG_4K("cctags:tag-4k", 4096, "4k");
 
     public final String iconId;
-    Icon icon;
+    public Icon icon;
 
     public final int size;
     public final String name;

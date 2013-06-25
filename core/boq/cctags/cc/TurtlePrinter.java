@@ -31,7 +31,7 @@ public class TurtlePrinter extends TurtlePeripheral implements PrinterHelper.Pri
         return inkLevel;
     }
 
-    private final static String[] printerMethods = { "inkLevel", "loadInk", "print" };
+    private final static String[] printerMethods = { "inkLevel", "loadInk", "print", "listIcons" };
 
     private final static String[] methods = ObjectArrays.concat(commonMethods, printerMethods, String.class);
 
@@ -83,6 +83,11 @@ public class TurtlePrinter extends TurtlePeripheral implements PrinterHelper.Pri
                 tagAccess.writeData(data, true);
 
             return result;
+        }
+
+        if (method == ownMethodStart + 3) { // listIcons
+            String iconType = checkArg(arguments, 0) ? arguments[0].toString() : "predefined";
+            return wrap(helper.printIconList(iconType));
         }
 
         throw new IllegalArgumentException("Invalid method id: " + method);

@@ -2,7 +2,7 @@ package boq.cctags;
 
 import net.minecraftforge.common.Configuration;
 import boq.cctags.cc.*;
-import boq.cctags.tag.ItemTag;
+import boq.cctags.tag.*;
 import boq.utils.lang.LangList;
 import boq.utils.log.Log;
 import cpw.mods.fml.common.*;
@@ -12,6 +12,7 @@ import cpw.mods.fml.common.Mod.PostInit;
 import cpw.mods.fml.common.Mod.PreInit;
 import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import dan200.turtle.api.TurtleAPI;
 
@@ -68,8 +69,11 @@ public class CCTags {
         GameRegistry.registerTileEntity(TileEntityWriter.class, "tag-writer");
         GameRegistry.registerTileEntity(TileEntityPrinter.class, "tag-printer");
 
+        EntityRegistry.registerModEntity(EntityTag.class, "CCTag", Constants.ENTITY_TAG, this, 160, Integer.MAX_VALUE, false);
+
         proxy.registerRenderers();
-        InitRegistries.registerAllTheThings();
+        TagIcons.instance.loadPredefinedIcons();
+        Recipes.registerRecipes();
     }
 
     @PostInit

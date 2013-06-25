@@ -1,6 +1,6 @@
 print("Reading any inserted tag. Press any key to abort")
 while true do
-    side, contents, size, _, tag_size = tags.waitForTag()
+    side, contents, size, tag_size, _  = tags.waitForTag()
     if not side then
         break
     end

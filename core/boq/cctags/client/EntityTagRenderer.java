@@ -8,9 +8,8 @@ import net.minecraftforge.common.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
-import boq.cctags.client.TagIcons.IconRender;
-import boq.cctags.tag.EntityTag;
-import boq.cctags.tag.TagData;
+import boq.cctags.tag.*;
+import boq.cctags.tag.TagIcons.IconData;
 import boq.utils.render.*;
 
 public class EntityTagRenderer extends Render {
@@ -39,7 +38,7 @@ public class EntityTagRenderer extends Render {
             tes.setTranslation(0, 0, 2 * Z_FIGHTER);
             RenderUtils.drawRectangle(tes, -0.25, -0.25, 0.25, 0.25, icons.iconBackground);
 
-            IconRender render = TagIcons.parseIconString(param);
+            IconData render = TagIcons.parseIconString(param);
 
             if (render != null) {
                 tes.setTranslation(0, 0, 3 * Z_FIGHTER);

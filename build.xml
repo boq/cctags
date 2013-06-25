@@ -17,7 +17,8 @@
 		</condition>
 		<property name="mcp.obfoutput" location="${mcp.home}/reobf" />
 		<property name="mcp.obfoutput.classes" location="${mcp.obfoutput}/minecraft" />
-		<property name="mcp.srcdir" location="${mcp.home}/src/minecraft" />
+		<property name="mcp.src.dir" location="${mcp.home}/src/minecraft" />
+		<property name="mcp.bin.dir" location="${mcp.home}/bin/minecraft" />
 		<property name="deploy.dir" location="${user.home}/.minecraft/mods" />
 		<property name="resource.dir" location="${basedir}/resources" />
 		<property name="jar.dir" location="${basedir}/target" />
@@ -33,7 +34,7 @@
 	</target>
 
 	<target name="copy-to-mcp" depends="buildenvsetup">
-		<copy todir="${mcp.srcdir}" overwrite="true" verbose="true">
+		<copy todir="${mcp.src.dir}" overwrite="true" verbose="true">
 			<fileset dir="${basedir}/core" includes="**/*.java" />
 			<fileset dir="${basedir}/utils" includes="**/*.java" />
 			<fileset dir="${cc-api.src}" includes="**/*.java" />
@@ -82,15 +83,18 @@
 			<fileset dir="${resource.dir}">
 				<include name="**/*.png" />
 				<include name="**/*.xml" />
+				<include name="**/*.txt" />
 				<include name="**/*.properties" />
 			</fileset>
 		</jar>
 	</target>
 
 	<target name="clean-mcp" depends="buildenvsetup">
-		<delete verbose="true" includeEmptyDirs="true">
-			<fileset dir="${mcp.srcdir}/boq" />
-			<fileset dir="${mcp.srcdir}/dan200" />
+		<delete verbose="true" includeEmptyDirs="true" failonerror="false">
+			<fileset dir="${mcp.src.dir}/boq" />
+			<fileset dir="${mcp.src.dir}/dan200" />
+	        <fileset dir="${mcp.bin.dir}/boq" />
+	        <fileset dir="${mcp.bin.dir}/dan200" />
 		</delete>
 	</target>
 </project>

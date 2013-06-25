@@ -2,12 +2,16 @@ package boq.cctags.cc;
 
 import static boq.utils.misc.Utils.TRUE;
 import static boq.utils.misc.Utils.wrap;
+
+import java.util.List;
+
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import boq.cctags.CCTags;
-import boq.cctags.client.TagIcons;
 import boq.cctags.tag.TagData;
+import boq.cctags.tag.TagIcons;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 
 public class PrinterHelper {
@@ -63,5 +67,10 @@ public class PrinterHelper {
         data.label = Strings.isNullOrEmpty(label) ? null : label;
 
         return TRUE;
+    }
+
+    public String printIconList(String iconType) {
+        List<String> icons = TagIcons.instance.listIcons(iconType);
+        return Joiner.on(',').join(icons);
     }
 }

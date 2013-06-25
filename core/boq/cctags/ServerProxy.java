@@ -16,7 +16,7 @@ public class ServerProxy implements IProxy {
 
     @Override
     public boolean isServer() {
-        return false;
+        return true;
     }
 
     @Override

@@ -12,7 +12,6 @@ import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import boq.cctags.Constants;
-import boq.cctags.client.TagIcons;
 import boq.utils.misc.PlayerOrientation;
 import boq.utils.misc.Rotation;
 import boq.utils.serializable.ISelectableSerializableData.IFieldSelector;
