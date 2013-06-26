@@ -3,6 +3,7 @@ package boq.cctags.cc;
 import static boq.utils.misc.Utils.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import boq.cctags.LuaInit;
 import boq.cctags.tag.TagData;
 
 import com.google.common.collect.ObjectArrays;
@@ -31,7 +32,7 @@ public class TurtlePrinter extends TurtlePeripheral implements PrinterHelper.Pri
         return inkLevel;
     }
 
-    private final static String[] printerMethods = { "inkLevel", "loadInk", "print", "listIcons" };
+    private final static String[] printerMethods = { "inkLevel", "loadInk", "print" };
 
     private final static String[] methods = ObjectArrays.concat(commonMethods, printerMethods, String.class);
 
@@ -85,11 +86,6 @@ public class TurtlePrinter extends TurtlePeripheral implements PrinterHelper.Pri
             return result;
         }
 
-        if (method == ownMethodStart + 3) { // listIcons
-            String iconType = checkArg(arguments, 0) ? arguments[0].toString() : "predefined";
-            return wrap(helper.printIconList(iconType));
-        }
-
         throw new IllegalArgumentException("Invalid method id: " + method);
     }
 
@@ -102,4 +98,14 @@ public class TurtlePrinter extends TurtlePeripheral implements PrinterHelper.Pri
     public void writeToNBT(NBTTagCompound tag) {
         tag.setInteger("InkLevel", inkLevel);
     }
+
+    @Override
+    public void attach(IComputerAccess computer) {
+        super.attach(computer);
+
+        final LuaInit reg = LuaInit.instance;
+        computer.mountFixedDir("rom/programs/loadink", reg.getRelPath("loadink"), true, 0);
+        computer.mountFixedDir("rom/help/icons", reg.getRelPath("icons"), true, 0);
+    }
+
 }

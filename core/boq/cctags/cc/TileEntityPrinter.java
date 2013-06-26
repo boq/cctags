@@ -3,6 +3,7 @@ package boq.cctags.cc;
 import static boq.utils.misc.Utils.checkArg;
 import static boq.utils.misc.Utils.wrap;
 import net.minecraft.item.ItemStack;
+import boq.cctags.LuaInit;
 import boq.cctags.tag.TagData;
 
 import com.google.common.collect.ObjectArrays;
@@ -18,7 +19,7 @@ public class TileEntityPrinter extends TileEntityPeripheral<PrinterData> {
 
     private final PrinterHelper helper;
 
-    private final static String[] printerMethods = { "inkLevel", "print", "listIcons" };
+    private final static String[] printerMethods = { "inkLevel", "print" };
 
     private final static String[] methods = ObjectArrays.concat(commonMethods, printerMethods, String.class);
 
@@ -58,11 +59,6 @@ public class TileEntityPrinter extends TileEntityPeripheral<PrinterData> {
             return result;
         }
 
-        if (method == ownMethodStart + 2) { // listIcons
-            String iconType = checkArg(arguments, 0) ? arguments[0].toString() : "predefined";
-            return wrap(helper.printIconList(iconType));
-        }
-
         throw new IllegalArgumentException("Unknown method: " + method);
     }
 
@@ -73,6 +69,14 @@ public class TileEntityPrinter extends TileEntityPeripheral<PrinterData> {
         }
 
         return false;
+    }
+
+    @Override
+    public void attach(IComputerAccess computer) {
+        super.attach(computer);
+
+        final LuaInit reg = LuaInit.instance;
+        computer.mountFixedDir("rom/help/icons", reg.getRelPath("icons"), true, 0);
     }
 
 }

@@ -67,6 +67,8 @@ public class LuaInit {
 
             try {
                 copyResourceToDist(classpathName, luaFile);
+                if (timestamp != null)
+                    luaFile.setLastModified(timestamp);
                 relPaths.put(fileName, relPath);
             } catch (IOException e) {
                 throw new RuntimeException("Failed to copy file", e);

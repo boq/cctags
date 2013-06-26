@@ -53,9 +53,8 @@ def update_lua_list():
 
 def update_icon_list():
     icon_file = path.join(icon_dir, "icons.properties")
-    print("Rewriting icon list %s " % icon_file)
+    help_file = path.join(lua_dir, "icons")
     icon_regex = re.compile("^icon-([-_a-zA-Z0-9]+)\.png$");
-    
     icons = list()
     
     for entry in os.listdir(icon_dir):
@@ -66,10 +65,17 @@ def update_icon_list():
             
             if match: 
                 icons.append(match.group(1))
-                 
+    
+    icons.sort()
+    
+    print("Rewriting icon list %s " % icon_file)
     with open(icon_file, 'wb') as output:
-        icons.sort()
         output.write("\n".join(icons))
+        
+    print("Rewriting 'help/icons' list %s " % icon_file)
+    with open(help_file, 'wb') as output:
+        output.write("Predefined icons:\n")
+        output.write(",".join(icons))
                 
 def get_mcp_versions():
     config = ConfigParser.SafeConfigParser()
@@ -115,8 +121,8 @@ def create_version_properties():
       
 def main():
     create_version_properties()
-    update_lua_list();
     update_icon_list()
+    update_lua_list();
     
 if __name__ == "__main__":
     main()
