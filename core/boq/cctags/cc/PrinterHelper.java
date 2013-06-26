@@ -5,8 +5,8 @@ import static boq.utils.misc.Utils.wrap;
 
 import java.util.List;
 
-import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 import boq.cctags.CCTags;
 import boq.cctags.tag.TagData;
 import boq.cctags.tag.TagIcons;
@@ -28,7 +28,8 @@ public class PrinterHelper {
     }
 
     private static boolean isBlackDye(ItemStack stack) {
-        return stack != null && stack.getItem() instanceof ItemDye && stack.getItemDamage() == 0;
+        int oreId = OreDictionary.getOreID(stack);
+        return oreId != -1 && OreDictionary.getOreName(oreId).equals("dyeBlack");
     }
 
     public boolean tryPrint() {

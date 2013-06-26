@@ -74,7 +74,7 @@ def update_icon_list():
         
     print("Rewriting 'help/icons' list %s " % icon_file)
     with open(help_file, 'wb') as output:
-        output.write("Predefined icons:\n")
+        output.write("Predefined tag icons:\n")
         output.write(",".join(icons))
                 
 def get_mcp_versions():

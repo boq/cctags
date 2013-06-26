@@ -112,16 +112,17 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
 
     @Override
     public void attach(IComputerAccess computer) {
-        final LuaInit reg = LuaInit.instance;
         computers.put(computer, computer.getAttachmentName());
-        computer.mountFixedDir("rom/apis/tags", reg.getRelPath("tags-computer"), true, 0);
+        LuaInit.mount(computer, "rom/apis/tags", "tags-computer");
 
-        computer.mountFixedDir("rom/programs/clonetag", reg.getRelPath("clonetag"), true, 0);
-        computer.mountFixedDir("rom/programs/writetag", reg.getRelPath("writetag"), true, 0);
-        computer.mountFixedDir("rom/programs/readtag", reg.getRelPath("readtag"), true, 0);
-        computer.mountFixedDir("rom/programs/progtag", reg.getRelPath("program"), true, 0);
+        LuaInit.mount(computer, "rom/programs/clonetag", "clonetag");
+        LuaInit.mount(computer, "rom/programs/writetag", "writetag");
+        LuaInit.mount(computer, "rom/programs/readtag", "readtag");
+        LuaInit.mount(computer, "rom/programs/progtag", "program");
 
-        computer.mountFixedDir("rom/help/progtag", reg.getRelPath("program-help"), true, 0);
+        LuaInit.mount(computer, "rom/help/progtag", "program-help");
+        LuaInit.mount(computer, "rom/help/clonetag", "clonetag-help");
+        LuaInit.mount(computer, "rom/help/tag-writer", "computer-writer-help");
     }
 
     @Override

@@ -3,6 +3,8 @@ local argv = { ... }
 print("Tag contents?")
 contents = read()
 
+os.loadAPI("rom/apis/tags")
+
 if #argv >= 1 then
     icon = argv[1] or ""
     label = argv[2] or ""

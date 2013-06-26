@@ -34,12 +34,12 @@ end
 
 safest = {
     print = print,
-    read = read
 }
 
 safe = {
     pullEvent = os.pullEvent,
-    scan = scanForTags
+    scan = scanForTags,
+    read = read
 }
 
 function safe.writeTag(side, contents)

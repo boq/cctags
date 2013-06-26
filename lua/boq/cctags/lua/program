@@ -66,11 +66,16 @@ if not fs.exists(path) or fs.isDir(path) then
     return
 end
 
+os.loadAPI("rom/apis/tags")
+
 local file = io.open(path, "r")
 local line = file:read()
 local finished = false
+local line = 0
 while line and not finished do
+    line  = line + 1
     local command, quantity, icon, label = parseLine(line)
+    print(string.format("Printing %d tags from line %d", quantity, line) 
     for i = 1,quantity do
         if not writeTag(command, icon, label) then
             finished = true

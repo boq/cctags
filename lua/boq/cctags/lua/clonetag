@@ -1,5 +1,7 @@
 local argv = { ... }
 
+os.loadAPI("rom/apis/tags")
+
 print("Insert initial tag or press any key to abort.")
 _, contents = tags.waitForTag()
 

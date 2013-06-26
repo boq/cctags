@@ -75,8 +75,8 @@ public class TileEntityPrinter extends TileEntityPeripheral<PrinterData> {
     public void attach(IComputerAccess computer) {
         super.attach(computer);
 
-        final LuaInit reg = LuaInit.instance;
-        computer.mountFixedDir("rom/help/icons", reg.getRelPath("icons"), true, 0);
+        LuaInit.mount(computer, "rom/help/icons", "icons");
+        LuaInit.mount(computer, "rom/help/tag-printer", "computer-printer-help");
     }
 
 }

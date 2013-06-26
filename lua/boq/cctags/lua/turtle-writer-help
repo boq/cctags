@@ -1,0 +1,9 @@
+Tag writer is peripheral that allows to read and write tag contents.
+
+Available methods:
+bool isTagValid() - is currently selected tag valid?
+bool scanForTag([string direction = "front"]) - scan for tags on nearby blocks and select first found. Possible argument values: "front", "back", "up", "down", "left", "right"
+bool selectFromSlot([int slot = current]) - select tag from inventory
+string,int contents() - read selected tag contents
+int write(str) - write new data to selected tag
+string,int size() - get selected tag size as (size_description, size_in_bytes) pair 

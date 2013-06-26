@@ -213,12 +213,12 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
 
     @Override
     public void attach(IComputerAccess computer) {
-        final LuaInit reg = LuaInit.instance;
-        computer.mountFixedDir("rom/apis/tags", reg.getRelPath("tags-turtle"), true, 0);
+        LuaInit.mount(computer, "rom/apis/tags", "tags-turtle");
 
-        computer.mountFixedDir("rom/programs/follow", reg.getRelPath("follow"), true, 0);
+        LuaInit.mount(computer, "rom/programs/follow", "follow");
 
-        computer.mountFixedDir("rom/help/follow", reg.getRelPath("follow-help"), true, 0);
+        LuaInit.mount(computer, "rom/help/follow", "follow-help");
+        LuaInit.mount(computer, "rom/help/tag-writer", "turtle-writer-help");
     }
 
     @Override

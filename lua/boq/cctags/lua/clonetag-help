@@ -1,0 +1,6 @@
+clonetag is a program for cloning data from first inserted tag to subsequent ones. Program works with all connected tag peripherals.
+
+Examples of use:
+"clonetag" - simple run, without printing
+"clonetag" <icon name> - print icon on any tag inserted into connected printer. See 'help icons' for possible values
+"clonetag" <icon name> <label> - as above, but also print label

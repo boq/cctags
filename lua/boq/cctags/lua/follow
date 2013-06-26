@@ -54,7 +54,7 @@ while not finished do
         error(string.format("Invalid operation, error: '%s'", operation, err))
     end
     
-    work_env["tag_dir"] = dir
+    work_env["tagDir"] = dir
     setfenv(operation, work_env)
     local result = operation()
     

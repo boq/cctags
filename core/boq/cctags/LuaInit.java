@@ -12,6 +12,8 @@ import com.google.common.collect.Maps;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Closer;
 
+import dan200.computer.api.IComputerAccess;
+
 public class LuaInit {
     public final static LuaInit instance = new LuaInit();
 
@@ -116,5 +118,12 @@ public class LuaInit {
         } finally {
             closer.close();
         }
+    }
+
+    public static void mount(IComputerAccess computer, String path, String fileId) {
+        String relPath = instance.getRelPath(fileId);
+        String actualPath = computer.mountFixedDir(path, relPath, true, 0);
+        if (!actualPath.equals(path))
+            computer.unmount(actualPath);
     }
 }

@@ -1,1 +1,3 @@
-<TODO>
+progtag can be used to write tag contents according to definitions from text file. Every line in that file has following format:
+quantity, [icon], [label] ; contents
+Part before semicolon can be ommited. Lines starting with "--" are treated as comments.

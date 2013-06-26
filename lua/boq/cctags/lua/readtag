@@ -1,3 +1,5 @@
+os.loadAPI("rom/apis/tags")
+
 print("Reading any inserted tag. Press any key to abort")
 while true do
     side, contents, size, tag_size, _  = tags.waitForTag()
@@ -11,6 +13,6 @@ while true do
         print(string.format("Empty tag, side = '%s' size = %d", side, tag_size))
     end
 
-    p = tags.getPeripheral(side)
+    p = peripheral.wrap(side)
     p.eject()
 end

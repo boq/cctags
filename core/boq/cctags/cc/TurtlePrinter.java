@@ -103,9 +103,9 @@ public class TurtlePrinter extends TurtlePeripheral implements PrinterHelper.Pri
     public void attach(IComputerAccess computer) {
         super.attach(computer);
 
-        final LuaInit reg = LuaInit.instance;
-        computer.mountFixedDir("rom/programs/loadink", reg.getRelPath("loadink"), true, 0);
-        computer.mountFixedDir("rom/help/icons", reg.getRelPath("icons"), true, 0);
+        LuaInit.mount(computer, "rom/programs/loadink", "loadink");
+        LuaInit.mount(computer, "rom/help/icons", "icons");
+        LuaInit.mount(computer, "rom/help/tag-printer", "turtle-printer-help");
     }
 
 }
