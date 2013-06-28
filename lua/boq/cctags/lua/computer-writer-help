@@ -1,10 +1,8 @@
 Tag writer is peripheral that allows to read and write tag contents.
-
 Available methods:
 bool hasTag() - does peripheral contain valid tag?
-string,int contents() - return current tag contents
+bool eject() - eject current tag
+string,int contents() - return current tag contents (text and side)
 bool,int write(string new_contents) - writes data to tag
 string,int size() - return current tag size as (size_description, size_in_bytes) pair 
-bool eject() - eject current tag
-
-Peripheral will emit event ("tag",side) once tag is inserted 
+Peripheral will emit ("tag",side) event once tag is inserted

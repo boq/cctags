@@ -116,7 +116,7 @@ local function envs_delay()
     -- Warning: following table is probably horribly unaccurate and arbitrary
     envs_table = {
         -- probably safe
-        safest = {safest, 0, true},
+        _dummy0 = {safest, 0, true},
         term = {term, 0},
         colors = {colors, 0},
         colours = {colours, 0},
@@ -124,15 +124,15 @@ local function envs_delay()
         keys = {keys, 0},
         
         -- may block/slow down execution (?)
-        safe = {safe, 1, true},
+        _dummy1 = {safe, 1, true},
         textutils = {textutils, 1},
         gps = {gps, 1},
         
         -- minor world interaction
         rednet = {rednet, 2},
-        turtleSafe = {turtle_safe_hidden, 2},
-        turtle_safe_global = {turtle_safe_global, 2, true},
-        move = {move, 2, true},
+        t = {turtle_safe_hidden, 2},
+        _dummy2 = {turtle_safe_global, 2, true},
+        _dummy3 = {move, 2, true},
         
         -- full world interaction
         turtle = {turtle, 3}

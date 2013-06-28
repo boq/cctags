@@ -54,14 +54,22 @@
 		</exec>
 	</target>
 
-	<target name="run-python" depends="buildenvsetup">
+	<target name="run-python-generate" depends="buildenvsetup">
 		<exec executable="${python.exe}" dir="${basedir}" failonerror="true">
-			<arg value="${basedir}/helper.py" />
+			<arg value="${basedir}/generate.py" />
 			<arg value="${mcp.home}" />
 			<arg value="${jar.dir}" />
 			<arg value="${modname}" />
 			<arg value="${lua.files.dir}" />
 			<arg value="${icon.dir}" />
+		</exec>
+	</target>
+
+	<target name="run-python-update" depends="buildenvsetup">
+		<exec executable="${python.exe}" dir="${basedir}" failonerror="true">
+			<arg value="${basedir}/update.py" />
+			<arg value="${icon.dir}" />
+			<arg value="${lua.files.dir}" />
 		</exec>
 	</target>
 
@@ -71,7 +79,8 @@
 
 		<delete dir="${jar.dir}" />
 		<mkdir dir="${jar.dir}" />
-		<antcall target="run-python" />
+		<antcall target="run-python-update" />
+		<antcall target="run-python-generate" />
 		<jar destfile="${basedir}/target/${jarname}.jar">
 			<fileset dir="${mcp.obfoutput.classes}" includes="**/*.class" excludes="net/**/*" />
 			<fileset dir="${basedir}/core" includes="mcmod.info" />
@@ -93,8 +102,8 @@
 		<delete verbose="true" includeEmptyDirs="true" failonerror="false">
 			<fileset dir="${mcp.src.dir}/boq" />
 			<fileset dir="${mcp.src.dir}/dan200" />
-	        <fileset dir="${mcp.bin.dir}/boq" />
-	        <fileset dir="${mcp.bin.dir}/dan200" />
+			<fileset dir="${mcp.bin.dir}/boq" />
+			<fileset dir="${mcp.bin.dir}/dan200" />
 		</delete>
 	</target>
 </project>

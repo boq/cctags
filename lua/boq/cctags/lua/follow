@@ -24,6 +24,17 @@ for name,data in pairs(tags.envs()) do
     end 
 end
 
+if reader_side == 'print' then
+    local w,h = term.getSize()
+    local s = {}
+    for k,_ in pairs(work_env) do
+        table.insert(s, k)
+    end
+    
+    print(table.concat(s, ','))
+    return
+end
+
 work_env["reader"] = reader_side
 
 if forward_start then

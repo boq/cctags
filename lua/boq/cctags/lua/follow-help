@@ -1,14 +1,19 @@
-follow is program that allows to use tags for turtle controlling. Program executed any code read from tags found by turtle.
-
+follow is program that allows to use tags for controlling turtle. Program works by executing code found on tags.
 Arguments:
 <peripheral side> - on which side is mounted tag reader/printer
 <move forward on start = true> (optional) - if true, turtle will move one block before searching for tags 
-<max security level = 2> (optional) - for security purposes, expressions are executed in limited scope. This parameter descibes, how much code on tag can do. See api/tags for full list.
+<max security level = 2> (optional) - for security purposes, expressions are executed in limited scope. This parameter descibes, how much code on tag can do. See 'api/tags' for full list.
+
+If first argument is equal to 'print' instead of moving program will print all names available on current level and return.
 
 Any executed code can use two additional variables:
 reader - peripheral side, copied program from parameters
 tagDir - where is tag containing currently executed code
 
+Any variable or function defined by code will persist between commands until program ends.
+
 Program will work until one of two things happen:
 - no new tag is found
 - code explicitly calls 'stop()'
+
+Functions 'forward', 'back', 'up', 'down' will cause turtle to move until tag is found.

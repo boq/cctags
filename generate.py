@@ -19,9 +19,6 @@ print("Mod: " + mod_name)
 lua_dir = path.abspath(sys.argv[4])
 print("Lua dir: " + lua_dir)
 
-icon_dir = path.abspath(sys.argv[5])
-print("Icon dir: " + icon_dir)
-
 import runtime.commands as commands 
 from runtime.commands import Commands
 
@@ -50,33 +47,7 @@ def update_lua_list():
         timestamps = iterate_lua_files(input_file)
         lines = map(lambda (name, timestamp) : "%s=%d" % (name, timestamp), timestamps)
         output.write("\n".join(lines))
-
-def update_icon_list():
-    icon_file = path.join(icon_dir, "icons.properties")
-    help_file = path.join(lua_dir, "icons")
-    icon_regex = re.compile("^icon-([-_a-zA-Z0-9]+)\.png$");
-    icons = list()
-    
-    for entry in os.listdir(icon_dir):
-            if path.isdir(entry):
-                continue
-                
-            match = icon_regex.match(entry)
-            
-            if match: 
-                icons.append(match.group(1))
-    
-    icons.sort()
-    
-    print("Rewriting icon list %s " % icon_file)
-    with open(icon_file, 'wb') as output:
-        output.write("\n".join(icons))
         
-    print("Rewriting 'help/icons' list %s " % icon_file)
-    with open(help_file, 'wb') as output:
-        output.write("Predefined tag icons:\n")
-        output.write(",".join(icons))
-                
 def get_mcp_versions():
     config = ConfigParser.SafeConfigParser()
     config_path = path.normpath(path.join(mcp_dir,Commands._version_config))
@@ -121,7 +92,6 @@ def create_version_properties():
       
 def main():
     create_version_properties()
-    update_icon_list()
     update_lua_list();
     
 if __name__ == "__main__":
