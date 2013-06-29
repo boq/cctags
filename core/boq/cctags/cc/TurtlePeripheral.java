@@ -11,7 +11,6 @@ import boq.cctags.EntityPacketHandler;
 import boq.cctags.LuaInit;
 import boq.cctags.tag.*;
 import boq.utils.coord.Bounds;
-import boq.utils.log.Log;
 
 import com.google.common.base.Preconditions;
 
@@ -147,7 +146,6 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
             EntityTag tag = (EntityTag)o;
             if (tag.data.side == tagDirection) {
                 tagAccess = new EntityTagAccess(tag);
-                Log.info("Found in dir %s", direction);
                 return true;
             }
         }

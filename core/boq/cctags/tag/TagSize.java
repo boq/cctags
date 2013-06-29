@@ -14,7 +14,7 @@ public enum TagSize {
             return false;
         }
     },
-    TAG_4G("cctags:tag-inf", -1, "Almost unlimited") {
+    TAG_4G("cctags:tag-inf", -1, "\u221E") {
         @Override
         public boolean check(String contents) {
             return true;

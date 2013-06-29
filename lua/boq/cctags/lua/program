@@ -1,5 +1,6 @@
 local function parseLine(line)
     if line:sub(1,2) == "--" then
+        print(line)
         return nil, 0
     end
      
@@ -23,7 +24,7 @@ local function parseLine(line)
 end
 
 local function writeTag(contents, icon, label)
-    print("Writing '".. contents .. "'. Insert tag, press space to skip or other key to abort")
+    print("Writing '".. contents .. "'. Insert tag or press space to skip. Press any other key to abort")
     while true do
         local event, arg = os.pullEvent()
         
@@ -71,11 +72,13 @@ os.loadAPI("rom/apis/tags")
 local file = io.open(path, "r")
 local line = file:read()
 local finished = false
-local line = 0
+local lineNum = 0
 while line and not finished do
-    line  = line + 1
+    lineNum  = lineNum + 1
     local command, quantity, icon, label = parseLine(line)
-    print(string.format("Printing %d tags from line %d", quantity, line) 
+    if tonumber(quantity) > 0 then
+        print(string.format("Printing %d tag(s) from line %d", quantity, lineNum))
+    end
     for i = 1,quantity do
         if not writeTag(command, icon, label) then
             finished = true

@@ -42,8 +42,7 @@ public class ItemTag extends Item {
 
     public static void setupDefaultTags(ItemStack stack) {
         NBTTagCompound tag = getItemTag(stack);
-        tag.setInteger(TagData.TAG_COLOR, Constants.COLOR_GREEN);
-        tag.setString(TagData.TAG_ICON, Constants.DEFAULT_ICON);
+        tag.setInteger(TagData.TAG_COLOR, Constants.COLOR_BLACK);
     }
 
     @SuppressWarnings({ "unchecked" })

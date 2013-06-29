@@ -4,7 +4,7 @@ Arguments:
 <move forward on start = true> (optional) - if true, turtle will move one block before searching for tags 
 <max security level = 2> (optional) - for security purposes, expressions are executed in limited scope. This parameter descibes, how much code on tag can do. See 'api/tags' for full list.
 
-If first argument is equal to 'print' instead of moving program will print all names available on current level and return.
+If first argument is equal to 'print' instead of moving program will print all functions available on current level and return.
 
 Any executed code can use two additional variables:
 reader - peripheral side, copied program from parameters
@@ -16,4 +16,4 @@ Program will work until one of two things happen:
 - no new tag is found
 - code explicitly calls 'stop()'
 
-Functions 'forward', 'back', 'up', 'down' will cause turtle to move until tag is found.
+Functions 'forward(reader)', 'back(reader)', 'up(reader)', 'down(reader)' will cause turtle to move until tag is found.

@@ -7,7 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-import boq.cctags.cc.ItemMisc;
+import boq.cctags.cc.ItemMisc.Subtype;
 import boq.cctags.cc.PeripheralType;
 import boq.cctags.tag.*;
 
@@ -37,11 +37,14 @@ public class Recipes {
         ItemTag.setupDefaultTags(itemTag64K);
         recipes.add(new ShapedOreRecipe(itemTag64K, "PSP", "RRR", "PGP", 'S', Item.slimeBall, 'P', Item.paper, 'R', Item.redstone, 'G', Item.ingotGold));
 
-        ItemStack itemWriterPcb = new ItemStack(mod.itemMisc, 1, ItemMisc.Subtype.WRITER_PCB.ordinal());
+        ItemStack itemHandheld = mod.itemMisc.getStack(Subtype.HANDHELD);
+        recipes.add(new ShapedOreRecipe(itemHandheld, "WRW", "IDG", "WRW", 'W', "plankWood", 'R', Item.redstone, 'G', Block.thinGlass, 'D', "dyeGreen", 'I', Item.ingotIron));
+
+        ItemStack itemWriterPcb = mod.itemMisc.getStack(Subtype.WRITER_PCB);
         manager.addRecipe(itemWriterPcb, "GGG", " R ", " I ", 'G', Item.goldNugget, 'R', Item.redstone, 'I', Item.ingotIron);
         PeripheralType.WRITER.craftingItem = itemWriterPcb;
 
-        ItemStack itemPrinterPcb = new ItemStack(mod.itemMisc, 1, ItemMisc.Subtype.PRINTER_PCB.ordinal());
+        ItemStack itemPrinterPcb = mod.itemMisc.getStack(Subtype.PRINTER_PCB);
         manager.addRecipe(itemPrinterPcb, "GGG", "RRR", "IBI", 'G', Item.goldNugget, 'R', Item.redstone, 'I', Item.ingotIron, 'B', new ItemStack(Item.dyePowder, 1, 0));
         PeripheralType.PRINTER.craftingItem = itemPrinterPcb;
 

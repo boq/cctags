@@ -3,6 +3,6 @@ Available methods:
 bool hasTag() - does peripheral contain valid tag?
 bool eject() - eject current tag
 string,int contents() - return current tag contents (text and side)
-bool,int write(string new_contents) - writes data to tag
+bool,int write(string new_contents) - write data to tag
 string,int size() - return current tag size as (size_description, size_in_bytes) pair 
 Peripheral will emit ("tag",side) event once tag is inserted

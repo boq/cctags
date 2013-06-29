@@ -14,7 +14,8 @@ public class ItemMisc extends Item {
 
     public enum Subtype {
         WRITER_PCB("item.pcb-writer", "cctags:pcb-writer"),
-        PRINTER_PCB("item.pcb-printer", "cctags:pcb-printer");
+        PRINTER_PCB("item.pcb-printer", "cctags:pcb-printer"),
+        HANDHELD("item.handheld", "cctags:handheld");
         public final String name;
         public final String iconName;
         private Icon icon;
@@ -25,9 +26,9 @@ public class ItemMisc extends Item {
         }
     }
 
-    private Subtype[] types = Subtype.values();
+    private final static Subtype[] types = Subtype.values();
 
-    private Subtype getSubtype(int id) {
+    private static Subtype getSubtype(int id) {
         try {
             return types[id];
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -40,6 +41,7 @@ public class ItemMisc extends Item {
         setMaxDamage(0);
         setHasSubtypes(true);
         setCreativeTab(CreativeTabs.tabMisc);
+        setUnlocalizedName("cctags-misc");
     }
 
     @Override
@@ -68,5 +70,15 @@ public class ItemMisc extends Item {
     public void getSubItems(int id, CreativeTabs tab, List result) {
         for (Subtype s : types)
             result.add(new ItemStack(id, 1, s.ordinal()));
+    }
+
+    public static boolean checkItem(ItemStack stack, Subtype subtype) {
+        return stack != null &&
+                stack.getItem() instanceof ItemMisc &&
+                getSubtype(stack.getItemDamage()) == subtype;
+    }
+
+    public ItemStack getStack(Subtype subtype) {
+        return new ItemStack(this, 1, subtype.ordinal());
     }
 }

@@ -20,7 +20,6 @@ public class TagData extends SerializableData {
 
     @SerializableField(nullable = true, flags = SerializableField.SERIALIZABLE | CLIENT_UPDATE)
     public String icon;
-    public static final String TAG_ICON = "icon";
 
     @SerializableField(nullable = true, flags = SerializableField.NBT_SERIALIZABLE)
     public String contents;

@@ -2,4 +2,4 @@ Tag printer extends writer functionality by adding methods to change visible tag
 int inkLevel() - return current ink level
 int loadInk([int slot = current]) - consume ink item from slot
 bool print([string icon], [string label]) - print (or remove if argument is omited/nil) new icon (and optional label) on inserted tag
-Peripheral still has all writer methods (see 'help tag_writer'). Every printing will use one unit of ink. Currently, no visible tag property can be read by any peripheral.
+Every printing will use one unit of ink. Currently, no visible tag property can be read by any peripheral. Peripheral still has all writer methods (see 'help tag_writer')

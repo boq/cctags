@@ -9,13 +9,18 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import boq.cctags.CCTags;
 import boq.cctags.EntityPacketHandler;
+import boq.cctags.cc.ItemMisc;
+import boq.cctags.cc.ItemMisc.Subtype;
 import boq.utils.coord.Bounds;
 import boq.utils.coord.BoundsRotator;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
+import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -23,6 +28,8 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
 
     public static double AABB_THICKNESS = 0.05;
     public static double AABB_MARGIN = 0.05;
+    public static int POOL_PERIOD = 20;
+    private int tickCounter;
 
     private final static Bounds canonicalBounds = new Bounds(-0.25 - AABB_MARGIN, -0.25 - AABB_MARGIN, 0.5 - AABB_THICKNESS,
             0.25 + AABB_MARGIN, 0.25 + AABB_MARGIN, 0.5 + AABB_THICKNESS);
@@ -120,20 +127,20 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
 
     @Override
     public boolean attackEntityFrom(DamageSource source, int amount) {
-        if (!isDead) {
+        if (isDead)
+            return false;
+
+        if (worldObj.isRemote)
+            spawnParticles();
+        else {
             setDead();
-            if (worldObj.isRemote)
-                spawnParticles();
-            else {
-                setBeenAttacked();
+            setBeenAttacked();
 
-                Entity entity = source.getEntity();
-                boolean isCreative = entity instanceof EntityPlayer && ((EntityPlayer)entity).capabilities.isCreativeMode;
+            Entity entity = source.getEntity();
+            boolean isCreative = entity instanceof EntityPlayer && ((EntityPlayer)entity).capabilities.isCreativeMode;
 
-                if (!isCreative)
-                    dropItemStack();
-            }
-
+            if (!isCreative)
+                dropItemStack();
         }
 
         return true;
@@ -148,9 +155,32 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
     }
 
     @Override
-    public void onUpdate() {}
+    public void onUpdate() {
+        if (tickCounter++ >= POOL_PERIOD) {
+            checkWalls();
+            tickCounter = 0;
+        }
+    }
+
+    private void checkWalls() {
+        if (isDead)
+            return;
+
+        int x = MathHelper.floor_double(posX);
+        int y = MathHelper.floor_double(posY);
+        int z = MathHelper.floor_double(posZ);
+
+        if (worldObj.isAirBlock(x, y, z)) {
+            setDead();
+            if (worldObj.isRemote)
+                spawnParticles();
+            else
+                dropItemStack();
+        }
+    }
 
     private ItemStack toItemStack() {
+        Preconditions.checkState(!worldObj.isRemote, "Can't run this method on client side");
         int damage = data.tagSize.ordinal();
         ItemStack result = new ItemStack(CCTags.instance.itemTag, 1, damage);
         NBTTagCompound tag = ItemTag.getItemTag(result);
@@ -208,11 +238,36 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
         return 0;
     }
 
+    private String tagDescription() {
+        String label;
+
+        if (Strings.isNullOrEmpty(data.label)) {
+            String un = CCTags.instance.itemTag.getUnlocalizedName() + ".name";
+            label = LanguageRegistry.instance().getStringLocalization(un);
+        } else
+            label = data.label;
+
+        String contents;
+
+        if (Strings.isNullOrEmpty(data.contents))
+            contents = LanguageRegistry.instance().getStringLocalization("cctag.empty");
+        else
+            contents = data.contents;
+
+        return String.format("%s (%s): %s", label, data.tagSize.name, Strings.nullToEmpty(contents));
+    }
+
     @Override
     public boolean interact(EntityPlayer player) {
         if (!worldObj.isRemote) {
-            data.rotation = data.rotation.rotateCCW();
-            EntityPacketHandler.sendUpdateToAllTrackers(this);
+            ItemStack held = player.getHeldItem();
+
+            if (ItemMisc.checkItem(held, Subtype.HANDHELD))
+                player.sendChatToPlayer(tagDescription());
+            else {
+                data.rotation = data.rotation.rotateCCW();
+                EntityPacketHandler.sendUpdateToAllTrackers(this);
+            }
         }
         return true;
     }

@@ -1,7 +1,9 @@
-progtag can be used to write tag contents according to definitions from text file. Every line in that file has following format:
-quantity, [icon], [label] ; contents
-Part before semicolon can be ommited. Lines starting with "--" are treated as comments.
+progtag can be used to write tag contents according to definitions from file. Every line in file should have following format:
+quantity, [icon], [label] : contents
+Instead of comma, any other combination of non-alphanumeric characters can be used as separator. 
+Part before colon can be ommited. Lines starting with "--" are treated as comments.
 Example file:
--- test
-1, foo ; print("Hello ") a = "world"
-2, bar, xyzzy ; print(a)
+-- default program
+1 forward Start : forward(reader) a = 2
+1 right Right : turnRight() forward(reader)
+1 no Stop : print("Done a=".. a) stop() 

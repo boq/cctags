@@ -61,11 +61,14 @@ public class CCTags {
         LangList.loadAll("/mods/cctags/lang/");
 
         itemTag = new ItemTag(itemTagId);
+        GameRegistry.registerItem(itemTag, "cctag");
 
         itemMisc = new ItemMisc(itemMiscId);
+        GameRegistry.registerItem(itemMisc, "cctagMisc");
 
         blockPeripheral = new BlockTagPeripheral(blockPeripheralId);
-        GameRegistry.registerBlock(blockPeripheral, ItemPeripheral.class, "tag-peripheral");
+        GameRegistry.registerBlock(blockPeripheral, ItemPeripheral.class, "tagPeripheral");
+
         GameRegistry.registerTileEntity(TileEntityWriter.class, "tag-writer");
         GameRegistry.registerTileEntity(TileEntityPrinter.class, "tag-printer");
 

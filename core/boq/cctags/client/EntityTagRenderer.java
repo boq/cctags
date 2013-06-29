@@ -12,6 +12,8 @@ import boq.cctags.tag.*;
 import boq.cctags.tag.TagIcons.IconData;
 import boq.utils.render.*;
 
+import com.google.common.base.Strings;
+
 public class EntityTagRenderer extends Render {
 
     private static final double Z_FIGHTER = 0.0005;
@@ -71,7 +73,7 @@ public class EntityTagRenderer extends Render {
 
         BoxHelper.setColor(data.color);
 
-        iconModels.render(data.icon);
+        iconModels.render(Strings.nullToEmpty(data.icon));
         GL11.glPopMatrix();
     }
 

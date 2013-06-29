@@ -25,7 +25,7 @@ public class BlockTagPeripheral extends BlockContainer {
         super(id, Material.rock);
         setHardness(2.0F);
         setUnlocalizedName("tag-peripheral");
-        setCreativeTab(CreativeTabs.tabDecorations);
+        setCreativeTab(CreativeTabs.tabMisc);
     }
 
     @Override
