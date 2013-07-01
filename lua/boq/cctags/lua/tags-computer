@@ -8,14 +8,15 @@ end
 
 function waitForTag(verbose)
     while true do
-        event, arg = os.pullEvent()
+        local event, arg = os.pullEvent()
     
         if event == 'tag' then
-            p = getPeripheral(arg)
-            contents,size = p.contents()
-            size_val, size_name = p.size()
+            local p = getPeripheral(arg)
+            local contents,size = p.contents()
+            local size_val, size_name = p.size()
+            local serial = p.serial()
             p.eject()
-            return arg, contents, size, size_val, size_name
+            return arg, contents, size, size_val, size_name, serial
         elseif event == 'key' then
             print("Aborting")
             return nil

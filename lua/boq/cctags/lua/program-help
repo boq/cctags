@@ -4,6 +4,6 @@ Instead of comma, any other combination of non-alphanumeric characters can be us
 Part before colon can be ommited. Lines starting with "--" are treated as comments.
 Example file:
 -- default program
-1 forward Start : forward(reader) a = 2
-1 right Right : turnRight() forward(reader)
+1 forward Start : forward() a = 2
+1 right Right : turnRight() forward()
 1 no Stop : print("Done a=".. a) stop() 

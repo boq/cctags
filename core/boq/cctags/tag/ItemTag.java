@@ -43,6 +43,7 @@ public class ItemTag extends Item {
     public static void setupDefaultTags(ItemStack stack) {
         NBTTagCompound tag = getItemTag(stack);
         tag.setInteger(TagData.TAG_COLOR, Constants.COLOR_BLACK);
+        tag.setInteger(TagData.TAG_SERIAL, -1);
     }
 
     @SuppressWarnings({ "unchecked" })
@@ -98,7 +99,7 @@ public class ItemTag extends Item {
     public ItemTag(int par1) {
         super(par1);
         setUnlocalizedName("cctag");
-        setCreativeTab(CreativeTabs.tabDecorations);
+        setCreativeTab(CreativeTabs.tabMisc);
         setHasSubtypes(true);
         setMaxDamage(0);
     }

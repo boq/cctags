@@ -35,7 +35,7 @@ def iterate_lua_files(filename):
         lua_file = path.join(lua_dir, key)
         try:
             stat = os.stat(lua_file)
-            yield (key, stat.st_mtime)
+            yield (key, stat.st_mtime * 1000)
         except os.error, desc:
             print("Can't stat lua file %s: %s" % (lua_file, desc))
 

@@ -61,7 +61,7 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
         return type().peripheralType;
     }
 
-    protected final static String[] commonMethods = { "hasTag", "contents", "write", "size", "eject" };
+    protected final static String[] commonMethods = { "hasTag", "contents", "write", "size", "eject", "serial" };
 
     @Override
     public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception {
@@ -99,6 +99,10 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
             case 4: // eject
                 return wrap(ejectTag(true));
 
+            case 5: {// serial
+                TagData data = readData();
+                return wrap(data.serial(worldObj));
+            }
             default:
                 throw new IllegalArgumentException("Unknown method: " + method);
         }

@@ -2,13 +2,13 @@ os.loadAPI("rom/apis/tags")
 
 print("Reading any inserted tag. Press any key to abort")
 while true do
-    side, contents, size, tag_size, _  = tags.waitForTag()
+    side, contents, size, tag_size, serial  = tags.waitForTag()
     if not side then
         break
     end
 
     if contents then
-        print(string.format("Tag read, side ='%s' contents = '%s' (%d) size = %d", side, contents, size, tag_size))
+        print(string.format("Tag read, side ='%s' serialId=%06X, contents = '%s' (%d) size = %d", side, serial, contents, size, tag_size))
     else
         print(string.format("Empty tag, side = '%s' size = %d", side, tag_size))
     end

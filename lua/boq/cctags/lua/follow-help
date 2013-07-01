@@ -9,6 +9,7 @@ If first argument is equal to 'print' instead of moving program will print all f
 Any executed code can use two additional variables:
 reader - peripheral side, copied program from parameters
 tagDir - where is tag containing currently executed code
+serial - serial id of currently scanned tag
 
 Any variable or function defined by code will persist between commands until program ends.
 
@@ -16,4 +17,4 @@ Program will work until one of two things happen:
 - no new tag is found
 - code explicitly calls 'stop()'
 
-Functions 'forward(reader)', 'back(reader)', 'up(reader)', 'down(reader)' will cause turtle to move until tag is found.
+Functions 'forward()', 'back()', 'up()', 'down()' will cause turtle to move until tag is found.

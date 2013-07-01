@@ -10,8 +10,9 @@ end
 local forward_start = not ((args[2] == '0') or (args[2] == 'false'))
 local max_level = tonumber(args[3]) or 2
 local work_env = {}
+local full_env = tags.envs(work_env) -- declared functions may want to see inside work_env
 
-for name,data in pairs(tags.envs()) do
+for name,data in pairs(full_env) do
     env, level, is_global = unpack(data)
     if level <= max_level then
         if is_global then
@@ -45,6 +46,7 @@ end
 
 local step = 0;
 local finished = false
+local lastSerial = -1
 
 function work_env.stop() 
     finished = true
@@ -52,26 +54,31 @@ function work_env.stop()
 end
 
 while not finished do
-    dir, contents = tags.scanForTags(reader_side)
+    local dir, contents, _, _, serial = tags.scanForTags(reader_side)
+    
     if not dir then
         error("No tag found")
     end
     
-    step = step + 1
-    print(string.format("Step %d: executing: '%s'", step, contents))
-    
-    local operation, e = loadstring(contents)
-    if not operation then
-        error(string.format("Invalid operation, error: '%s'", operation, err))
-    end
-    
-    work_env["tagDir"] = dir
-    setfenv(operation, work_env)
-    local result = operation()
-    
-    if result then
-        print(string.format("%Step d: result: '%s'", step, result))
-    else
-        print(string.format("Step %d: done", step))
+    if serial ~= lastSerial then    
+        lastSerial = serial
+        step = step + 1
+        print(string.format("Step %d: executing: '%s'", step, contents))
+        
+        local operation, e = loadstring(contents)
+        if not operation then
+            error(string.format("Invalid operation, error: '%s'", operation, err))
+        end
+        
+        work_env["tagDir"] = dir
+        work_env["serial"] = serial
+        setfenv(operation, work_env)
+        local result = operation()
+        
+        if result then
+            print(string.format("%Step d: result: '%s'", step, result))
+        else
+            print(string.format("Step %d: done", step))
+        end
     end
 end

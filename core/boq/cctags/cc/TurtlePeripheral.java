@@ -76,7 +76,7 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
         @Override
         public boolean isValid() {
             ItemStack stack = turtle.getSlotContents(slotId);
-            return stack != null && stack.getItem() instanceof ItemTag;
+            return stack != null && stack.getItem() instanceof ItemTag && stack.stackSize == 1;
         }
 
         @Override
@@ -152,7 +152,7 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
         return false;
     }
 
-    protected final static String[] commonMethods = { "isTagValid", "scanForTag", "selectFromSlot", "contents", "write", "size" };
+    protected final static String[] commonMethods = { "isTagValid", "scanForTag", "selectFromSlot", "contents", "write", "size", "serial" };
 
     @Override
     public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception {
@@ -185,7 +185,7 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
                 if (isSelectedTagValid()) {
                     TagData data = tagAccess.readData();
                     if (!data.tagSize.check(newContents))
-                        return wrap("false", "Message too bigs");
+                        return wrap("false", "Message too big");
 
                     data.contents = newContents;
                     tagAccess.writeData(data, false);
@@ -194,10 +194,19 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
                 return wrap(false, "No selected tag");
             }
             case 5: { // size
+                if (!isSelectedTagValid())
+                    return wrap("false", "No selected tag");
+
                 TagSize size = tagAccess.readData().tagSize;
-                if (isSelectedTagValid())
-                    return wrap(size.size, size.name);
-                return null;
+                return wrap(size.size, size.name);
+            }
+
+            case 6: { // serial
+                if (!isSelectedTagValid())
+                    return wrap("false", "No selected tag");
+
+                int serial = tagAccess.readData().serial(turtle.getWorld());
+                return wrap(serial);
             }
         }
 
