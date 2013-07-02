@@ -36,6 +36,10 @@ if reader_side == 'print' then
     return
 end
 
+if fs.exists("follow-env") then
+    os.run(work_env, "follow-env")
+end
+
 work_env["reader"] = reader_side
 
 if forward_start then
