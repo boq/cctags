@@ -77,44 +77,6 @@ local function selectAction(list, arg)
     end
 end
 
-local turtle_safe_hidden = subset(turtle,
-    "forward",
-    "back",
-    "up",
-    "down",
-    
-    "detect",
-    "detectUp",
-    "detectDown",
-    
-    "compare",
-    "compareUp",
-    "compareDown",
-    
-    "drop",
-    "dropUp",
-    "dropDown",
-    
-    "suck",
-    "suckUp",
-    "suckDown"
-)
-
-local turtle_safe_global = subset(turtle, 
-    "turnLeft",
-    "turnRight",
-
-    "select",
-    "transferTo",
-    "getItemCount",
-    "getItemSpace",
-    
-    "compareTo",
-    
-    "refuel",
-    "getFuelLevel"
-)
-
 local function dirAction(normal, up, down)
     return function(side, reverse, ...)
         local args = {...}
@@ -143,8 +105,47 @@ local unsafe = {
     dig = dirAction(turtle.dig, turtle.digUp, turtle.digDown),
 }
 
--- it's a big function, but we want to inject out variables (`vars') into scope during function declaration
+-- it's a big function, but we want to inject out variables (`vars') into scope during function declaration and delay few things until APIs are loaded
 function envs(vars)
+
+    -- turtle API has some loading logic, so we need to delay creation of those tables
+    turtle_safe_hidden = subset(turtle,
+        "forward",
+        "back",
+        "up",
+        "down",
+        
+        "detect",
+        "detectUp",
+        "detectDown",
+        
+        "compare",
+        "compareUp",
+        "compareDown",
+        
+        "drop",
+        "dropUp",
+        "dropDown",
+        
+        "suck",
+        "suckUp",
+        "suckDown"
+    )
+
+    turtle_safe_global = subset(turtle, 
+        "turnLeft",
+        "turnRight",
+
+        "select",
+        "transferTo",
+        "getItemCount",
+        "getItemSpace",
+        
+        "compareTo",
+        
+        "refuel",
+        "getFuelLevel"
+    )
 
     function moveUntilTag(action)
         return function()

@@ -37,9 +37,19 @@
         "label" : "Drop",
         "contents" : "drop(tagDir, true) prev()"
     },
-    "dummy" : {
-        "label" : "Dummy",
-        "contents" : "stop()",
-        "color" : 43224624
+    "right" : {
+        "icon" : "right",
+        "label" : "Right",
+        "contents" : "turnRight() t.forward()"
+    },
+    "left" : {
+        "icon" : "left",
+        "label" : "Left",
+        "contents" : "turnLeft() t.forward()"
+    },
+    "step" : {
+        "icon" : "forward",
+        "label" : "Single step",
+        "contents" : "t.forward()"
     }
 }

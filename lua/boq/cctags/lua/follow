@@ -48,8 +48,8 @@ if forward_start then
     end
 end
 
-local step = 0;
 local finished = false
+local lastSerial = 0
 
 function work_env.stop() 
     finished = true
@@ -57,6 +57,7 @@ function work_env.stop()
 end
 
 work_env.prev = function() end
+work_env.step = 0
 
 while not finished do
     local dir, contents, _, _, serial = tags.scanForTags(reader_side)
@@ -64,26 +65,35 @@ while not finished do
     if not dir then
         error("No tag found")
     end
+    
+    if serial == lastSerial then
+        error("Tag " .. serial .. " was read twice in row")
+    end
+    
+    lastSerial = serial
      
-    step = step + 1
-    print(string.format("Step %d: executing: '%s'", step, contents))
+    work_env.tagDir = dir
+    work_env.serial = serial
+    work_env.step = work_env.step + 1
+    print(string.format("Step %d: executing: '%s'", work_env.step, contents))
     
     local operation, e = loadstring(contents)
     if not operation then
         error(string.format("Invalid operation, error: '%s'", operation, err))
     end
     
-    work_env.tagDir = dir
-    work_env.serial = serial
-    
     setfenv(operation, work_env)
-    local result = operation()
+    local status, result = pcall(operation)
+    
+    if not status then
+        error("Error during command execution: " .. result)
+    end
     
     work_env.prev = operation
     
     if result then
-        print(string.format("%Step d: result: '%s'", step, result))
+        print(string.format("%Step d: result: '%s'", work_env.step, result))
     else
-        print(string.format("Step %d: done", step))
+        print(string.format("Step %d: done", work_env.step))
     end
 end
