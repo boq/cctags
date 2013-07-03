@@ -1,5 +1,6 @@
 package boq.cctags;
 
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.common.Configuration;
 import boq.cctags.cc.*;
 import boq.cctags.tag.*;
@@ -37,6 +38,8 @@ public class CCTags {
     private int blockPeripheralId;
     public BlockTagPeripheral blockPeripheral;
 
+    public CreativeTabs tabTags;
+
     @PreInit
     public void preInit(FMLPreInitializationEvent event) {
         Log.logger = event.getModLog();
@@ -49,6 +52,8 @@ public class CCTags {
             blockPeripheralId = cfg.getBlock("blockTagPeripheral", 2324).getInt();
 
             config = new Config(cfg);
+
+            tabTags = new CreativeTabTags(CreativeTabs.getNextID());
         } catch (Exception e) {
             Log.severe(e, "Error during config reading");
         } finally {
@@ -81,7 +86,7 @@ public class CCTags {
 
     @PostInit
     public void modsLoaded(FMLPostInitializationEvent evt) {
-        LuaInit.instance.setupFiles();
+        LuaInit.instance.setup();
         for (PeripheralType type : PeripheralType.TYPES)
             TurtleAPI.registerUpgrade(type);
     }

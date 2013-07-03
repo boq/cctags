@@ -6,4 +6,6 @@ string,int contents() - return current tag contents (text and side)
 bool,int write(string new_contents) - write data to tag
 string,int size() - return current tag size as (size_description, size_in_bytes) pair
 int serial() - return current tag serial id
+string,string,string library(string id) - get tag data from library (returns contents,icon,label)
+
 Peripheral will emit ("tag",side) event once tag is inserted

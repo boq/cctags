@@ -61,7 +61,7 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
         return type().peripheralType;
     }
 
-    protected final static String[] commonMethods = { "hasTag", "contents", "write", "size", "eject", "serial" };
+    protected final static String[] commonMethods = { "hasTag", "contents", "write", "size", "eject", "serial", "library" };
 
     @Override
     public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception {
@@ -103,6 +103,8 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
                 TagData data = readData();
                 return wrap(data.serial(worldObj));
             }
+            case 6: // library
+                return LuaInit.instance.getLuaLibrary(arguments);
             default:
                 throw new IllegalArgumentException("Unknown method: " + method);
         }

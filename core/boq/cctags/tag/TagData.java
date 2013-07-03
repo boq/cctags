@@ -23,7 +23,7 @@ public class TagData extends SerializableData {
     public String icon;
 
     @SerializableField(flags = SerializableField.NBT_SERIALIZABLE)
-    private int serialId;
+    int serialId;
     public static final String TAG_SERIAL = "serialId";
 
     @SerializableField(nullable = true, flags = SerializableField.NBT_SERIALIZABLE)

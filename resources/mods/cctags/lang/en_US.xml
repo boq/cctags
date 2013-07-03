@@ -13,4 +13,6 @@
 	
 	<entry key="cctag.size">Size: %s</entry>
 	<entry key="cctag.empty">&lt;empty&gt;</entry>
+	
+	<entry key="itemGroup.cctags">CCTags</entry>
 </properties>

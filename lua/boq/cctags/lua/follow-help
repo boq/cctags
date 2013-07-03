@@ -10,6 +10,7 @@ Any executed code can use two additional variables:
 reader - peripheral side, copied program from parameters
 tagDir - where is tag containing currently executed code
 serial - serial id of currently scanned tag
+prev() - call previous command
 
 Any variable or function defined by code will persist between commands until program ends.
 

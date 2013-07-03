@@ -1,18 +1,24 @@
 local function parseLine(line)
     if line:sub(1,2) == "--" then
-        print(line)
-        return nil, 0
+        return "comment"
+    end
+    
+    local sep = line:find("@")
+    if sep ~= nil then
+        quantity = line:sub(1, sep - 1)
+        id = line:sub(sep + 1)
+        return "lib", id, quantity
     end
      
-    local sep = line:find(":")
+    sep = line:find(":")
     if sep == nil then
-        return line, 1
+        return "free",line, 1
     end
     
     local params = line:sub(1, sep - 1)
     local contents = string.match(line:sub(sep + 1), "^%s*(.+)" )
     if not contents then
-        return nil, 0
+        return "error"
     end
     
     local it = params:gmatch("[%w_]+")
@@ -20,16 +26,21 @@ local function parseLine(line)
     local icon = it()
     local label = it()
     
-    return contents, quantity, icon, label
+    return "free",contents, quantity, icon, label
 end
 
-local function writeTag(contents, icon, label)
+local function writeTag(type, contents, icon, label)
     print("Writing '".. contents .. "'. Insert tag or press space to skip. Press any other key to abort")
     while true do
         local event, arg = os.pullEvent()
         
         if event == "tag" then
             local p, t = tags.getPeripheral(arg)
+            
+            if type == "lib" then
+                contents, icon, label = p.library(contents)
+            end
+            
             local result, err = p.write(contents)
             if not result then
                 error(err)
@@ -75,16 +86,24 @@ local finished = false
 local lineNum = 0
 while line and not finished do
     lineNum  = lineNum + 1
-    local command, quantity, icon, label = parseLine(line)
-    if tonumber(quantity) > 0 then
+    local type, command, quantity, icon, label = parseLine(line)
+    
+    if type == "error" then
+        print(string.format("Invalid line %d: %s", lineNum, line))
+    elseif type == "comment" then
+        print(line)
+    elseif type == "lib" or type == "free" then
         print(string.format("Printing %d tag(s) from line %d", quantity, lineNum))
-    end
-    for i = 1,quantity do
-        if not writeTag(command, icon, label) then
-            finished = true
-            break
+        for i = 1,quantity do
+            if not writeTag(type, command, icon, label) then
+                finished = true
+                break
+            end
         end
+    else
+        print("Ooops: " .. type);
     end
+    
     line = file:read()
 end
 file:close()

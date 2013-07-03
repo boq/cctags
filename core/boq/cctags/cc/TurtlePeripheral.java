@@ -152,7 +152,7 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
         return false;
     }
 
-    protected final static String[] commonMethods = { "isTagValid", "scanForTag", "selectFromSlot", "contents", "write", "size", "serial" };
+    protected final static String[] commonMethods = { "isTagValid", "scanForTag", "selectFromSlot", "contents", "write", "size", "serial", "library" };
 
     @Override
     public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception {
@@ -208,6 +208,9 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
                 int serial = tagAccess.readData().serial(turtle.getWorld());
                 return wrap(serial);
             }
+
+            case 7: // library
+                return LuaInit.instance.getLuaLibrary(arguments);
         }
 
         throw new IllegalArgumentException("Invalid method id: " + method);

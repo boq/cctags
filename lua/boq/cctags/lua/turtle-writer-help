@@ -7,3 +7,4 @@ string,int contents() - read selected tag contents
 int write(str) - write new data to selected tag
 string,int size() - get selected tag size as (size_description, size_in_bytes) pair
 int serial() - get serial id of selected tag
+string,string,string library(string id) - get tag data from library (returns contents,icon,label)

@@ -1,0 +1,45 @@
+{
+    "start"  : {
+         "icon" : "forward",
+         "label" : "Start",
+         "contents" : "forward()",
+         "color" : "00FF00"
+    },
+    "forward"  : {
+         "icon" : "forward",
+         "label" : "Forward",
+         "contents" : "forward()"
+    },
+    "stop" : {
+        "icon" : "no",
+        "label" : "Stop",
+        "contents" : "stop()",
+        "color" : "FF0000"
+    },
+    "refuel" : {
+        "icon" : "energy",
+        "label" : "Refuel",
+        "contents" : "suck(tagDir, true) refuel() prev()",
+        "color" : "FFFF00"
+    },
+    "suck" : {
+        "icon" : "in",
+        "label" : "Suck",
+        "contents" : "suck(tagDir, true) prev()"
+    },
+    "suck" : {
+        "icon" : "out",
+        "label" : "Suck",
+        "contents" : "suck(tagDir, true) prev()"
+    },
+    "drop" : {
+        "icon" : "in",
+        "label" : "Drop",
+        "contents" : "drop(tagDir, true) prev()"
+    },
+    "dummy" : {
+        "label" : "Dummy",
+        "contents" : "stop()",
+        "color" : 43224624
+    }
+}

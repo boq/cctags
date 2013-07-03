@@ -1,13 +1,19 @@
 package boq.cctags;
 
+import static boq.utils.misc.Utils.checkArg;
+import static boq.utils.misc.Utils.wrap;
+
 import java.io.*;
 import java.util.*;
 import java.util.Map.Entry;
 
+import argo.jdom.*;
+import argo.saj.InvalidSyntaxException;
+import boq.cctags.tag.TagSize;
 import boq.utils.log.Log;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
+import com.google.common.base.*;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Closer;
@@ -21,35 +27,110 @@ public class LuaInit {
 
     private Map<String, String> relPaths = Maps.newHashMap();
 
+    public static class LibEntry {
+        public final String icon;
+        public final String label;
+        public final String contents;
+        public final int color;
+        public final TagSize size;
+
+        private LibEntry(String icon, String label, int color, String contents) {
+            this.icon = icon;
+            this.label = label;
+            this.contents = contents;
+            this.color = color & 0xFFFFFF;
+            size = TagSize.fitSize(contents);
+        }
+    }
+
+    private ImmutableMap<String, LibEntry> library;
+
+    private static final JdomParser parser = new JdomParser();
+
     public String getRelPath(String fileName) {
         String result = relPaths.get(fileName);
         Preconditions.checkNotNull(result, "Lua file %s cannot be found", fileName);
         return result;
     }
 
-    public void setupFiles() {
-        Map<String, Long> files;
-        try {
-            files = readFileList();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public LibEntry getLibraryEntry(String name) {
+        return library.get(name);
+    }
 
+    public ImmutableMap<String, LibEntry> getLibrary() {
+        return library;
+    }
+
+    private static final String RELATIVE_PATH = "cctags" + File.separatorChar + "lua";
+
+    public void setup() {
+        File luaFolder = getLuaFolder();
+
+        try {
+            setupFiles(luaFolder);
+            readLibrary(luaFolder);
+        } catch (Throwable e) {
+            Throwables.propagate(e);
+        }
+    }
+
+    private static File getLuaFolder() {
         File mcFolder = CCTags.proxy.getMcFolder();
 
-        String relative = "cctags" + File.separatorChar + "lua";
-        File luaFolder = new File(mcFolder, relative);
+        File luaFolder = new File(mcFolder, RELATIVE_PATH);
 
         Preconditions.checkState(!luaFolder.exists() || luaFolder.isDirectory(), "Path '%s' is not directort", luaFolder);
         if (!luaFolder.exists() && !luaFolder.mkdirs())
             throw new RuntimeException("Folder " + luaFolder + " cannot be created");
+
+        return luaFolder;
+    }
+
+    private void readLibrary(File luaFolder) throws IOException, InvalidSyntaxException {
+        Closer closer = Closer.create();
+        try {
+            InputStream listFile = closer.register(LuaInit.class.getResourceAsStream("/boq/cctags/lua/library.json"));
+            Reader reader = new InputStreamReader(listFile);
+
+            JsonRootNode root = parser.parse(reader);
+
+            ImmutableMap.Builder<String, LibEntry> builder = ImmutableMap.builder();
+            for (Entry<JsonStringNode, JsonNode> entry : root.getFields().entrySet()) {
+                String name = entry.getKey().getText();
+
+                JsonNode data = entry.getValue();
+                String icon = data.isNode("icon") ? data.getNullableStringValue("icon") : null;
+                String label = data.isNode("label") ? data.getNullableStringValue("label") : null;
+                String contents = data.getStringValue("contents");
+
+                int color;
+
+                if (data.isNumberValue("color"))
+                    color = Integer.parseInt(data.getNumberValue("color"));
+                else if (data.isStringValue("color"))
+                    color = Integer.parseInt(data.getStringValue("color"), 16);
+                else
+                    color = CCTags.config.DEFAULT_LIB_TAG_COLOR;
+
+                builder.put(name, new LibEntry(icon, label, color, contents));
+            }
+
+            library = builder.build();
+        } finally {
+            closer.close();
+        }
+    }
+
+    private void setupFiles(File luaFolder) throws IOException {
+        Map<String, Long> files;
+        files = readFileList();
 
         for (Entry<String, Long> entry : files.entrySet()) {
             String fileName = entry.getKey();
             Long timestamp = entry.getValue();
 
             File luaFile = new File(luaFolder, fileName);
-            String relPath = relative + File.separatorChar + fileName;
+            String relPath = RELATIVE_PATH + File.separatorChar + fileName;
 
             if (timestamp != null && luaFile.exists()) {
                 long currentTimestamp = luaFile.lastModified();
@@ -67,14 +148,10 @@ public class LuaInit {
             String classpathName = "/boq/cctags/lua/" + fileName;
             Log.info("Creating or replacing file '%s' with '%s", luaFile, classpathName);
 
-            try {
-                copyResourceToDist(classpathName, luaFile);
-                if (timestamp != null)
-                    luaFile.setLastModified(timestamp);
-                relPaths.put(fileName, relPath);
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to copy file", e);
-            }
+            copyResourceToDist(classpathName, luaFile);
+            if (timestamp != null)
+                luaFile.setLastModified(timestamp);
+            relPaths.put(fileName, relPath);
         }
     }
 
@@ -125,5 +202,16 @@ public class LuaInit {
         String actualPath = computer.mountFixedDir(path, relPath, true, 0);
         if (!actualPath.equals(path))
             computer.unmount(actualPath);
+    }
+
+    public Object[] getLuaLibrary(Object[] arguments) {
+        Preconditions.checkArgument(checkArg(arguments, 0), "Missing parameter");
+
+        String name = arguments[0].toString();
+        LibEntry entry = library.get(name);
+        if (entry == null)
+            return wrap(null, "Invalid name");
+
+        return wrap(entry.contents, entry.icon, entry.label);
     }
 }

@@ -11,7 +11,8 @@ import net.minecraft.nbt.*;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import boq.cctags.Constants;
+import boq.cctags.*;
+import boq.cctags.LuaInit.LibEntry;
 import boq.utils.misc.PlayerOrientation;
 import boq.utils.misc.Rotation;
 import boq.utils.serializable.ISelectableSerializableData.IFieldSelector;
@@ -74,8 +75,8 @@ public class ItemTag extends Item {
     }
 
     public static int getColor(ItemStack stack) {
-        final int white = ItemDye.dyeColors[15];
-        return getTag(stack, TagData.TAG_COLOR, white);
+        final int black = ItemDye.dyeColors[0];
+        return getTag(stack, TagData.TAG_COLOR, black);
     }
 
     public static TagData readData(ItemStack stack) {
@@ -99,7 +100,7 @@ public class ItemTag extends Item {
     public ItemTag(int par1) {
         super(par1);
         setUnlocalizedName("cctag");
-        setCreativeTab(CreativeTabs.tabMisc);
+        setCreativeTab(CCTags.instance.tabTags);
         setHasSubtypes(true);
         setMaxDamage(0);
     }
@@ -147,6 +148,21 @@ public class ItemTag extends Item {
                 setupDefaultTags(stack);
                 results.add(stack);
             }
+
+        for (LibEntry e : LuaInit.instance.getLibrary().values()) {
+            ItemStack stack = new ItemStack(id, 1, e.size.ordinal());
+            TagData data = new TagData();
+            data.color = e.color;
+            data.serialId = -1;
+            data.contents = e.contents;
+            data.label = e.label;
+            data.icon = e.icon;
+
+            NBTTagCompound tag = getItemTag(stack);
+            data.writeToNBT(tag, nbtOnlySelector);
+
+            results.add(stack);
+        }
     }
 
     @Override

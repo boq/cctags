@@ -13,6 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import boq.cctags.CCTags;
 import boq.cctags.tag.ItemTag;
 import boq.utils.misc.PlayerOrientation;
 import boq.utils.misc.Utils;
@@ -25,7 +26,7 @@ public class BlockTagPeripheral extends BlockContainer {
         super(id, Material.rock);
         setHardness(2.0F);
         setUnlocalizedName("tag-peripheral");
-        setCreativeTab(CreativeTabs.tabMisc);
+        setCreativeTab(CCTags.instance.tabTags);
     }
 
     @Override

@@ -25,6 +25,8 @@ public enum TagSize {
     TAG_1K("cctags:tag-1k", 1024, "1k"),
     TAG_4K("cctags:tag-4k", 4096, "4k");
 
+    public static final TagSize[] VALUES = values();
+
     public final String iconId;
     public Icon icon;
 
@@ -43,5 +45,13 @@ public enum TagSize {
 
     public boolean visible() {
         return true;
+    }
+
+    public static TagSize fitSize(String contents) {
+        for (TagSize size : TagSize.VALUES)
+            if (size.size > contents.length())
+                return size;
+
+        return TAG_4G;
     }
 }
