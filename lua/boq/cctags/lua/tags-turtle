@@ -121,17 +121,19 @@ local function dirAction(normal, up, down)
         if side then
             selectAction(turtleRotate, side)
             
-            if action == "up" then
-                up(unpack(args))
-            elseif action == "down" then
-                down(unpack(args))
+            local result
+            if side == "up" then
+                result = up(unpack(args))
+            elseif side == "down" then
+                result = down(unpack(args))
             else
-                normal(unpack(args))
+                result = normal(unpack(args))
             end
             
             selectAction(turtleReverse, side)
+            return result
         else
-            action(unpack(args))
+            return normal(unpack(args))
         end
     end
 end
@@ -143,38 +145,19 @@ local unsafe = {
 
 -- it's a big function, but we want to inject out variables (`vars') into scope during function declaration
 function envs(vars)
-    local function waitForMove()
-        while true do
-            local dir, _, _, _, current = scanForTags(vars.reader)
-            if current then
-                print(current .. " " .. (vars.serial or "?"))
-            end
-            
-            if not dir or vars.serial ~= current then
-                break
-            end
-        end
-    end
 
     function moveUntilTag(action)
         return function()
-            if not action() then
-                print("Error during movement. Aborting!")
-                return
-            end
-            
-            waitForMove() --wait until we move away from current tag
             while true do
-                local dir = scanForTags(vars.reader)
-                if dir then
-                    break
-                end
-                
                 if not action() then
                     print("Error during movement. Aborting!")
                     break
                 end
-                sleep(0.5)
+                
+                local dir = scanForTags(vars.reader)
+                if dir then
+                    break
+                end
             end
         end
     end    
