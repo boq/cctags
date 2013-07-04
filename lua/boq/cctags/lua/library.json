@@ -10,6 +10,21 @@
          "label" : "Forward",
          "contents" : "forward()"
     },
+    "step" : {
+        "icon" : "forward",
+        "label" : "Back",
+        "contents" : "back()"
+    },
+    "up" : {
+        "icon" : "forward",
+        "label" : "Up",
+        "contents" : "up()"
+    },
+    "down" : {
+        "icon" : "forward",
+        "label" : "Down",
+        "contents" : "down()"
+    },
     "stop" : {
         "icon" : "no",
         "label" : "Stop",
@@ -19,34 +34,41 @@
     "refuel" : {
         "icon" : "energy",
         "label" : "Refuel",
-        "contents" : "suck(tagDir, true) refuel() prev()",
+        "contents" : "suck(tagDir, true) refuel() restorePrev()",
         "color" : "FFFF00"
     },
     "suck" : {
         "icon" : "in",
         "label" : "Suck",
-        "contents" : "suck(tagDir, true) prev()"
-    },
-    "suck" : {
-        "icon" : "out",
-        "label" : "Suck",
-        "contents" : "suck(tagDir, true) prev()"
+        "contents" : "suck(tagDir, true) restorePrev()"
     },
     "drop" : {
         "icon" : "in",
         "label" : "Drop",
-        "contents" : "drop(tagDir, true) prev()"
+        "contents" : "drop(tagDir, true) restorePrev()"
     },
-    "right" : {
+    "go-right" : {
         "icon" : "right",
-        "label" : "Right",
+        "label" : "Go right",
         "contents" : "turnRight() t.forward()"
     },
-    "left" : {
+    "go-left" : {
         "icon" : "left",
-        "label" : "Left",
+        "label" : "Go left",
         "contents" : "turnLeft() t.forward()"
     },
+    
+    "turn-right" : {
+        "icon" : "right",
+        "label" : "Turn right",
+        "contents" : "turnRight() restorePrev()"
+    },
+    "turn-left" : {
+        "icon" : "left",
+        "label" : "Turn left",
+        "contents" : "turnLeft() restorePrev()"
+    },
+    
     "step" : {
         "icon" : "forward",
         "label" : "Single step",

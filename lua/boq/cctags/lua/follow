@@ -75,6 +75,13 @@ while not finished do
     work_env.tagDir = dir
     work_env.serial = serial
     work_env.step = work_env.step + 1
+    
+    local updatePrev = true
+    
+    function work_env.holdPrev()
+        updatePrev = false
+    end 
+    
     print(string.format("Step %d: executing: '%s'", work_env.step, contents))
     
     local operation, e = loadstring(contents)
@@ -89,7 +96,9 @@ while not finished do
         error("Error during command execution: " .. result)
     end
     
-    work_env.prev = operation
+    if updatePrev then
+        work_env.prev = operation
+    end
     
     if result then
         print(string.format("%Step d: result: '%s'", work_env.step, result))

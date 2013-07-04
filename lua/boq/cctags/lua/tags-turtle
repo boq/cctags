@@ -177,10 +177,19 @@ function envs(vars)
     function move.rotate(side)
         selectAction(turtleRotate, side)
     end
+    
+    local safe_env = {}
+    
+    function safe_env.restorePrev()
+        vars.holdPrev()
+        vars.prev()
+    end
+    
         -- Warning: following table is probably horribly unaccurate and arbitrary
     return {
         -- probably safe
-        _dummy0 = {safest, 0, true},
+        _dummy10 = {safest, 0, true},
+        _dummy20 = {safe_env, 0, true},
         term = {term, 0},
         colors = {colors, 0},
         colours = {colours, 0},
@@ -188,18 +197,18 @@ function envs(vars)
         keys = {keys, 0},
         
         -- may block/slow down execution (?)
-        _dummy1 = {safe, 1, true},
+        _dummy30 = {safe, 1, true},
         textutils = {textutils, 1},
         gps = {gps, 1},
         
         -- minor world interaction
         rednet = {rednet, 2},
         t = {turtle_safe_hidden, 2},
-        _dummy2 = {turtle_safe_global, 2, true},
-        _dummy3 = {move, 2, true},
+        _dummy40 = {turtle_safe_global, 2, true},
+        _dummy50 = {move, 2, true},
         
         -- full world interaction
-        _dummy4 = {unsafe, 3, true},
+        _dummy60 = {unsafe, 3, true},
         turtle = {turtle, 3}
     }
 end
