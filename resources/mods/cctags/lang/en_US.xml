@@ -2,7 +2,9 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties version="1.0">
 	<comment>English (EN) CCTags Localization File</comment>
-	<entry key="item.cctag.name">Tag</entry>
+	<entry key="item.cctag.normal.name">Tag</entry>
+	<entry key="item.cctag.big.name">Poster</entry>
+	<entry key="item.cctag.glass.name">Glass tag</entry>
 	
 	<entry key="item.pcb-writer.name">Tag Writer Module</entry>
     <entry key="item.pcb-printer.name">Tag Printer Module</entry>

@@ -133,8 +133,8 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
         throw new IllegalArgumentException("Invalid direction, must be one of: up, down, front, back, left, right");
     }
 
-    private final static double DELTA = 0.05;
-    private final static Bounds searchBounds = new Bounds(-DELTA, -DELTA, -DELTA, 1 + DELTA, 1 + DELTA, 1 + DELTA);
+    private final static double DELTA = 0.01;
+    private final static Bounds searchBounds = new Bounds(DELTA, DELTA, DELTA, 1 - DELTA, 1 - DELTA, 1 - DELTA);
 
     protected boolean selectTag(ForgeDirection direction) {
         Vec3 position = turtle.getPosition();

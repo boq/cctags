@@ -1,5 +1,6 @@
 package boq.cctags.tag;
 
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
 
 public enum TagSize {
@@ -27,7 +28,7 @@ public enum TagSize {
 
     public static final TagSize[] VALUES = values();
 
-    public final String iconId;
+    private final String iconId;
     public Icon icon;
 
     public final int size;
@@ -53,5 +54,9 @@ public enum TagSize {
                 return size;
 
         return TAG_4G;
+    }
+
+    public void registerIcons(IconRegister registry) {
+        icon = registry.registerIcon(iconId);
     }
 }

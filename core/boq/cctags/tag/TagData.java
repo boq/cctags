@@ -32,6 +32,9 @@ public class TagData extends SerializableData {
     @SerializableField(flags = SerializableField.NBT_SERIALIZABLE | EXCLUDE_IN_ITEM_NBT)
     public TagSize tagSize;
 
+    @SerializableField(flags = SerializableField.SERIALIZABLE | EXCLUDE_IN_ITEM_NBT)
+    public TagType tagType;
+
     @SerializableField(flags = EXCLUDE_IN_ITEM_NBT | SerializableField.SERIALIZABLE)
     public ForgeDirection side;
 

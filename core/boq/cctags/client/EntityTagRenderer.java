@@ -4,24 +4,59 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.Icon;
 import net.minecraftforge.common.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
 import boq.cctags.tag.*;
 import boq.cctags.tag.TagIcons.IconData;
+import boq.cctags.tag.TagIcons.IconType;
 import boq.utils.render.*;
 
 import com.google.common.base.Strings;
 
 public class EntityTagRenderer extends Render {
 
-    private static final double Z_FIGHTER = 0.0005;
+    private static class Key {
+        public final IconData icon;
+        public final TagType type;
 
-    private final static ParameterModel<String> iconModels = new ParameterModel<String>() {
+        private Key(IconData icon, TagType type) {
+            this.icon = icon;
+            this.type = type;
+        }
 
         @Override
-        public void compile(String param) {
+        public int hashCode() {
+            final int prime = 31;
+            return prime * (prime + icon.hashCode()) + type.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+
+            if (obj instanceof Key) {
+                Key other = (Key)obj;
+                return other.type == type && icon.equals(other.icon);
+            }
+            return false;
+        }
+
+        @Override
+        public String toString() {
+            return "Key [" + icon + ", type=" + type + "]";
+        }
+    }
+
+    private static final double Z_FIGHTER = 0.0005;
+
+    private final static ParameterModel<Key> iconModels = new ParameterModel<Key>() {
+
+        @Override
+        public void compile(Key param) {
             final TagIcons icons = TagIcons.instance;
             GL11.glDisable(GL11.GL_CULL_FACE);
 
@@ -30,7 +65,14 @@ public class EntityTagRenderer extends Render {
             tes.startDrawingQuads();
             tes.setNormal(0.0F, 0.0F, -1.0F);
             tes.setTranslation(0, 0, 2 * Z_FIGHTER);
-            RenderUtils.drawRectangle(tes, -0.25, -0.25, 0.25, 0.25, icons.iconMarker);
+            final double size = param.type == TagType.BIG ? 0.5 : 0.25;
+            final Icon background = param.type == TagType.GLASS ? icons.iconBackgroundGlass : icons.iconBackgroundPaper;
+            if (param.type == TagType.GLASS) {
+                GL11.glEnable(GL11.GL_BLEND);
+                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            }
+
+            RenderUtils.drawRectangle(tes, -size, -size, size, size, icons.iconMarker);
             tes.draw();
 
             GL11.glColor3d(1, 1, 1);
@@ -38,13 +80,13 @@ public class EntityTagRenderer extends Render {
             tes.startDrawingQuads();
             tes.setNormal(0.0F, 0.0F, -1.0F);
             tes.setTranslation(0, 0, 2 * Z_FIGHTER);
-            RenderUtils.drawRectangle(tes, -0.25, -0.25, 0.25, 0.25, icons.iconBackground);
 
-            IconData render = TagIcons.parseIconString(param);
+            RenderUtils.drawRectangle(tes, -size, -size, size, size, background);
 
-            if (render != null) {
+            final IconData icon = param.icon;
+            if (icon.type != IconType.NULL) {
                 tes.setTranslation(0, 0, 3 * Z_FIGHTER);
-                render.render(tes, -0.25, -0.25, 0.25, 0.25);
+                icon.render(tes, -size, -size, size, size);
             }
 
             tes.draw();
@@ -73,7 +115,9 @@ public class EntityTagRenderer extends Render {
 
         BoxHelper.setColor(data.color);
 
-        iconModels.render(Strings.nullToEmpty(data.icon));
+        IconData render = TagIcons.instance.getIconData(Strings.nullToEmpty(data.icon));
+        Key key = new Key(render, data.tagType);
+        iconModels.render(key);
         GL11.glPopMatrix();
     }
 

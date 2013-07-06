@@ -37,10 +37,12 @@ function writeLoop(contents, icon, label)
             print("New tag in peripheral  '" .. side .. "'")
             p, p_type = getPeripheral(side)
 
-            result, err = p.write(contents)
-            if not result then
-                print(string.format("Error while writing on '%s' : '%s'", side, err))
-                break
+            if contents then
+                result, err = p.write(contents)
+                if not result then
+                    print(string.format("Error while writing on '%s' : '%s'", side, err))
+                    break
+                end
             end
             
             if print_mode then

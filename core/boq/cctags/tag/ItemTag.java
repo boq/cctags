@@ -25,11 +25,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemTag extends Item {
-
-    public static final TagSize[] sizes = TagSize.values();
-
-    private Icon backgroundIcon;
-
     public static NBTTagCompound getItemTag(ItemStack stack) {
         NBTTagCompound result = stack.getTagCompound();
 
@@ -64,14 +59,31 @@ public class ItemTag extends Item {
     }
 
     public static TagSize getSize(int damage) {
-        if (damage > sizes.length)
+        damage &= 0xFF;
+        if (damage > TagSize.VALUES.length)
             return TagSize.TAG_BROKEN;
 
-        return sizes[damage];
+        return TagSize.VALUES[damage];
     }
 
     public static TagSize getSize(ItemStack stack) {
         return getSize(stack.getItemDamage());
+    }
+
+    public static TagType getType(int damage) {
+        damage = (damage >> 8) & 0xFF;
+        if (damage > TagType.VALUES.length)
+            return TagType.NORMAL;
+
+        return TagType.VALUES[damage];
+    }
+
+    public static TagType getType(ItemStack stack) {
+        return getType(stack.getItemDamage());
+    }
+
+    public static int calculateDamage(TagType type, TagSize size) {
+        return (type.ordinal() << 8) + size.ordinal();
     }
 
     public static int getColor(ItemStack stack) {
@@ -88,6 +100,7 @@ public class ItemTag extends Item {
         result.readFromNBT(tag, nbtOnlySelector);
 
         result.tagSize = getSize(stack);
+        result.tagType = getType(stack);
         return result;
     }
 
@@ -95,6 +108,13 @@ public class ItemTag extends Item {
         NBTTagCompound tag = new NBTTagCompound("tag");
         data.writeToNBT(tag, nbtOnlySelector);
         stack.stackTagCompound = tag;
+    }
+
+    public ItemStack createFromData(TagData data) {
+        int damage = calculateDamage(data.tagType, data.tagSize);
+        ItemStack result = new ItemStack(this, 1, damage);
+        writeData(result, data);
+        return result;
     }
 
     public ItemTag(int par1) {
@@ -109,10 +129,11 @@ public class ItemTag extends Item {
     @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister registry) {
         itemIcon = registry.registerIcon("cctags:tag-marker");
-        backgroundIcon = registry.registerIcon("cctags:tag-background");
+        for (TagType type : TagType.VALUES)
+            type.registerIcons(registry);
 
-        for (TagSize size : sizes)
-            size.icon = registry.registerIcon(size.iconId);
+        for (TagSize size : TagSize.VALUES)
+            size.registerIcons(registry);
 
         TagIcons.instance.registerIcons(registry);
     }
@@ -129,6 +150,11 @@ public class ItemTag extends Item {
     }
 
     @Override
+    public String getUnlocalizedName(ItemStack stack) {
+        return getType(stack).unlocalizedName;
+    }
+
+    @Override
     public String getItemDisplayName(ItemStack stack) {
         String label = getTag(stack, TagData.TAG_LABEL, null);
 
@@ -142,12 +168,14 @@ public class ItemTag extends Item {
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubItems(int id, CreativeTabs tab, List results) {
-        for (TagSize size : sizes)
-            if (size.visible()) {
-                ItemStack stack = new ItemStack(id, 1, size.ordinal());
-                setupDefaultTags(stack);
-                results.add(stack);
-            }
+        for (TagType type : TagType.VALUES)
+            if (type.visible)
+                for (TagSize size : TagSize.VALUES)
+                    if (size.visible()) {
+                        ItemStack stack = new ItemStack(id, 1, calculateDamage(type, size));
+                        setupDefaultTags(stack);
+                        results.add(stack);
+                    }
 
         for (LibEntry e : LuaInit.instance.getLibrary().values()) {
             ItemStack stack = new ItemStack(id, 1, e.size.ordinal());
@@ -163,6 +191,7 @@ public class ItemTag extends Item {
 
             results.add(stack);
         }
+
     }
 
     @Override
@@ -187,7 +216,7 @@ public class ItemTag extends Item {
     public Icon getIconFromDamageForRenderPass(int damage, int pass) {
         switch (pass) {
             case 0:
-                return backgroundIcon;
+                return getType(damage).backgroundIcon;
             case 2:
                 return getSize(damage).icon;
             default:
@@ -223,7 +252,7 @@ public class ItemTag extends Item {
         data.readFromNBT(getItemTag(stack), nbtOnlySelector);
 
         data.tagSize = getSize(stack);
-
+        data.tagType = getType(stack);
         data.side = ForgeDirection.VALID_DIRECTIONS[side];
 
         if (!isBlockSideAvailable(data.side, world, x, y, z))
@@ -253,5 +282,13 @@ public class ItemTag extends Item {
 
         stack.stackSize--;
         return true;
+    }
+
+    public static ItemStack upgradeToType(ItemStack stack, TagType type) {
+        TagSize size = getSize(stack);
+        int newDamage = calculateDamage(type, size);
+        ItemStack result = stack.copy();
+        result.setItemDamage(newDamage);
+        return result;
     }
 }

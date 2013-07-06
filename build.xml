@@ -74,13 +74,15 @@
 	</target>
 
 	<target name="build-jar" depends="buildenvsetup">
-		<property file="version.properties" />
-		<property name="jarname" value="${modname}-${cctags.version.tag}" />
-
 		<delete dir="${jar.dir}" />
 		<mkdir dir="${jar.dir}" />
+		
 		<antcall target="run-python-update" />
 		<antcall target="run-python-generate" />
+		
+	    <property file="version.properties" />
+	    <property name="jarname" value="${modname}-${cctags.version.tag}" />
+		
 		<jar destfile="${basedir}/target/${jarname}.jar">
 			<fileset dir="${mcp.obfoutput.classes}" includes="**/*.class" excludes="net/**/*" />
 			<fileset dir="${basedir}/core" includes="mcmod.info" />

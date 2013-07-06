@@ -11,8 +11,28 @@ import boq.cctags.cc.ItemMisc.Subtype;
 import boq.cctags.cc.PeripheralType;
 import boq.cctags.tag.*;
 
+import com.google.common.collect.ObjectArrays;
+
 public class Recipes {
     private Recipes() {}
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private static ItemStack createTagStack(List recipes, ItemTag item, int count, TagSize size) {
+        int damage = ItemTag.calculateDamage(TagType.NORMAL, size);
+        ItemStack result = new ItemStack(item, count, damage);
+        ItemTag.setupDefaultTags(result);
+
+        recipes.add(new BigTagRecipe(result, size));
+        return result;
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private static void addTagRecipes(List recipes, ItemStack stack, Object... recipe) {
+        Object[] recipeWithP = ObjectArrays.concat(recipe, 'P');
+        recipes.add(new ShapedOreRecipe(stack.copy(), ObjectArrays.concat(recipeWithP, Item.paper)));
+        ItemStack glassStack = ItemTag.upgradeToType(stack, TagType.GLASS);
+        recipes.add(new ShapedOreRecipe(glassStack, ObjectArrays.concat(recipeWithP, Block.thinGlass)));
+    }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public static void registerRecipes() {
@@ -21,21 +41,17 @@ public class Recipes {
         List recipes = manager.getRecipeList();
         recipes.add(new DyeRecipe());
 
-        ItemStack itemTag64 = new ItemStack(mod.itemTag, 16, TagSize.TAG_64.ordinal());
-        ItemTag.setupDefaultTags(itemTag64);
-        recipes.add(new ShapedOreRecipe(itemTag64, "PSP", "PRP", "PIP", 'S', Item.slimeBall, 'P', Item.paper, 'R', Item.redstone, 'I', Item.ingotIron));
+        ItemStack itemTag64 = createTagStack(recipes, mod.itemTag, 16, TagSize.TAG_64);
+        addTagRecipes(recipes, itemTag64, "PSP", "PRP", "PIP", 'S', Item.slimeBall, 'R', Item.redstone, 'I', Item.ingotIron);
 
-        ItemStack itemTag256 = new ItemStack(mod.itemTag, 8, TagSize.TAG_256.ordinal());
-        ItemTag.setupDefaultTags(itemTag256);
-        recipes.add(new ShapedOreRecipe(itemTag256, "PSP", "RRR", "PIP", 'S', Item.slimeBall, 'P', Item.paper, 'R', Item.redstone, 'I', Item.ingotIron));
+        ItemStack itemTag256 = createTagStack(recipes, mod.itemTag, 8, TagSize.TAG_256);
+        addTagRecipes(recipes, itemTag256, "PSP", "RRR", "PIP", 'S', Item.slimeBall, 'R', Item.redstone, 'I', Item.ingotIron);
 
-        ItemStack itemTag1K = new ItemStack(mod.itemTag, 4, TagSize.TAG_1K.ordinal());
-        ItemTag.setupDefaultTags(itemTag1K);
-        recipes.add(new ShapedOreRecipe(itemTag1K, "PSP", "RRR", "PGP", 'S', Item.slimeBall, 'P', Item.paper, 'R', Item.redstone, 'G', Item.goldNugget));
+        ItemStack itemTag1K = createTagStack(recipes, mod.itemTag, 4, TagSize.TAG_1K);
+        addTagRecipes(recipes, itemTag1K, "PSP", "RRR", "PGP", 'S', Item.slimeBall, 'R', Item.redstone, 'G', Item.goldNugget);
 
-        ItemStack itemTag64K = new ItemStack(mod.itemTag, 8, TagSize.TAG_4K.ordinal());
-        ItemTag.setupDefaultTags(itemTag64K);
-        recipes.add(new ShapedOreRecipe(itemTag64K, "PSP", "RRR", "PGP", 'S', Item.slimeBall, 'P', Item.paper, 'R', Item.redstone, 'G', Item.ingotGold));
+        ItemStack itemTag64K = createTagStack(recipes, mod.itemTag, 8, TagSize.TAG_4K);
+        addTagRecipes(recipes, itemTag64K, "PSP", "RRR", "PGP", 'S', Item.slimeBall, 'R', Item.redstone, 'G', Item.ingotGold);
 
         ItemStack itemHandheld = mod.itemMisc.getStack(Subtype.HANDHELD);
         recipes.add(new ShapedOreRecipe(itemHandheld, "WRW", "IDG", "WRW", 'W', "plankWood", 'R', Item.redstone, 'G', Block.thinGlass, 'D', "dyeGreen", 'I', Item.ingotIron));

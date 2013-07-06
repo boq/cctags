@@ -11,6 +11,7 @@ reader - peripheral side, copied program from parameters
 tagDir - where is tag containing currently executed code
 serial - serial id of currently scanned tag
 prev() - call previous command
+holdPrev() - don't replace prev() with current instruction
 
 Any variable or function defined by code will persist between commands until program ends.
 

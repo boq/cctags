@@ -31,8 +31,15 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
     public static int POOL_PERIOD = 20;
     private int tickCounter;
 
-    private final static Bounds canonicalBounds = new Bounds(-0.25 - AABB_MARGIN, -0.25 - AABB_MARGIN, 0.5 - AABB_THICKNESS,
-            0.25 + AABB_MARGIN, 0.25 + AABB_MARGIN, 0.5 + AABB_THICKNESS);
+    private Bounds relativeBounds() {
+        if (data.tagType == TagType.BIG)
+            return new Bounds(-0.5 + AABB_MARGIN, -0.5 + AABB_MARGIN, 0.5 - AABB_THICKNESS,
+                    0.5 - AABB_MARGIN, 0.5 - AABB_MARGIN, 0.5 + AABB_THICKNESS);
+        else
+            return new Bounds(-0.25 - AABB_MARGIN, -0.25 - AABB_MARGIN, 0.5 - AABB_THICKNESS,
+                    0.25 + AABB_MARGIN, 0.25 + AABB_MARGIN, 0.5 + AABB_THICKNESS);
+
+    }
 
     public EntityTag(World world) {
         super(world);
@@ -94,7 +101,7 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
     }
 
     private void updateAABB() {
-        Bounds b = canonicalBounds.copy();
+        Bounds b = relativeBounds();
         BoundsRotator.flipDirection(b, data.side);
         b.setAABB(boundingBox, posX, posY, posZ);
     }
@@ -181,12 +188,7 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
 
     private ItemStack toItemStack() {
         Preconditions.checkState(!worldObj.isRemote, "Can't run this method on client side");
-        int damage = data.tagSize.ordinal();
-        ItemStack result = new ItemStack(CCTags.instance.itemTag, 1, damage);
-        NBTTagCompound tag = ItemTag.getItemTag(result);
-
-        data.writeToNBT(tag, ItemTag.nbtOnlySelector);
-        return result;
+        return CCTags.instance.itemTag.createFromData(data);
     }
 
     @Override
@@ -271,4 +273,10 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
         }
         return true;
     }
+
+    @Override
+    public boolean shouldRenderInPass(int pass) {
+        return (data.tagType == TagType.GLASS ? 1 : 0) == pass;
+    }
+
 }

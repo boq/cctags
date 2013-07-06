@@ -12,7 +12,9 @@ print("Icon dir: " + icon_dir)
 lua_dir = path.abspath(sys.argv[2])
 print("Lua dir: " + lua_dir)
 
-EXCLUDE = { "icon-marker.png", "icon-background.png" }
+EXCLUDE = { "icon-marker.png",
+            "icon-background-glass.png",
+            "icon-background-paper.png" }
 
 def update_icon_list():
     icon_file = path.join(icon_dir, "icons.properties")

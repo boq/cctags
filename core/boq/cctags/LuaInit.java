@@ -132,16 +132,24 @@ public class LuaInit {
             File luaFile = new File(luaFolder, fileName);
             String relPath = RELATIVE_PATH + File.separatorChar + fileName;
 
-            if (timestamp != null && luaFile.exists()) {
-                long currentTimestamp = luaFile.lastModified();
-                if (currentTimestamp >= timestamp) {
-                    if (currentTimestamp > timestamp)
-                        Log.info("File '%s' is newer (%s) than resource (%s)", luaFile,
-                                new Date(currentTimestamp).toString(),
-                                new Date(timestamp).toString());
-
-                    relPaths.put(fileName, relPath);
+            if (luaFile.exists()) {
+                if (!luaFile.canWrite()) {
+                    Log.info("File %s is marked as read only, skipping", luaFile);
                     continue;
+                }
+
+                if (timestamp != null) {
+
+                    long currentTimestamp = luaFile.lastModified();
+                    if (currentTimestamp >= timestamp) {
+                        if (currentTimestamp > timestamp)
+                            Log.info("File '%s' is newer (%s) than resource (%s)", luaFile,
+                                    new Date(currentTimestamp).toString(),
+                                    new Date(timestamp).toString());
+
+                        relPaths.put(fileName, relPath);
+                        continue;
+                    }
                 }
             }
 
