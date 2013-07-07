@@ -11,7 +11,6 @@ import org.lwjgl.opengl.GL11;
 
 import boq.cctags.tag.*;
 import boq.cctags.tag.TagIcons.IconData;
-import boq.cctags.tag.TagIcons.IconType;
 import boq.utils.render.*;
 
 import com.google.common.base.Strings;
@@ -82,14 +81,11 @@ public class EntityTagRenderer extends Render {
             tes.setTranslation(0, 0, 2 * Z_FIGHTER);
 
             RenderUtils.drawRectangle(tes, -size, -size, size, size, background);
+            tes.draw();
 
             final IconData icon = param.icon;
-            if (icon.type != IconType.NULL) {
-                tes.setTranslation(0, 0, 3 * Z_FIGHTER);
-                icon.render(tes, -size, -size, size, size);
-            }
+            icon.render(tes, -size, -size, size, size, 3 * Z_FIGHTER);
 
-            tes.draw();
             GL11.glEnable(GL11.GL_CULL_FACE);
         }
     };

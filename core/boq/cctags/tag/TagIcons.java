@@ -8,6 +8,10 @@ import java.util.concurrent.ExecutionException;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
+
+import org.lwjgl.opengl.GL11;
+
+import boq.cctags.CCTags;
 import boq.cctags.client.RenderUtils;
 import boq.utils.log.Log;
 
@@ -32,8 +36,26 @@ public class TagIcons {
     public Icon iconBackgroundPaper;
     public Icon iconBackgroundGlass;
 
+    private static boolean isSquare(int value, int max) {
+        int square = 4;
+
+        for (int i = 2; i <= max; i++) {
+            if (square == value)
+                return true;
+
+            square += 2 * i + 1;
+        }
+
+        return false;
+    }
+
     public enum IconType {
         NULL {
+            @Override
+            public boolean canBeCrafted(String argument) {
+                return false;
+            }
+
             @Override
             public boolean validate(String argument) {
                 return false;
@@ -41,7 +63,7 @@ public class TagIcons {
 
             @Override
             @SideOnly(Side.CLIENT)
-            public void render(Tessellator tes, double xm, double ym, double xp, double yp, String argument) {}
+            public void render(Tessellator tes, double xm, double ym, double xp, double yp, double z, String argument) {}
         },
         PREDEFINED {
 
@@ -52,18 +74,81 @@ public class TagIcons {
 
             @SideOnly(Side.CLIENT)
             @Override
-            public void render(Tessellator tes, double xm, double ym, double xp, double yp, String argument) {
+            public void render(Tessellator tes, double xm, double ym, double xp, double yp, double z, String argument) {
+                tes.startDrawingQuads();
+                tes.setNormal(0.0F, 0.0F, -1.0F);
+                tes.setTranslation(0, 0, z);
+
                 Icon icon = instance.predefinedIcons.get(argument);
                 RenderUtils.drawRectangle(tes, xm, ym, xp, yp, icon);
+
+                tes.draw();
+            }
+
+        },
+        BITMAP {
+            @Override
+            public boolean canBeCrafted(String argument) {
+                final int limit = CCTags.config.MAX_CRAFTABLE_BITMAP_TAG_SIZE;
+                return argument.length() < limit * limit;
+            }
+
+            @Override
+            public boolean validate(String argument) {
+                if (!isSquare(argument.length(), CCTags.config.MAX_BITMAP_TAG_SIZE))
+                    return false;
+
+                for (char c : argument.toCharArray())
+                    if (c != '1' && c != '0')
+                        return false;
+
+                return true;
+            }
+
+            @Override
+            @SideOnly(Side.CLIENT)
+            public void render(Tessellator tes, double xm, double ym, double xp, double yp, double z, String argument) {
+                int len = argument.length();
+                double sq = Math.sqrt(len);
+
+                double dx = (xp - xm) / sq;
+                double dy = (yp - ym) / sq;
+
+                double x = xm;
+                double y = ym;
+
+                tes.startDrawingQuads();
+                tes.setNormal(0.0F, 0.0F, -1.0F);
+                tes.setTranslation(0, 0, z);
+                tes.setColorOpaque(0, 0, 0);
+
+                for (char c : argument.toCharArray()) {
+                    if (c == '1')
+                        RenderUtils.drawRectangle(tes, x, y, x + dx, y + dy);
+
+                    x += dx;
+                    if (x >= xp) {
+                        y += dy;
+                        x = xm;
+                    }
+                }
+
+                GL11.glDisable(GL11.GL_TEXTURE_2D);
+                tes.draw();
+                GL11.glEnable(GL11.GL_TEXTURE_2D);
             }
 
         };
-        // TODO: Text, bitmap
+        // TODO: Text
+
+        public boolean canBeCrafted(String argument) {
+            return true;
+        }
 
         public abstract boolean validate(String argument);
 
         @SideOnly(Side.CLIENT)
-        public abstract void render(Tessellator tes, double xm, double ym, double xp, double yp, String argument);
+        public abstract void render(Tessellator tes, double xm, double ym, double xp, double yp, double z, String argument);
     }
 
     public final static IconData NULL_ICON = new IconData(IconType.NULL, "");
@@ -77,8 +162,8 @@ public class TagIcons {
             this.argument = argument;
         }
 
-        public void render(Tessellator tes, double xm, double ym, double xp, double yp) {
-            type.render(tes, xm, ym, xp, yp, argument);
+        public void render(Tessellator tes, double xm, double ym, double xp, double yp, double z) {
+            type.render(tes, xm, ym, xp, yp, z, argument);
         }
 
         @Override
@@ -103,6 +188,10 @@ public class TagIcons {
             }
 
             return false;
+        }
+
+        public boolean canBeCrafted() {
+            return type.canBeCrafted(argument);
         }
     }
 
@@ -176,7 +265,7 @@ public class TagIcons {
                 return NULL_ICON;
 
             IconType type;
-            int separatorIndex = icon.indexOf(':');
+            int separatorIndex = icon.indexOf('!');
             if (separatorIndex == -1)
                 type = IconType.PREDEFINED;
             else {
@@ -207,8 +296,8 @@ public class TagIcons {
         }
     }
 
-    public boolean isValidIconString(String icon) {
-        return parseIconString(icon) != null;
+    public boolean canIconBeCrafted(String icon) {
+        return parseIconString(icon).canBeCrafted();
     }
 
     public List<String> listIcons(String iconType) {

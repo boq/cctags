@@ -58,8 +58,8 @@ public class PrinterHelper {
     }
 
     public Object[] printTag(TagData data, String icon, String label) {
-        if (!TagIcons.instance.isValidIconString(icon))
-            return wrap(false, "Unknown icon: " + icon);
+        if (!TagIcons.instance.canIconBeCrafted(icon))
+            return wrap(false, "Invalid icon name: " + icon);
 
         if (!tryPrint())
             return wrap(false, "No ink");

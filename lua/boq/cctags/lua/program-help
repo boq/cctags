@@ -1,7 +1,6 @@
 progtag can be used to write tag contents according to definitions from file. Every line in file should be in one of following forms:
-for default tags: quantity, [icon], [label] : contents
+for default tags: quantity [icon] [label] : contents
 for tags from library: quantity @ library_id
-Instead of comma, any other combination of non-alphanumeric characters can be used as separator. 
 Part before colon can be ommited. Lines starting with "--" are treated as comments.
 Example file:
 -- default program

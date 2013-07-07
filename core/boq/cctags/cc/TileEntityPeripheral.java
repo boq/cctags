@@ -143,7 +143,7 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
 
         if (ejected == null)
             return false;
-        
+
         player.setCurrentItemOrArmor(0, ejected);
         return true;
     }

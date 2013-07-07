@@ -21,7 +21,7 @@ local function parseLine(line)
         return "error"
     end
     
-    local it = params:gmatch("[%w_]+")
+    local it = params:gmatch("[%S]+")
     local quantity = it()
     local icon = it()
     local label = it()

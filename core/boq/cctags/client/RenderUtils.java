@@ -19,4 +19,11 @@ public class RenderUtils {
         tes.addVertexWithUV(xm, yp, 0, um, vm);
     }
 
+    public static void drawRectangle(Tessellator tes, double xm, double ym, double xp, double yp) {
+        tes.addVertex(xm, ym, 0);
+        tes.addVertex(xp, ym, 0);
+        tes.addVertex(xp, yp, 0);
+        tes.addVertex(xm, yp, 0);
+    }
+
 }

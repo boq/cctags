@@ -35,9 +35,9 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
         if (data.tagType == TagType.BIG)
             return new Bounds(-0.5 + AABB_MARGIN, -0.5 + AABB_MARGIN, 0.5 - AABB_THICKNESS,
                     0.5 - AABB_MARGIN, 0.5 - AABB_MARGIN, 0.5 + AABB_THICKNESS);
-        else
-            return new Bounds(-0.25 - AABB_MARGIN, -0.25 - AABB_MARGIN, 0.5 - AABB_THICKNESS,
-                    0.25 + AABB_MARGIN, 0.25 + AABB_MARGIN, 0.5 + AABB_THICKNESS);
+
+        return new Bounds(-0.25 - AABB_MARGIN, -0.25 - AABB_MARGIN, 0.5 - AABB_THICKNESS,
+                0.25 + AABB_MARGIN, 0.25 + AABB_MARGIN, 0.5 + AABB_THICKNESS);
 
     }
 
