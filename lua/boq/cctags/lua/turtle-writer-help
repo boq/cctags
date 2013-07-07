@@ -4,7 +4,7 @@ bool scanForTag([string direction = "front"]) - scan for tags on nearby blocks a
 bool selectFromSlot([int slot = current]) - select tag from inventory. Works only for single tags.
 bool isTagValid() - is currently selected tag valid?
 string,int contents() - read selected tag contents
-int write(str) - write new data to selected tag
+result,int write(str) - write new data to selected tag
 string,int size() - get selected tag size as (size_description, size_in_bytes) pair
 int serial() - get serial id of selected tag
 string,string,string library(string id) - get tag data from library (returns contents,icon,label)

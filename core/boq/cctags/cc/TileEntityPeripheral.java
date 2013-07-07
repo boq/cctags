@@ -138,13 +138,33 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
             Log.warning("Detached unknown computer %s from tag peripheral (%d,%d,%d)", computer, xCoord, yCoord, zCoord);
     }
 
+    public boolean giveTagToPlayer(EntityPlayer player, boolean update) {
+        ItemStack ejected = removeTag(update);
+
+        if (ejected == null)
+            return false;
+        
+        player.setCurrentItemOrArmor(0, ejected);
+        return true;
+    }
+
     public boolean ejectTag(boolean update) {
-        if (data.tag == null)
+        ItemStack ejected = removeTag(update);
+
+        if (ejected == null)
             return false;
 
         if (worldObj.getGameRules().getGameRuleBooleanValue("doTileDrops"))
-            Utils.dropItem(worldObj, xCoord, yCoord, zCoord, data.tag);
+            Utils.dropItem(worldObj, xCoord, yCoord, zCoord, ejected);
 
+        return true;
+    }
+
+    public ItemStack removeTag(boolean update) {
+        if (data.tag == null)
+            return null;
+
+        ItemStack tmp = data.tag;
         data.tag = null;
 
         if (update) {
@@ -152,7 +172,7 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
             worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, meta, 3);
             onInventoryChanged();
         }
-        return true;
+        return tmp;
     }
 
     protected void onTagInsert() {

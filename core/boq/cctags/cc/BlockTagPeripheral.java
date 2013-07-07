@@ -143,6 +143,8 @@ public class BlockTagPeripheral extends BlockContainer {
 
             if (isItemTag(equipped))
                 used = tep.insertTag(equipped);
+            else if (player.isSneaking() && equipped == null)
+                tep.giveTagToPlayer(player, true);
             else
                 return tep.ejectTag(true);
         }
