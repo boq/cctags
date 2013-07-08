@@ -1,3 +1,35 @@
+function split(arg)
+    return function ()
+        local start = arg:find("%S")
+        if not start then
+            return ""
+        end
+        
+        arg = arg:sub(start)
+        
+        local ch = arg:sub(1,1)
+        local endIndex
+        if ch == '"' or ch == "'" then
+            arg = arg:sub(2)
+            arg = "" .. arg -- don't ask, I don't know. Maybe bug, maybe I'm missing something. Remove when sanity is restored.
+            endIndex = arg:find(ch)
+            print(endIndex)
+            if not endIndex then
+                error("Quote not terminated")
+            end 
+        else
+            endIndex = arg:find("%s")
+            if not endIndex then
+                return arg
+            end
+        end
+        
+        local result = arg:sub(1, endIndex - 1)
+        arg = arg:sub(endIndex + 1)
+        return result
+    end
+end
+
 local function parseLine(line)
     if line:sub(1,2) == "--" then
         return "comment"
@@ -21,7 +53,7 @@ local function parseLine(line)
         return "error"
     end
     
-    local it = params:gmatch("[%S]+")
+    local it = split(params)
     local quantity = it()
     local icon = it()
     local label = it()
