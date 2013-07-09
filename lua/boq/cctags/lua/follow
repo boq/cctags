@@ -2,13 +2,13 @@ local args = { ... }
 
 local reader_side = args[1]
 if not reader_side then
-    print("Usage: reader <peripheral side>, [<move forward on start = true>], [<max security level = 2>]")
+    print("Usage: reader <peripheral side>, [<move forward on start = true>], [<max security level = 3>]")
     return
 end
 
 --TODO: Get better
 local forward_start = not ((args[2] == '0') or (args[2] == 'false'))
-local max_level = tonumber(args[3]) or 2
+local max_level = tonumber(args[3]) or 3
 local work_env = {}
 local full_env = tags.envs(work_env) -- declared functions may want to see inside work_env
 
@@ -59,6 +59,39 @@ end
 work_env.prev = function() end
 work_env.step = 0
 
+local function stack(initial)
+    local head = {
+        value = initial
+    }
+    
+    head.prev = head 
+    
+    local result = {}
+    
+    function result.push(v)
+        head = {
+            value = v,
+            prev = head
+        }
+    end
+    
+    function result.pop()
+        local c = head.value
+        head = head.prev
+        return c
+    end
+    
+    function result.top()
+        return head.value
+    end
+    
+    return result 
+end
+
+local postamble = stack(function() end)
+work_env.pushPostamble = postamble.push
+work_env.popPostamble = postamble.pop
+
 while not finished do
     local dir, contents, _, _, serial = tags.scanForTags(reader_side)
     
@@ -99,6 +132,8 @@ while not finished do
     if updatePrev then
         work_env.prev = operation
     end
+    
+    postamble.top()()
     
     if result then
         print(string.format("%Step d: result: '%s'", work_env.step, result))

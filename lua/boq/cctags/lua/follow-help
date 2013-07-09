@@ -12,6 +12,8 @@ tagDir - where is tag containing currently executed code
 serial - serial id of currently scanned tag
 prev() - call previous command
 holdPrev() - don't replace prev() with current instruction
+pushPreamble(function) - push new preamble (function called after tag is interpreted) to stack
+top pushPreamble() - pop preamble from stack
 
 Any variable or function defined by code will persist between commands until program ends.
 

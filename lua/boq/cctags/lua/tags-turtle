@@ -40,7 +40,8 @@ local safest = {
 local safe = {
     pullEvent = os.pullEvent,
     scan = scanForTags,
-    read = read
+    read = read,
+    sleep = os.sleep
 }
 
 function safe.writeTag(side, contents)
@@ -195,6 +196,10 @@ function envs(vars)
         colours = {colours, 0},
         vector = {vector, 0},
         keys = {keys, 0},
+        math = {math, 0},
+        bit = {bit, 0},
+        string = {string, 0},
+        table = {table, 0},
         
         -- may block/slow down execution (?)
         _dummy30 = {safe, 1, true},
@@ -209,6 +214,7 @@ function envs(vars)
         
         -- full world interaction
         _dummy60 = {unsafe, 3, true},
-        turtle = {turtle, 3}
+        turtle = {turtle, 3},
+        os = {os, 3}
     }
 end

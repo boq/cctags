@@ -10,7 +10,7 @@
          "label" : "Forward",
          "contents" : "forward()"
     },
-    "step" : {
+    "back" : {
         "icon" : "forward",
         "label" : "Back",
         "contents" : "back()"
@@ -34,18 +34,18 @@
     "refuel" : {
         "icon" : "energy",
         "label" : "Refuel",
-        "contents" : "suck(tagDir, true) refuel() restorePrev()",
+        "contents" : "suck(tagDir, true) refuel()",
         "color" : "FFFF00"
     },
     "suck" : {
-        "icon" : "in",
+        "icon" : "out",
         "label" : "Suck",
-        "contents" : "suck(tagDir, true) restorePrev()"
+        "contents" : "suck(tagDir, true)"
     },
     "drop" : {
         "icon" : "in",
         "label" : "Drop",
-        "contents" : "drop(tagDir, true) restorePrev()"
+        "contents" : "drop(tagDir, true)"
     },
     "go-right" : {
         "icon" : "right",
@@ -61,17 +61,113 @@
     "turn-right" : {
         "icon" : "right",
         "label" : "Turn right",
-        "contents" : "turnRight() restorePrev()"
+        "contents" : "turnRight()"
     },
     "turn-left" : {
         "icon" : "left",
         "label" : "Turn left",
-        "contents" : "turnLeft() restorePrev()"
+        "contents" : "turnLeft()"
     },
     
-    "step" : {
+    "step-forward" : {
         "icon" : "forward",
-        "label" : "Single step",
+        "label" : "Single step forward",
         "contents" : "t.forward()"
+    },
+    
+    "step-back" : {
+        "icon" : "forward",
+        "label" : "Single step back",
+        "contents" : "t.back()"
+    },
+    
+    "step-up" : {
+        "icon" : "forward",
+        "label" : "Single step up",
+        "contents" : "t.up()"
+    },
+    
+    "step-down" : {
+        "icon" : "forward",
+        "label" : "Single step down",
+        "contents" : "t.down()"
+    },
+    
+    "postamble-prev" : {
+        "icon" : "in",
+        "label" : "Push default: prev",
+        "contents" : "pushPostamble(prev)"
+    },
+    
+    "postamble-forward" : {
+        "icon" : "double-forward",
+        "label" : "Push default: forward",
+        "contents" : "pushPostamble(forward)"
+    },
+    
+    "postamble-back" : {
+        "icon" : "double-forward",
+        "label" : "Push default: back",
+        "contents" : "pushPostamble(back)"
+    },
+    
+    "postamble-up" : {
+        "icon" : "double-forward",
+        "label" : "Push default: up",
+        "contents" : "pushPostamble(up)"
+    },
+    
+    "postamble-down" : {
+        "icon" : "double-forward",
+        "label" : "Push default: down",
+        "contents" : "pushPostamble(down)"
+    },
+    
+    "postamble-pop-continue" : {
+        "icon" : "out",
+        "label" : "Pop and call default",
+        "contents" : "p = popPostamble() p()"
+    },
+    
+    "postamble-pop" : {
+        "icon" : "out",
+        "label" : "Pop default",
+        "contents" : "popPostamble()"
+    },
+    
+    "first-slot" : {
+        "icon" : "first",
+        "label" : "Select first slot",
+        "contents" : "_slot = 1 select(_slot)"
+    },
+    
+    "last-slot" : {
+        "icon" : "last",
+        "label" : "Select last slot",
+        "contents" : "_slot = 16 select(_slot)"
+    },
+    
+    "next-slot" : {
+        "icon" : "next",
+        "label" : "Select next slot",
+        "contents" : "_slot = math.min(_slot + 1, 16) select(_slot)"
+    },
+    
+    "prev-slot" : {
+        "icon" : "prev",
+        "label" : "Select previous slot",
+        "contents" : "_slot = math.max(_slot - 1, 1) select(_slot)"
+    },
+    
+    "sleep-1" : {
+        "icon" : "hourglass",
+        "label" : "Sleep one second",
+        "contents" : "sleep(1)"
+    },
+    
+    "sleep-0.5" : {
+        "icon" : "hourglass",
+        "label" : "Sleep half second",
+        "contents" : "sleep(0.5)"
     }
 }
