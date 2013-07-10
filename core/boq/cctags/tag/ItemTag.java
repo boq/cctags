@@ -25,6 +25,10 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemTag extends Item {
+
+    private final static String CATEGORY_TAG = "Category";
+    private final static String COMMENT_TAG = "Comment";
+
     public static NBTTagCompound getItemTag(ItemStack stack) {
         NBTTagCompound result = stack.getTagCompound();
 
@@ -147,6 +151,18 @@ public class ItemTag extends Item {
         final LanguageRegistry reg = LanguageRegistry.instance();
         String sizeTemplate = reg.getStringLocalization("cctag.size");
         description.add(String.format(sizeTemplate, size.name));
+
+        NBTTagCompound tag = getItemTag(stack);
+        if (tag.hasKey(CATEGORY_TAG)) {
+            String category = "cctag.category." + tag.getString(CATEGORY_TAG);
+            description.add(String.format(
+                    reg.getStringLocalization("cctag.category"),
+                    reg.getStringLocalization(category)
+                    ));
+        }
+
+        if (tag.hasKey(COMMENT_TAG))
+            description.add("\u00A7o" + tag.getString(COMMENT_TAG) + "\u00A7r");
     }
 
     @Override
@@ -188,6 +204,12 @@ public class ItemTag extends Item {
 
             NBTTagCompound tag = getItemTag(stack);
             data.writeToNBT(tag, nbtOnlySelector);
+
+            if (e.category != null)
+                tag.setString(CATEGORY_TAG, e.category);
+
+            if (e.comment != null)
+                tag.setString(COMMENT_TAG, e.comment);
 
             results.add(stack);
         }

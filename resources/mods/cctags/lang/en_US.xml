@@ -16,5 +16,15 @@
 	<entry key="cctag.size">Size: %s</entry>
 	<entry key="cctag.empty">&lt;empty&gt;</entry>
 	
+	<entry key="cctag.category">Category: %s</entry>
+	
+	<entry key="cctag.category.move">movement</entry>
+	<entry key="cctag.category.control">control</entry>
+	<entry key="cctag.category.inventory">inventory</entry>
+	<entry key="cctag.category.condition">condition</entry>
+	<entry key="cctag.category.branch">branch</entry>
+	<entry key="cctag.category.logic">logic</entry>
+	<entry key="cctag.category.arithmetic">arithmetic</entry>
+	
 	<entry key="itemGroup.cctags">CCTags</entry>
 </properties>

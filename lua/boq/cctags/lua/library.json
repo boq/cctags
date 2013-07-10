@@ -1,173 +1,324 @@
 {
-    "start"  : {
-         "icon" : "forward",
-         "label" : "Start",
-         "contents" : "forward()",
-         "color" : "00FF00"
-    },
-    "forward"  : {
-         "icon" : "forward",
-         "label" : "Forward",
-         "contents" : "forward()"
-    },
-    "back" : {
+    "move" : {
         "icon" : "forward",
-        "label" : "Back",
-        "contents" : "back()"
+        "tags" : {        
+            "start"  : {
+                "icon" : "gear",
+                 "label" : "Start",
+                 "contents" : "pushPostamble(forward)",
+                 "color" : "00FF00",
+                 "comment" : "Optional marker for start",
+            },
+            "forward"  : {
+                 "label" : "Forward",
+                 "contents" : "forward()",
+                 "comment" : "Stop on new tag"
+            },
+            "back" : {
+                "label" : "Back",
+                "contents" : "back()",
+                "comment" : "Stop on new tag"
+            },
+            "up" : {
+                "label" : "Up",
+                "contents" : "up()",
+                "comment" : "Stop on new tag"
+            },
+            "down" : {
+                "label" : "Down",
+                "contents" : "down()",
+                "comment" : "Stop on new tag"
+            },
+            
+            "go-right" : {
+                "icon" : "right",
+                "label" : "Go right",
+                "contents" : "turnRight() t.forward()",
+                "comment" : "Turn and make single step"
+            },
+            "go-left" : {
+                "icon" : "left",
+                "label" : "Go left",
+                "contents" : "turnLeft() t.forward()",
+                "comment" : "Turn and make single step"
+            },
+            
+            "turn-right" : {
+                "icon" : "right",
+                "label" : "Turn right",
+                "contents" : "turnRight()"
+            },
+            "turn-left" : {
+                "icon" : "left",
+                "label" : "Turn left",
+                "contents" : "turnLeft()"
+            },
+            
+            "step-forward" : {
+                "label" : "Single step forward",
+                "contents" : "t.forward()"
+            },
+            "step-back" : {
+                "label" : "Single step back",
+                "contents" : "t.back()"
+            },
+            "step-up" : {
+                "label" : "Single step up",
+                "contents" : "t.up()"
+            },
+            "step-down" : {
+                "label" : "Single step down",
+                "contents" : "t.down()"
+            },
+            
+            "postamble-forward" : {
+                "icon" : "double-forward",
+                "label" : "Default move: forward",
+                "contents" : "pushPostamble(forward)",
+                "comment" : "Move after all executed tags"
+            },
+            
+            "postamble-back" : {
+                "icon" : "double-forward",
+                "label" : "Default move: back",
+                "contents" : "pushPostamble(back)",
+                "comment" : "Move after all executed tags"
+            },
+            
+            "postamble-up" : {
+                "icon" : "double-forward",
+                "label" : "Default move: up",
+                "contents" : "pushPostamble(up)",
+                "comment" : "Move after all executed tags"
+            },
+            
+            "postamble-down" : {
+                "icon" : "double-forward",
+                "label" : "Default move: down",
+                "contents" : "pushPostamble(down)",
+                "comment" : "Move after all executed tags"
+            }
+        }
     },
-    "up" : {
-        "icon" : "forward",
-        "label" : "Up",
-        "contents" : "up()"
+    "inventory" : {
+        "color" : "FFFF00",
+        "tags" : {
+            "refuel" : {
+                "icon" : "energy",
+                "label" : "Refuel",
+                "contents" : "suck(tagDir, true) refuel()",
+                "comment" : "Will suck from inventory"
+            },
+            "suck" : {
+                "icon" : "out",
+                "label" : "Suck",
+                "contents" : "suck(tagDir, true)"
+            },
+            "drop" : {
+                "icon" : "in",
+                "label" : "Drop",
+                "contents" : "drop(tagDir, true)"
+            },
+            "first-slot" : {
+                "category" : "inventory",
+                "icon" : "first",
+                "label" : "Select first slot",
+                "contents" : "_slot = 1 select(_slot)"
+            },
+            "last-slot" : {
+                "category" : "inventory",
+                "icon" : "last",
+                "label" : "Select last slot",
+                "contents" : "_slot = 16 select(_slot)"
+            },
+            "next-slot" : {
+                "category" : "inventory",
+                "icon" : "next",
+                "label" : "Select next slot",
+                "contents" : "_slot = math.min(_slot + 1, 16) select(_slot)"
+            },
+            "prev-slot" : {
+                "category" : "inventory",
+                "icon" : "prev",
+                "label" : "Select previous slot",
+                "contents" : "_slot = math.max(_slot - 1, 1) select(_slot)"
+            }
+        }
     },
-    "down" : {
-        "icon" : "forward",
-        "label" : "Down",
-        "contents" : "down()"
+    "condition" : {
+        "color" : "0000FF",
+        "icon" : "question",
+        "tags" : {
+            "compare" : {
+                "label" : "Compare",
+                "contents" : "push(compare(tagDir, true))",
+                "comment" : "Result on stack"
+            },
+            
+            "detect" : {
+                "category" : "condition",
+                "label" : "Detect",
+                "contents" : "push(detect(tagDir, true))",
+                "comment" : "Result on stack"
+            }
+        }
     },
-    "stop" : {
-        "icon" : "no",
-        "label" : "Stop",
-        "contents" : "stop()",
-        "color" : "FF0000"
+    "branch" : {
+        "color" : "FF0000",
+        "icon" : "branch",
+        "tags" : {
+            "branch-left" : {
+                "label" : "Conditional left",
+                "contents" : "cond(turnLeft)",
+                "comment" : "Condition on stack"
+            },
+            "branch-right" : {
+                "label" : "Conditional right",
+                "contents" : "cond(turnRight)",
+                "comment" : "Condition on stack"
+            },
+            "branch-stop" : {
+                "label" : "Conditional right",
+                "contents" : "cond(stop)",
+                "comment" : "Condition on stack"
+            }
+        }
     },
-    "refuel" : {
-        "icon" : "energy",
-        "label" : "Refuel",
-        "contents" : "suck(tagDir, true) refuel()",
-        "color" : "FFFF00"
+    "logic" : {
+        "color" : "ABABAB",
+        "tags" : {
+            "and" : {
+                "label" : "Logical and",
+                "icon" : "text!and",
+                "contents" : "and_()",
+                "comment" : "Arguments on stack"
+            },
+            "or" : {
+                "label" : "Logical or",
+                "icon" : "text!or",
+                "contents" : "or_()",
+                "comment" : "Arguments on stack"
+            },
+            "not" : {
+                "label" : "Logical not",
+                "icon" : "text!not",
+                "contents" : "not_()",
+                "comment" : "Argument on stack"
+            }
+        }
     },
-    "suck" : {
-        "icon" : "out",
-        "label" : "Suck",
-        "contents" : "suck(tagDir, true)"
+    "arithmetic" : {
+        "color" : "ABABAB",
+        "tags" : {
+            "zero" : {
+                "label" : "Push zero",
+                "icon" : "dni-zero",
+                "contents" : "push(0)"
+            },
+            "one" : {
+                "label" : "Push one",
+                "icon" : "dni-one",
+                "contents" : "push(1)"
+            },
+            "add" : {
+                "label" : "Add",
+                "icon" : "text!add",
+                "contents" : "add()",
+                "comment" : "Arguments on stack"
+            },
+            "sub" : {
+                "label" : "Subtract",
+                "icon" : "text!sub",
+                "contents" : "sub()",
+                "comment" : "Arguments on stack"
+            },
+            
+            "mul" : {
+                "label" : "Muliply",
+                "icon" : "text!mul",
+                "contents" : "mul()",
+                "comment" : "Arguments on stack"
+            },
+            "div" : {
+                "label" : "Divide",
+                "icon" : "text!div",
+                "contents" : "div()",
+                "comment" : "Arguments on stack"
+            },
+            "inc" : {
+                "label" : "Increment",
+                "icon" : "text!++",
+                "contents" : "inc()",
+                "comment" : "Argument on stack"
+            },
+            "dec" : {
+                "label" : "Decrement",
+                "icon" : "text!--",
+                "contents" : "dec()",
+                "comment" : "Argument on stack"
+            },
+            "neg" : {
+                "label" : "Negate",
+                "icon" : "text!neg",
+                "contents" : "neg()",
+                "comment" : "Argument on stack"
+            }
+        }
     },
-    "drop" : {
-        "icon" : "in",
-        "label" : "Drop",
-        "contents" : "drop(tagDir, true)"
-    },
-    "go-right" : {
-        "icon" : "right",
-        "label" : "Go right",
-        "contents" : "turnRight() t.forward()"
-    },
-    "go-left" : {
-        "icon" : "left",
-        "label" : "Go left",
-        "contents" : "turnLeft() t.forward()"
-    },
-    
-    "turn-right" : {
-        "icon" : "right",
-        "label" : "Turn right",
-        "contents" : "turnRight()"
-    },
-    "turn-left" : {
-        "icon" : "left",
-        "label" : "Turn left",
-        "contents" : "turnLeft()"
-    },
-    
-    "step-forward" : {
-        "icon" : "forward",
-        "label" : "Single step forward",
-        "contents" : "t.forward()"
-    },
-    
-    "step-back" : {
-        "icon" : "forward",
-        "label" : "Single step back",
-        "contents" : "t.back()"
-    },
-    
-    "step-up" : {
-        "icon" : "forward",
-        "label" : "Single step up",
-        "contents" : "t.up()"
-    },
-    
-    "step-down" : {
-        "icon" : "forward",
-        "label" : "Single step down",
-        "contents" : "t.down()"
-    },
-    
-    "postamble-prev" : {
-        "icon" : "in",
-        "label" : "Push default: prev",
-        "contents" : "pushPostamble(prev)"
-    },
-    
-    "postamble-forward" : {
-        "icon" : "double-forward",
-        "label" : "Push default: forward",
-        "contents" : "pushPostamble(forward)"
-    },
-    
-    "postamble-back" : {
-        "icon" : "double-forward",
-        "label" : "Push default: back",
-        "contents" : "pushPostamble(back)"
-    },
-    
-    "postamble-up" : {
-        "icon" : "double-forward",
-        "label" : "Push default: up",
-        "contents" : "pushPostamble(up)"
-    },
-    
-    "postamble-down" : {
-        "icon" : "double-forward",
-        "label" : "Push default: down",
-        "contents" : "pushPostamble(down)"
-    },
-    
-    "postamble-pop-continue" : {
-        "icon" : "out",
-        "label" : "Pop and call default",
-        "contents" : "p = popPostamble() p()"
-    },
-    
-    "postamble-pop" : {
-        "icon" : "out",
-        "label" : "Pop default",
-        "contents" : "popPostamble()"
-    },
-    
-    "first-slot" : {
-        "icon" : "first",
-        "label" : "Select first slot",
-        "contents" : "_slot = 1 select(_slot)"
-    },
-    
-    "last-slot" : {
-        "icon" : "last",
-        "label" : "Select last slot",
-        "contents" : "_slot = 16 select(_slot)"
-    },
-    
-    "next-slot" : {
-        "icon" : "next",
-        "label" : "Select next slot",
-        "contents" : "_slot = math.min(_slot + 1, 16) select(_slot)"
-    },
-    
-    "prev-slot" : {
-        "icon" : "prev",
-        "label" : "Select previous slot",
-        "contents" : "_slot = math.max(_slot - 1, 1) select(_slot)"
-    },
-    
-    "sleep-1" : {
-        "icon" : "hourglass",
-        "label" : "Sleep one second",
-        "contents" : "sleep(1)"
-    },
-    
-    "sleep-0.5" : {
-        "icon" : "hourglass",
-        "label" : "Sleep half second",
-        "contents" : "sleep(0.5)"
+    "control" : {
+        "color" : "FFFFFF",
+        "tags" : {
+            "print" : {
+                "icon" : "question",
+                "label" : "Print",
+                "contents" : "print(top())",
+                "comment" : "Print top of stack"
+            },
+            "pop" : {
+                "icon" : "pop",
+                "label" : "Pop",
+                "contents" : "pop()",
+                "comment" : "Pop top of stack"
+            },
+            "repeat" : {
+                "icon" : "prev",
+                "label" : "Repeat",
+                "contents" : "prev()",
+                "comment" : "Repeat last command"
+            },
+            "postamble-prev" : {
+                "icon" : "push",
+                "label" : "Push default: prev",
+                "contents" : "pushPostamble(prev)",
+                "comment" : "Execute previous command after all tags"
+            },
+            "postamble-pop-continue" : {
+                "icon" : "pop",
+                "label" : "Pop and call default",
+                "contents" : "p = popPostamble() p()"
+            },
+            "postamble-pop" : {
+                "icon" : "pop",
+                "label" : "Pop default",
+                "contents" : "popPostamble()",
+            },
+            "sleep-1" : {
+                "icon" : "hourglass",
+                "label" : "Sleep one second",
+                "contents" : "sleep(1)"
+            },
+            "sleep-0.5" : {
+                "icon" : "hourglass",
+                "label" : "Sleep half second",
+                "contents" : "sleep(0.5)"
+            },
+            "stop" : {
+                "comment" : "Stop program execution",
+                "icon" : "no",
+                "label" : "Stop",
+                "contents" : "stop()",
+                "color" : "FF0000"
+            }
+        }
     }
 }

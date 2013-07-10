@@ -30,15 +30,19 @@ public class LuaInit {
     public static class LibEntry {
         public final String icon;
         public final String label;
+        public final String category;
+        public final String comment;
         public final String contents;
         public final int color;
         public final TagSize size;
 
-        private LibEntry(String icon, String label, int color, String contents) {
+        private LibEntry(String icon, String label, int color, String category, String comment, String contents) {
             this.icon = icon;
             this.label = label;
             this.contents = contents;
             this.color = color & 0xFFFFFF;
+            this.category = category;
+            this.comment = comment;
             size = TagSize.fitSize(contents);
         }
     }
@@ -86,6 +90,15 @@ public class LuaInit {
         return luaFolder;
     }
 
+    private static int getColor(JsonNode node, int defaultValue) {
+        if (node.isNumberValue("color"))
+            return Integer.parseInt(node.getNumberValue("color"));
+        else if (node.isStringValue("color"))
+            return Integer.parseInt(node.getStringValue("color"), 16);
+
+        return defaultValue;
+    }
+
     private void readLibrary(File luaFolder) throws IOException, InvalidSyntaxException {
         Closer closer = Closer.create();
         try {
@@ -95,26 +108,28 @@ public class LuaInit {
             JsonRootNode root = parser.parse(reader);
 
             ImmutableMap.Builder<String, LibEntry> builder = ImmutableMap.builder();
-            for (Entry<JsonStringNode, JsonNode> entry : root.getFields().entrySet()) {
-                String name = entry.getKey().getText();
+            for (Entry<JsonStringNode, JsonNode> cat : root.getFields().entrySet()) {
+                String category = cat.getKey().getText();
+                JsonNode categoryData = cat.getValue();
 
-                JsonNode data = entry.getValue();
-                String icon = data.isNode("icon") ? data.getNullableStringValue("icon") : null;
-                String label = data.isNode("label") ? data.getNullableStringValue("label") : null;
-                String contents = data.getStringValue("contents");
+                int categoryColor = getColor(categoryData, CCTags.config.DEFAULT_LIB_TAG_COLOR);
+                String categoryIcon = categoryData.isNode("icon") ? categoryData.getNullableStringValue("icon") : null;
 
-                int color;
+                JsonNode tags = categoryData.getNode("tags");
+                for (Entry<JsonStringNode, JsonNode> entry : tags.getFields().entrySet()) {
+                    String name = entry.getKey().getText();
 
-                if (data.isNumberValue("color"))
-                    color = Integer.parseInt(data.getNumberValue("color"));
-                else if (data.isStringValue("color"))
-                    color = Integer.parseInt(data.getStringValue("color"), 16);
-                else
-                    color = CCTags.config.DEFAULT_LIB_TAG_COLOR;
+                    JsonNode data = entry.getValue();
+                    String icon = data.isNode("icon") ? data.getNullableStringValue("icon") : categoryIcon;
+                    String label = data.isNode("label") ? data.getNullableStringValue("label") : null;
+                    String comment = data.isNode("comment") ? data.getNullableStringValue("comment") : null;
+                    String contents = data.getStringValue("contents");
 
-                builder.put(name, new LibEntry(icon, label, color, contents));
+                    int color = getColor(data, categoryColor);
+
+                    builder.put(name, new LibEntry(icon, label, color, category, comment, contents));
+                }
             }
-
             library = builder.build();
         } finally {
             closer.close();

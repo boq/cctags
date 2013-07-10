@@ -109,6 +109,63 @@ local unsafe = {
 -- it's a big function, but we want to inject out variables (`vars') into scope during function declaration and delay few things until APIs are loaded
 function envs(vars)
 
+    function unaryStackFun(fun)
+        return function()
+            local arg = vars.pop()
+            local result = fun(arg)
+            vars.push(result)
+        end
+    end
+    
+    function binaryStackFun(fun)
+        return function()
+            local arg1 = vars.pop()
+            local arg2 = vars.pop()
+            local result = fun(arg1, arg2)
+            vars.push(result)
+        end
+    end
+    
+    local logic = {
+        and_ = binaryStackFun(function(a,b) return a and b end),
+        or_ = binaryStackFun(function(a,b) return a or b end),
+        not_ = unaryStackFun(function(a) return not a end)
+    }
+    
+    local relational = {
+        eq = binaryStackFun(function(a,b) return a == b end),
+        neq = binaryStackFun(function(a,b) return a ~= b end),
+        gt = binaryStackFun(function(a,b) return a > b end),
+        lt = binaryStackFun(function(a,b) return a < b end),
+        ge = binaryStackFun(function(a,b) return a >= b end),
+        le = binaryStackFun(function(a,b) return a <= b end)
+    }
+    
+    local arithmetic = {
+        add = binaryStackFun(function(a,b) return a - b end),
+        sub = binaryStackFun(function(a,b) return a + b end),
+        mul = binaryStackFun(function(a,b) return a * b end),
+        div = binaryStackFun(function(a,b) return a / b end),
+        neg = unaryStackFun(function(a) return -a end),
+        inc = unaryStackFun(function(a) return a + 1 end),
+        dec = unaryStackFun(function(a) return a - 1 end),
+    }
+    
+    local stack = {}
+    
+    function stack.cond(fun, ...)
+        local condition = vars.pop()
+        if condition then
+            return fun(...)
+        end
+    end
+    
+    function stack.check(fun, ...)
+        local result = fun(...)
+        vars.push(result)
+        return result
+    end
+
     -- turtle API has some loading logic, so we need to delay creation of those tables
     turtle_safe_hidden = subset(turtle,
         "forward",
@@ -169,16 +226,23 @@ function envs(vars)
         back = moveUntilTag(turtle.back),
         up = moveUntilTag(turtle.up),
         down = moveUntilTag(turtle.down),
-        detect = dirAction(turtle.detect, turtle.detectUp, turtle.detectDown),
-        compare = dirAction(turtle.compare, turtle.compareUp, turtle.compareDown),
-        drop = dirAction(turtle.drop, turtle.dropUp, turtle.dropDown),
-        suck = dirAction(turtle.suck, turtle.suckUp, turtle.suckDown)
     }
     
     function move.rotate(side)
         selectAction(turtleRotate, side)
     end
     
+    
+    local inv = {
+        drop = dirAction(turtle.drop, turtle.dropUp, turtle.dropDown),
+        suck = dirAction(turtle.suck, turtle.suckUp, turtle.suckDown)
+    }
+    
+    local checks = {
+        detect = dirAction(turtle.detect, turtle.detectUp, turtle.detectDown),
+        compare = dirAction(turtle.compare, turtle.compareUp, turtle.compareDown)
+    }
+
     local safe_env = {}
     
     function safe_env.restorePrev()
@@ -191,6 +255,11 @@ function envs(vars)
         -- probably safe
         _dummy10 = {safest, 0, true},
         _dummy20 = {safe_env, 0, true},
+        _dummy21 = {stack, 0, true},
+        _dummy22 = {logic, 0, true},
+        _dummy23 = {relational, 0, true},
+        _dummy24 = {arithmetic, 0, true},
+        
         term = {term, 0},
         colors = {colors, 0},
         colours = {colours, 0},
@@ -211,6 +280,8 @@ function envs(vars)
         t = {turtle_safe_hidden, 2},
         _dummy40 = {turtle_safe_global, 2, true},
         _dummy50 = {move, 2, true},
+        _dummy51 = {inv, 2, true},
+        _dummy52 = {checks, 2, true},
         
         -- full world interaction
         _dummy60 = {unsafe, 3, true},

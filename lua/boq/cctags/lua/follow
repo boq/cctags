@@ -48,23 +48,17 @@ if forward_start then
     end
 end
 
-local finished = false
-local lastSerial = 0
-
-function work_env.stop() 
-    finished = true
-    print("stop(): finished")
-end
-
 work_env.prev = function() end
 work_env.step = 0
 
 local function stack(initial)
-    local head = {
+    local empty = {
         value = initial
     }
     
-    head.prev = head 
+    empty.prev = empty
+    
+    local head = empty
     
     local result = {}
     
@@ -85,12 +79,39 @@ local function stack(initial)
         return head.value
     end
     
-    return result 
+    function result.clear()
+        head = empty
+    end
+    
+    return result
 end
 
 local postamble = stack(function() end)
 work_env.pushPostamble = postamble.push
 work_env.popPostamble = postamble.pop
+
+local values = stack(nil)
+work_env._args = values
+function work_env.push(value) 
+    values.push(value)
+    print('Push: ' .. tostring(value))
+end
+
+function work_env.pop()
+    value = values.pop()
+    print('Pop: ' .. tostring(value))
+    return value 
+end
+work_env.top = values.top
+
+local finished = false
+local lastSerial = 0
+
+function work_env.stop() 
+    finished = true
+    postamble.clear()
+    print("stop(): finished")
+end
 
 while not finished do
     local dir, contents, _, _, serial = tags.scanForTags(reader_side)
