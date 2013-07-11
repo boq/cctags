@@ -7,6 +7,7 @@ import boq.cctags.client.RenderUtils;
 
 import com.google.common.base.Splitter;
 
+import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -25,6 +26,12 @@ public enum IconType {
         @Override
         @SideOnly(Side.CLIENT)
         public void render(Tessellator tes, double xm, double ym, double xp, double yp, double z, String argument) {}
+
+        @Override
+        public String getDescription(LanguageRegistry reg, String argument) {
+            return reg.getStringLocalization("cctag.icon.none");
+        }
+
     },
     PREDEFINED {
 
@@ -51,6 +58,12 @@ public enum IconType {
             tes.draw();
         }
 
+        @Override
+        public String getDescription(LanguageRegistry reg, String argument) {
+            final String format = reg.getStringLocalization("cctag.icon.predefined");
+            return String.format(format, argument);
+        }
+
     },
     BITMAP {
         @Override
@@ -69,6 +82,12 @@ public enum IconType {
             Iterable<String> lines = Splitter.on('_').split(argument);
             RenderUtils.renderBits(tes, lines, xm, ym, xp, yp, z);
         }
+
+        @Override
+        public String getDescription(LanguageRegistry reg, String argument) {
+            return reg.getStringLocalization("cctag.icon.bitmap");
+        }
+
     },
     TEXT {
         @Override
@@ -87,6 +106,13 @@ public enum IconType {
             Iterable<String> split = Splitter.on('_').split(argument);
             RenderUtils.renderScaledText(split, xm, ym, xp, yp, z);
         }
+
+        @Override
+        public String getDescription(LanguageRegistry reg, String argument) {
+            final String format = reg.getStringLocalization("cctag.icon.text");
+            return String.format(format, argument);
+        }
+
     };
 
     private static int calculateLength(String input) {
@@ -106,4 +132,6 @@ public enum IconType {
 
     @SideOnly(Side.CLIENT)
     public abstract void render(Tessellator tes, double xm, double ym, double xp, double yp, double z, String argument);
+
+    public abstract String getDescription(LanguageRegistry reg, String argument);
 }

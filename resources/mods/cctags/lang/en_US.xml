@@ -26,5 +26,10 @@
 	<entry key="cctag.category.logic">logic</entry>
 	<entry key="cctag.category.arithmetic">arithmetic</entry>
 	
+	<entry key="cctag.icon.none">No icon</entry>
+	<entry key="cctag.icon.predefined">Icon: %s</entry>
+	<entry key="cctag.icon.text">Text: %s</entry>
+	<entry key="cctag.icon.bitmap">Bitmap iconn</entry>
+	
 	<entry key="itemGroup.cctags">CCTags</entry>
 </properties>

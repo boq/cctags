@@ -16,6 +16,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.io.Closer;
 
+import cpw.mods.fml.common.registry.LanguageRegistry;
+
 public class TagIcons {
 
     private TagIcons() {}
@@ -70,6 +72,10 @@ public class TagIcons {
         public boolean canBeCrafted() {
             return type.canBeCrafted(argument);
         }
+
+        public String getDescription(LanguageRegistry reg) {
+            return type.getDescription(reg, argument);
+        }
     }
 
     public void loadPredefinedIcons() {
@@ -115,7 +121,7 @@ public class TagIcons {
             }
     }
 
-    public static IconType getIconType(String typeId) {
+    private static IconType getIconType(String typeId) {
         try {
             return IconType.valueOf(typeId.toUpperCase());
         } catch (IllegalArgumentException e) {
@@ -174,7 +180,7 @@ public class TagIcons {
     }
 
     public boolean canIconBeCrafted(String icon) {
-        return parseIconString(icon).canBeCrafted();
+        return getIconData(icon).canBeCrafted();
     }
 
     public List<String> listIcons(String iconType) {

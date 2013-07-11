@@ -11,8 +11,12 @@ import net.minecraft.nbt.*;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+
+import org.lwjgl.input.Keyboard;
+
 import boq.cctags.*;
 import boq.cctags.LuaInit.LibEntry;
+import boq.cctags.tag.TagIcons.IconData;
 import boq.utils.misc.PlayerOrientation;
 import boq.utils.misc.Rotation;
 import boq.utils.serializable.ISelectableSerializableData.IFieldSelector;
@@ -153,16 +157,25 @@ public class ItemTag extends Item {
         description.add(String.format(sizeTemplate, size.name));
 
         NBTTagCompound tag = getItemTag(stack);
-        if (tag.hasKey(CATEGORY_TAG)) {
-            String category = "cctag.category." + tag.getString(CATEGORY_TAG);
-            description.add(String.format(
-                    reg.getStringLocalization("cctag.category"),
-                    reg.getStringLocalization(category)
-                    ));
-        }
 
-        if (tag.hasKey(COMMENT_TAG))
-            description.add("\u00A7o" + tag.getString(COMMENT_TAG) + "\u00A7r");
+        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+            if (tag.hasKey(CATEGORY_TAG)) {
+                String category = "cctag.category." + tag.getString(CATEGORY_TAG);
+                description.add(String.format(
+                        reg.getStringLocalization("cctag.category"),
+                        reg.getStringLocalization(category)
+                        ));
+            }
+
+            if (tag.hasKey(TagData.TAG_ICON)) {
+                String icon = tag.getString(TagData.TAG_ICON);
+                IconData data = TagIcons.instance.getIconData(icon);
+                description.add(data.getDescription(reg));
+            }
+
+            if (tag.hasKey(COMMENT_TAG))
+                description.add("\u00A7o" + tag.getString(COMMENT_TAG) + "\u00A7r");
+        }
     }
 
     @Override
