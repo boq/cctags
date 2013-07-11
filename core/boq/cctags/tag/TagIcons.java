@@ -28,19 +28,6 @@ public class TagIcons {
     public Icon iconBackgroundPaper;
     public Icon iconBackgroundGlass;
 
-    static boolean isSquare(int value, int max) {
-        int square = 4;
-
-        for (int i = 2; i <= max; i++) {
-            if (square == value)
-                return true;
-
-            square += 2 * i + 1;
-        }
-
-        return false;
-    }
-
     public final static IconData NULL_ICON = new IconData(IconType.NULL, "");
 
     public static class IconData {

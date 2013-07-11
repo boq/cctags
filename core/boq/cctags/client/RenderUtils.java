@@ -1,7 +1,5 @@
 package boq.cctags.client;
 
-import java.util.List;
-
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Icon;
@@ -35,13 +33,17 @@ public class RenderUtils {
         tes.addVertex(xm, yp, 0);
     }
 
-    public static void renderScaledText(List<String> lines, double xm, double ym, double xp, double yp, double z) {
+    public static void renderScaledText(Iterable<String> lines, double xm, double ym, double xp, double yp, double z) {
         final FontRenderer fr = FMLClientHandler.instance().getClient().fontRenderer;
-        int height = fr.FONT_HEIGHT * lines.size();
 
+        int lineCount = 0;
         int width = 0;
-        for (String line : lines)
+        for (String line : lines) {
+            lineCount++;
             width = Math.max(width, fr.getStringWidth(line));
+        }
+
+        int height = fr.FONT_HEIGHT * lineCount;
 
         double dx = xp - xm;
         double dy = yp - ym;
@@ -68,6 +70,50 @@ public class RenderUtils {
             y += fr.FONT_HEIGHT;
         }
         GL11.glPopMatrix();
+    }
+
+    public static void renderBits(Tessellator tes, Iterable<String> lines, double xm, double ym, double xp, double yp, double z) {
+        int maxWidth = 0;
+        int height = 0;
+        for (String line : lines) {
+            maxWidth = Math.max(maxWidth, line.length());
+            height++;
+        }
+
+        int size = Math.max(maxWidth, height);
+
+        double sizeX = xp - xm;
+        double sizeY = yp - ym;
+
+        double dx = sizeX / size;
+        double dy = sizeY / size;
+
+        double offsetX = (sizeX - dx * maxWidth) / 2;
+        double offsetY = (sizeY - dy * height) / 2;
+
+        double x = xm + offsetX;
+        double y = ym + offsetY;
+
+        tes.startDrawingQuads();
+        tes.setNormal(0.0F, 0.0F, -1.0F);
+        tes.setTranslation(0, 0, z);
+        tes.setColorOpaque(0, 0, 0);
+
+        for (String line : lines) {
+            for (char c : line.toCharArray()) {
+                if (c != ' ')
+                    RenderUtils.drawRectangle(tes, x, y, x + dx, y + dy);
+
+                x += dx;
+            }
+
+            y += dy;
+            x = xm;
+        }
+
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        tes.draw();
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
     }
 
 }

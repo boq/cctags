@@ -20,8 +20,8 @@ public class Config {
         MAX_PRINTER_CAPACITY = config.get(category, "maxPrinterCapacity", 100).getInt();
         DEFAULT_LIB_TAG_COLOR = config.get(category, "defaultLibTagColor", Constants.COLOR_BLUE).getInt();
 
-        MAX_BITMAP_TAG_SIZE = config.get(category, "maxBitmapTagSize", 5, "Maximum size on custom bitmap tag side").getInt();
-        MAX_CRAFTABLE_BITMAP_TAG_SIZE = config.get(category, "maxCraftableBitmapTagSize", 3, "Maximum size on custom bitmap tag that can be used by player").getInt();
+        MAX_BITMAP_TAG_SIZE = config.get(category, "maxBitmapTagSize", 32, "Maximum number of pixels on custom bitmap tag").getInt();
+        MAX_CRAFTABLE_BITMAP_TAG_SIZE = config.get(category, "maxCraftableBitmapTagSize", 16, "Maximum number of pixels on custom bitmap tag that can be used by player").getInt();
 
         MAX_TEXT_TAG_SIZE = config.get(category, "maxTextTagSize", 32, "Maximum length of custom tag text").getInt();
         MAX_CRAFTABLE_TEXT_TAG_SIZE = config.get(category, "maxCraftableTextTagSize", 16, "Maximum length of custom tag text that can be used by player").getInt();
