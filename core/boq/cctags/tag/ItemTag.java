@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.*;
 import net.minecraft.nbt.*;
 import net.minecraft.util.Icon;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -24,7 +25,6 @@ import boq.utils.serializable.SerializableField;
 
 import com.google.common.base.Strings;
 
-import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -152,25 +152,21 @@ public class ItemTag extends Item {
     public void addInformation(ItemStack stack, EntityPlayer player, List description, boolean extended) {
         TagSize size = getSize(stack);
 
-        final LanguageRegistry reg = LanguageRegistry.instance();
-        String sizeTemplate = reg.getStringLocalization("cctag.size");
-        description.add(String.format(sizeTemplate, size.name));
+        description.add(StatCollector.translateToLocalFormatted("cctag.size", size.name));
 
         NBTTagCompound tag = getItemTag(stack);
 
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
             if (tag.hasKey(CATEGORY_TAG)) {
                 String category = "cctag.category." + tag.getString(CATEGORY_TAG);
-                description.add(String.format(
-                        reg.getStringLocalization("cctag.category"),
-                        reg.getStringLocalization(category)
-                        ));
+                description.add(StatCollector.translateToLocalFormatted("cctag.category",
+                        StatCollector.translateToLocal(category)));
             }
 
             if (tag.hasKey(TagData.TAG_ICON)) {
                 String icon = tag.getString(TagData.TAG_ICON);
                 IconData data = TagIcons.instance.getIconData(icon);
-                description.add(data.getDescription(reg));
+                description.add(data.getDescription());
             }
 
             if (tag.hasKey(COMMENT_TAG))

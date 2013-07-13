@@ -158,7 +158,5 @@ while not finished do
     
     if result then
         print(string.format("%Step d: result: '%s'", work_env.step, result))
-    else
-        print(string.format("Step %d: done", work_env.step))
     end
 end

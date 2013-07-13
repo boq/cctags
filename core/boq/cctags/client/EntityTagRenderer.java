@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Icon;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
@@ -91,13 +92,12 @@ public class EntityTagRenderer extends Render {
     };
 
     public void doRender(EntityTag entity, double x, double y, double z, float yaw, float partialTickTime) {
-        BoxHelper.bindItemsTexture();
         GL11.glPushMatrix();
         GL11.glTranslated(x, y, z);
+        GL11.glColor4f(1, 1, 1, 1);
 
-        if (RenderManager.field_85095_o) {
+        if (RenderManager.field_85095_o) { // bounding box
             GL11.glDisable(GL11.GL_TEXTURE_2D);
-            GL11.glColor4f(1, 1, 1, 1);
             renderOffsetAABB(entity.boundingBox, -entity.posX, -entity.posY, -entity.posZ);
             GL11.glEnable(GL11.GL_TEXTURE_2D);
         }
@@ -113,6 +113,7 @@ public class EntityTagRenderer extends Render {
 
         IconData render = TagIcons.instance.getIconData(Strings.nullToEmpty(data.icon));
         Key key = new Key(render, data.tagType);
+        func_110777_b(entity); // set texture
         iconModels.render(key);
         GL11.glPopMatrix();
     }
@@ -120,6 +121,11 @@ public class EntityTagRenderer extends Render {
     @Override
     public void doRender(Entity entity, double x, double y, double z, float yaw, float partialTickTime) {
         doRender((EntityTag)entity, x, y, z, yaw, partialTickTime);
+    }
+
+    @Override
+    protected ResourceLocation func_110775_a(Entity entity) {
+        return renderManager.renderEngine.func_130087_a(1); // item texture
     }
 
 }

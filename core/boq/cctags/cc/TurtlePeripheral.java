@@ -14,8 +14,7 @@ import boq.utils.coord.Bounds;
 
 import com.google.common.base.Preconditions;
 
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.IHostedPeripheral;
+import dan200.computer.api.*;
 import dan200.turtle.api.ITurtleAccess;
 
 public abstract class TurtlePeripheral implements IHostedPeripheral {
@@ -155,7 +154,7 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
     protected final static String[] commonMethods = { "isTagValid", "scanForTag", "selectFromSlot", "contents", "write", "size", "serial", "library" };
 
     @Override
-    public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception {
+    public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception {
         switch (method) {
             case 0: // isTagValid
                 return wrap(isSelectedTagValid());

@@ -4,13 +4,10 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.common.Configuration;
 import boq.cctags.cc.*;
 import boq.cctags.tag.*;
-import boq.utils.lang.LangList;
 import boq.utils.log.Log;
 import cpw.mods.fml.common.*;
-import cpw.mods.fml.common.Mod.Init;
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.Mod.PostInit;
-import cpw.mods.fml.common.Mod.PreInit;
 import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.EntityRegistry;
@@ -40,7 +37,7 @@ public class CCTags {
 
     public CreativeTabs tabTags;
 
-    @PreInit
+    @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         Log.logger = event.getModLog();
 
@@ -61,10 +58,8 @@ public class CCTags {
         }
     }
 
-    @Init
+    @EventHandler
     public void load(FMLInitializationEvent evt) {
-        LangList.loadAll("/mods/cctags/lang/");
-
         itemTag = new ItemTag(itemTagId);
         GameRegistry.registerItem(itemTag, "cctag");
 
@@ -84,7 +79,7 @@ public class CCTags {
         Recipes.registerRecipes();
     }
 
-    @PostInit
+    @EventHandler
     public void modsLoaded(FMLPostInitializationEvent evt) {
         LuaInit.instance.setup();
         for (PeripheralType type : PeripheralType.TYPES)

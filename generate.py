@@ -16,38 +16,9 @@ sys.path.append(mcp_dir)
 mod_name = sys.argv[3]
 print("Mod: " + mod_name) 
 
-lua_dir = path.abspath(sys.argv[4])
-print("Lua dir: " + lua_dir)
-
 import runtime.commands as commands 
 from runtime.commands import Commands
 
-def iterate_property_keys(filename):
-    r = re.compile("^([^#=][^=]*)")
-    with open(filename, "r") as f:
-        for line in f:
-            match = r.match(line)
-            if match:
-                yield match.group(1).strip()
-
-def iterate_lua_files(filename):
-    for key in iterate_property_keys(filename):
-        lua_file = path.join(lua_dir, key)
-        try:
-            stat = os.stat(lua_file)
-            yield (key, stat.st_mtime * 1000)
-        except os.error, desc:
-            print("Can't stat lua file %s: %s" % (lua_file, desc))
-
-def update_lua_list():
-    input_file = path.join(lua_dir, "files.properties")
-    output_file = path.join(tmp_dir, "files.properties")
-    print("Rewriting lua list %s to %s" % (input_file, output_file))
-    with open(output_file, "wb") as output:
-        timestamps = iterate_lua_files(input_file)
-        lines = map(lambda (name, timestamp) : "%s=%d" % (name, timestamp), timestamps)
-        output.write("\n".join(lines))
-        
 def get_mcp_versions():
     config = ConfigParser.SafeConfigParser()
     config_path = path.normpath(path.join(mcp_dir,Commands._version_config))
@@ -92,7 +63,6 @@ def create_version_properties():
       
 def main():
     create_version_properties()
-    update_lua_list();
     
 if __name__ == "__main__":
     main()

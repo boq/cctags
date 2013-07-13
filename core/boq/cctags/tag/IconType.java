@@ -2,12 +2,12 @@ package boq.cctags.tag;
 
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Icon;
+import net.minecraft.util.StatCollector;
 import boq.cctags.CCTags;
 import boq.cctags.client.RenderUtils;
 
 import com.google.common.base.Splitter;
 
-import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -28,8 +28,8 @@ public enum IconType {
         public void render(Tessellator tes, double xm, double ym, double xp, double yp, double z, String argument) {}
 
         @Override
-        public String getDescription(LanguageRegistry reg, String argument) {
-            return reg.getStringLocalization("cctag.icon.none");
+        public String getDescription(String argument) {
+            return StatCollector.translateToLocal("cctag.icon.none");
         }
 
     },
@@ -59,9 +59,8 @@ public enum IconType {
         }
 
         @Override
-        public String getDescription(LanguageRegistry reg, String argument) {
-            final String format = reg.getStringLocalization("cctag.icon.predefined");
-            return String.format(format, argument);
+        public String getDescription(String argument) {
+            return StatCollector.translateToLocalFormatted("cctag.icon.predefined", argument);
         }
 
     },
@@ -84,8 +83,8 @@ public enum IconType {
         }
 
         @Override
-        public String getDescription(LanguageRegistry reg, String argument) {
-            return reg.getStringLocalization("cctag.icon.bitmap");
+        public String getDescription(String argument) {
+            return StatCollector.translateToLocal("cctag.icon.bitmap");
         }
 
     },
@@ -108,9 +107,8 @@ public enum IconType {
         }
 
         @Override
-        public String getDescription(LanguageRegistry reg, String argument) {
-            final String format = reg.getStringLocalization("cctag.icon.text");
-            return String.format(format, argument);
+        public String getDescription(String argument) {
+            return StatCollector.translateToLocalFormatted("cctag.icon.text", argument);
         }
 
     };
@@ -133,5 +131,5 @@ public enum IconType {
     @SideOnly(Side.CLIENT)
     public abstract void render(Tessellator tes, double xm, double ym, double xp, double yp, double z, String argument);
 
-    public abstract String getDescription(LanguageRegistry reg, String argument);
+    public abstract String getDescription(String argument);
 }

@@ -17,7 +17,7 @@ EXCLUDE = { "icon-marker.png",
             "icon-background-paper.png" }
 
 def update_icon_list():
-    icon_file = path.join(icon_dir, "icons.properties")
+    icon_file = path.join(icon_dir, "icons.txt")
     help_file = path.join(lua_dir, "icons")
     icon_regex = re.compile("^icon-([-_a-zA-Z0-9]+)\.png$");
     icons = list()
@@ -37,7 +37,7 @@ def update_icon_list():
     with open(icon_file, 'wb') as output:
         output.write("\n".join(icons))
         
-    print("Rewriting 'help/icons' list %s " % icon_file)
+    print("Rewriting 'help/icons' list %s " % help_file)
     with open(help_file, 'wb') as output:
         output.write("Predefined tag icons:\n")
         output.write(",".join(icons))

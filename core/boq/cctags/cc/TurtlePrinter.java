@@ -9,6 +9,7 @@ import boq.cctags.tag.TagData;
 import com.google.common.collect.ObjectArrays;
 
 import dan200.computer.api.IComputerAccess;
+import dan200.computer.api.ILuaContext;
 import dan200.turtle.api.ITurtleAccess;
 
 public class TurtlePrinter extends TurtlePeripheral implements PrinterHelper.Printer {
@@ -49,9 +50,9 @@ public class TurtlePrinter extends TurtlePeripheral implements PrinterHelper.Pri
     }
 
     @Override
-    public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception {
+    public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception {
         if (method < ownMethodStart)
-            return super.callMethod(computer, method, arguments);
+            return super.callMethod(computer, context, method, arguments);
 
         if (method == ownMethodStart + 0) // inkLevel
             return wrap(inkLevel);

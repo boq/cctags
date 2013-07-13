@@ -1,7 +1,5 @@
 package boq.cctags;
 
-import java.io.File;
-
 import net.minecraft.world.World;
 
 public interface IProxy {
@@ -10,6 +8,4 @@ public interface IProxy {
     public World getClientWorld();
 
     public boolean isServer();
-
-    public File getMcFolder();
 }

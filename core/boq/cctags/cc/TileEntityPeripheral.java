@@ -18,8 +18,7 @@ import boq.utils.misc.Utils;
 
 import com.google.common.collect.Maps;
 
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.IPeripheral;
+import dan200.computer.api.*;
 
 public abstract class TileEntityPeripheral<T extends WriterData> extends TileEntity implements IPeripheral, IInventory {
 
@@ -64,7 +63,7 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
     protected final static String[] commonMethods = { "hasTag", "contents", "write", "size", "eject", "serial", "library" };
 
     @Override
-    public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception {
+    public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception {
         switch (method) {
             case 0: // hasTag
                 return wrap(data.tag != null);
@@ -271,10 +270,11 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
     public void closeChest() {}
 
     @Override
-    public boolean isStackValidForSlot(int i, ItemStack stack) {
+    public boolean isItemValidForSlot(int i, ItemStack stack) {
         return (i == 0) &&
                 (data.tag == null) && // only one item allowed
                 (stack != null) &&
                 (stack.getItem() instanceof ItemTag);
     }
+
 }

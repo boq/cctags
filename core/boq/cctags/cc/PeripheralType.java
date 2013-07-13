@@ -5,7 +5,7 @@ import java.lang.reflect.Constructor;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
-import cpw.mods.fml.common.registry.LanguageRegistry;
+import net.minecraft.util.StatCollector;
 import dan200.computer.api.IHostedPeripheral;
 import dan200.turtle.api.*;
 
@@ -75,7 +75,7 @@ public enum PeripheralType implements ITurtleUpgrade {
 
     @Override
     public String getAdjective() {
-        return LanguageRegistry.instance().getStringLocalization(unlocalizedName + ".name");
+        return StatCollector.translateToLocal(unlocalizedName + ".name");
     }
 
     @Override

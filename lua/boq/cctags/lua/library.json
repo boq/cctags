@@ -4,10 +4,10 @@
         "tags" : {        
             "start"  : {
                 "icon" : "gear",
-                 "label" : "Start",
-                 "contents" : "pushPostamble(forward)",
-                 "color" : "00FF00",
-                 "comment" : "Optional marker for start",
+                "label" : "Start",
+                "contents" : "pushPostamble(forward)",
+                "color" : "00FF00",
+                "comment" : "Optional marker for start"
             },
             "forward"  : {
                  "label" : "Forward",
@@ -300,7 +300,7 @@
             "postamble-pop" : {
                 "icon" : "pop",
                 "label" : "Pop default",
-                "contents" : "popPostamble()",
+                "contents" : "popPostamble()"
             },
             "sleep-1" : {
                 "icon" : "hourglass",

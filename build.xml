@@ -24,13 +24,11 @@
 		<property name="jar.dir" location="${basedir}/target" />
 		<property name="lua.dir" location="${basedir}/lua" />
 
-		<property name="icon.package" value="mods/cctags/textures/items" />
+		<property name="icon.package" value="assets/cctags/textures/items" />
 		<property name="icon.dir" value="${resource.dir}/${icon.package}" />
 
 		<property name="lua.package" value="boq/cctags/lua" />
 		<property name="lua.files.dir" value="${lua.dir}/${lua.package}" />
-		<property name="lua.filelist" value="files.properties" />
-		<property name="lua.filelist.full" value="${lua.package}/${lua.filelist}" />
 	</target>
 
 	<target name="copy-to-mcp" depends="buildenvsetup">
@@ -60,8 +58,6 @@
 			<arg value="${mcp.home}" />
 			<arg value="${jar.dir}" />
 			<arg value="${modname}" />
-			<arg value="${lua.files.dir}" />
-			<arg value="${icon.dir}" />
 		</exec>
 	</target>
 
@@ -84,18 +80,16 @@
 	    <property name="jarname" value="${modname}-${cctags.version.tag}" />
 		
 		<jar destfile="${basedir}/target/${jarname}.jar">
-			<fileset dir="${mcp.obfoutput.classes}" includes="**/*.class" excludes="net/**/*" />
+			<fileset dir="${mcp.obfoutput.classes}" includes="boq/**/*.class" excludes="net/**/*" />
 			<fileset dir="${basedir}/core" includes="mcmod.info" />
 			<fileset dir="${basedir}" includes="version.properties" />
 
-			<fileset dir="${lua.dir}" excludes="${lua.filelist.full}" />
-			<zipfileset file="${jar.dir}/${lua.filelist}" fullpath="${lua.filelist.full}" />
-
+			<fileset dir="${lua.dir}"  />
 			<fileset dir="${resource.dir}">
 				<include name="**/*.png" />
-				<include name="**/*.xml" />
+				<include name="**/*.lang" />
+				<include name="**/*.mcmeta" />
 				<include name="**/*.txt" />
-				<include name="**/*.properties" />
 			</fileset>
 		</jar>
 	</target>

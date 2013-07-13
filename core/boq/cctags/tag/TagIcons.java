@@ -2,12 +2,17 @@ package boq.cctags.tag;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
+
+import org.apache.commons.io.Charsets;
+import org.apache.commons.io.IOUtils;
+
 import boq.utils.log.Log;
 
 import com.google.common.base.Throwables;
@@ -15,8 +20,6 @@ import com.google.common.cache.*;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.io.Closer;
-
-import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public class TagIcons {
 
@@ -73,8 +76,8 @@ public class TagIcons {
             return type.canBeCrafted(argument);
         }
 
-        public String getDescription(LanguageRegistry reg) {
-            return type.getDescription(reg, argument);
+        public String getDescription() {
+            return type.getDescription(argument);
         }
     }
 
@@ -82,13 +85,10 @@ public class TagIcons {
         try {
             Closer closer = Closer.create();
             try {
-                InputStream is = closer.register(TagIcons.class.getResourceAsStream("/mods/cctags/textures/items/icons.properties"));
-                Properties p = new Properties();
-                p.load(is);
+                InputStream is = closer.register(TagIcons.class.getResourceAsStream("/assets/cctags/textures/items/icons.txt"));
 
-                for (String s : p.stringPropertyNames())
+                for (String s : IOUtils.readLines(is, Charsets.UTF_8))
                     addIconName(s);
-
             } finally {
                 closer.close();
             }
