@@ -6,7 +6,7 @@
 	<classpathentry kind="src" path="lua"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Minecraft-1.5.2-forge"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/cc-api"/>
 	<classpathentry kind="lib" path="/Minecraft-1.5.2-forge/lib/argo-3.2-src.jar" sourcepath="/Minecraft-1.5.2-forge/lib/argo-3.2-src.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/cc-api.1.54"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

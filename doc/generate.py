@@ -8,7 +8,7 @@ BORDER = 'border.png'
 BACKGROUND = 'icon-background-paper.png'
 MARKER = 'icon-marker-lime.png'
 
-INPUT_FOLDER = "../resources/mods/cctags/textures/items/"
+INPUT_FOLDER = "../resources/assets/cctags/textures/items/"
 OUTPUT_FOLDER = "../target/doc/"
 
 border_img = Image.open(BORDER)
@@ -60,7 +60,7 @@ def do_images(input_folder, output_folder):
         html_file.write(HTML_HEADER)
         html_file.write(ICON_TABLE_HEADER)
         
-        prop_file = path.join(input_folder, "icons.properties")
+        prop_file = path.join(input_folder, "icons.txt")
         for entry in iterate_property_keys(prop_file):
             file_name = "icon-" + entry + ".png"
             input_file = path.join(input_folder, file_name)

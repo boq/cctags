@@ -1,0 +1,32 @@
+item.cctag.normal.name=Tag
+item.cctag.big.name=Poster
+item.cctag.glass.name=Glass tag
+
+item.pcb-writer.name=Tag Writer Module
+item.pcb-printer.name=Tag Printer Module
+item.handheld.name=Tag Reader
+
+tile.tag_writer.name=Tag Writer
+tile.tag_printer.name=Tag Printer
+
+cctag.size=Size: %s
+cctag.empty=<empty>
+
+handheld.desc=%s (#%s, %s): %s
+
+cctag.category=Category: %s
+
+cctag.category.move=movement
+cctag.category.control=control
+cctag.category.inventory=inventory
+cctag.category.condition=condition
+cctag.category.branch=branch
+cctag.category.logic=logic
+cctag.category.arithmetic=arithmetic
+
+cctag.icon.none=No icon
+cctag.icon.predefined=Icon: %s
+cctag.icon.text=Text: %s
+cctag.icon.bitmap=Bitmap iconn
+
+itemGroup.cctags=CCTags

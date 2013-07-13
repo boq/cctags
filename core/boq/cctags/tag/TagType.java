@@ -1,5 +1,7 @@
 package boq.cctags.tag;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
 
@@ -19,6 +21,7 @@ public enum TagType {
         this.backgroundName = backgroundName;
     }
 
+    @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister registry) {
         backgroundIcon = registry.registerIcon(backgroundName);
     }
