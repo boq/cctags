@@ -21,6 +21,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.io.Closer;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 public class TagIcons {
 
     private TagIcons() {}
@@ -103,6 +106,7 @@ public class TagIcons {
         predefinedIcons.put(name, null);
     }
 
+    @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister registry) {
         if (iconMarker == null)
             iconMarker = registry.registerIcon("cctags:icon-marker");

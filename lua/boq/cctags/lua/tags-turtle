@@ -59,52 +59,12 @@ function twice(action)
         return function() action() action() end
     end
 
-local turtleRotate = {
-    left = turtle.turnLeft,
-    right = turtle.turnRight,
-    back = twice(turtle.turnRight)
-}
-
-local turtleReverse = {
-    left = turtle.turnRight,
-    right = turtle.turnLeft,
-    back = twice(turtle.turnLeft)
-}
-
 local function selectAction(list, arg)
     local action = list[arg]
     if action then
         action()
     end
 end
-
-local function dirAction(normal, up, down)
-    return function(side, reverse, ...)
-        local args = {...}
-        if side then
-            selectAction(turtleRotate, side)
-            
-            local result
-            if side == "up" then
-                result = up(unpack(args))
-            elseif side == "down" then
-                result = down(unpack(args))
-            else
-                result = normal(unpack(args))
-            end
-            
-            selectAction(turtleReverse, side)
-            return result
-        else
-            return normal(unpack(args))
-        end
-    end
-end
-
-local unsafe = {
-    attack = dirAction(turtle.attack, turtle.attackUp, turtle.attackDown),
-    dig = dirAction(turtle.dig, turtle.digUp, turtle.digDown),
-}
 
 -- it's a big function, but we want to inject out variables (`vars') into scope during function declaration and delay few things until APIs are loaded
 function envs(vars)
@@ -221,6 +181,46 @@ function envs(vars)
         end
     end    
 
+    local turtleRotate = {
+        left = turtle.turnLeft,
+        right = turtle.turnRight,
+        back = twice(turtle.turnRight)
+    }
+
+    local turtleReverse = {
+        left = turtle.turnRight,
+        right = turtle.turnLeft,
+        back = twice(turtle.turnLeft)
+    }
+    
+    local function dirAction(normal, up, down)
+        return function(side, reverse, ...)
+            local args = {...}
+            if side then
+                selectAction(turtleRotate, side)
+                
+                local result
+                if side == "up" then
+                    result = up(unpack(args))
+                elseif side == "down" then
+                    result = down(unpack(args))
+                else
+                    result = normal(unpack(args))
+                end
+                
+                selectAction(turtleReverse, side)
+                return result
+            else
+                return normal(unpack(args))
+            end
+        end
+    end
+    
+    local unsafe = {
+        attack = dirAction(turtle.attack, turtle.attackUp, turtle.attackDown),
+        dig = dirAction(turtle.dig, turtle.digUp, turtle.digDown),
+    }
+
     local move = {
         forward = moveUntilTag(turtle.forward),
         back = moveUntilTag(turtle.back),
@@ -232,6 +232,35 @@ function envs(vars)
         selectAction(turtleRotate, side)
     end
     
+    function move.orient(targetDir)
+        local orientToIndex = {
+            front = 0,
+            right = 1,
+            back = 2,
+            left = 3
+        }
+    
+        local indexToAction = {
+            function() end,
+            turtle.turnRight,
+            twice(turtle.turnLeft),
+            turtle.turnLeft
+        }
+    
+        local targetIndex = orientToIndex[targetDir]
+        if not targetIndex then
+            error("Invalid direction: " .. targetDir)
+        end
+        
+        local tagDir = vars.tagDir
+        print(tagDir)
+        local tagIndex = orientToIndex[tagDir]
+        if tagIndex then
+            local result = (tagIndex - targetIndex) % 4
+            print("Res: " .. result)
+            indexToAction[result + 1]()
+        end
+    end
     
     local inv = {
         drop = dirAction(turtle.drop, turtle.dropUp, turtle.dropDown),

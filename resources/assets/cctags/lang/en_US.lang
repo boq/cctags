@@ -12,7 +12,7 @@ tile.tag_printer.name=Tag Printer
 cctag.size=Size: %s
 cctag.empty=<empty>
 
-handheld.desc=%s (#%06X, %s): %s
+handheld.desc=%s (#%s, %s): %s
 
 cctag.category=Category: %s
 

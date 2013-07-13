@@ -35,6 +35,10 @@ left
 line
 next
 no
+orient-back
+orient-front
+orient-left
+orient-right
 out
 pause
 pause-unpause

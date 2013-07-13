@@ -256,7 +256,8 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
         else
             contents = data.contents;
 
-        return Utils.wrap(label, data.serial(worldObj), data.tagSize.name, Strings.nullToEmpty(contents));
+        String serial = String.format("%06X", data.serial(worldObj));
+        return Utils.wrap(label, serial, data.tagSize.name, Strings.nullToEmpty(contents));
     }
 
     @Override

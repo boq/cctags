@@ -3,7 +3,7 @@
         "icon" : "forward",
         "tags" : {        
             "start"  : {
-                "icon" : "gear",
+                "icon" : "double-forward",
                 "label" : "Start",
                 "contents" : "pushPostamble(forward)",
                 "color" : "00FF00",
@@ -97,6 +97,34 @@
                 "label" : "Default move: down",
                 "contents" : "pushPostamble(down)",
                 "comment" : "Move after all executed tags"
+            },
+            
+            "orient-front" : {
+                "icon" : "orient-front",
+                "label" : "Orient front",
+                "contents" : "orient('front')",
+                "comment" : "Rotate turtle until tag is in front"
+            },
+            
+            "orient-right" : {
+                "icon" : "orient-right",
+                "label" : "Orient right",
+                "contents" : "orient('right')",
+                "comment" : "Rotate turtle until tag is on the right side"
+            },
+            
+            "orient-left" : {
+                "icon" : "orient-left",
+                "label" : "Orient left",
+                "contents" : "orient('left')",
+                "comment" : "Rotate turtle until tag is on the left side"
+            },
+            
+            "orient-back" : {
+                "icon" : "orient-back",
+                "label" : "Orient back",
+                "contents" : "orient('back')",
+                "comment" : "Rotate turtle until tag is on back"
             }
         }
     },

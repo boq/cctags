@@ -2,6 +2,9 @@ package boq.cctags.cc;
 
 import java.lang.reflect.Constructor;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
@@ -62,6 +65,7 @@ public enum PeripheralType implements ITurtleUpgrade {
         }
     }
 
+    @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister registry) {
         inactiveBlockIcon = registry.registerIcon(inactiveIconName);
         activeBlockIcon = registry.registerIcon(activeIconName);
