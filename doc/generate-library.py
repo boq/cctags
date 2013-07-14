@@ -24,6 +24,7 @@ HTML_HEADER = """<!doctype html>
         }
         .name {
             font-weight:bold;
+            font-size: 20px;
         }
         .note {
             font-weight:bold;
@@ -50,10 +51,10 @@ ICON_TABLE_HEADER = """<table><thead>
 ICON_TABLE_ENTRY = """<tr><td class="name">{name}</td><td style="color: #{color};">{icon}</td><td>{label}</td><td class="desc">{comment}</td></tr>
 """
 
-ICON_TABLE_ENTRY_CONTENTS = """<tr><td colspan="4">{contents}</td></tr>
+ICON_TABLE_ENTRY_CONTENTS = """<tr><th>Contents:</th><td colspan="3">{contents}</td></tr>
 """
 
-ICON_TABLE_ENTRY_DESCRIPTION = """<tr><td colspan="4" class="desc">{description}</td></tr>
+ICON_TABLE_ENTRY_DESCRIPTION = """<tr><th>Description:</th><td colspan="3" class="desc">{description}</td></tr>
 """
 
 ICON_TABLE_FOOTER = "</tbody></table>\n"
@@ -62,30 +63,30 @@ def do_work(input_path, output_path):
     with open(input_path, "r") as input, open(output_path, "wb") as output:
         output.write(HTML_HEADER)
         data = json.load(input)
-        for category_name, category_data in data.iteritems():
-            output.write(CATEGORY_HEADER.format(category = category_name))
+        for category in data:
+            output.write(CATEGORY_HEADER.format(category = category['name']))
             
-            note = category_data.get("notes")
+            note = category.get("notes")
             if note:
                 output.write(CATEGORY_NOTE.format(note=note.replace('\n', '<br />\n')))
             
             
             output.write(ICON_TABLE_HEADER)
             
-            default_color = category_data.get('color', "000000")
-            default_icon = category_data.get('icon', '<whoops>')
-            for tag_name, tag_data in sorted(category_data['tags'].items(), key=lambda (k,v) : v):
+            default_color = category.get('color', "000000")
+            default_icon = category.get('icon', '<whoops>')
+            for tag in category['tags']:
                 tmp = dict()
-                tmp['name'] = tag_name
-                tmp['color'] = tag_data.get('color', default_color)
-                tmp['icon'] = tag_data.get('icon', default_icon)
-                tmp['label'] = tag_data['label']
-                tmp['comment'] = tag_data.get('comment', "")
+                tmp['name'] = tag['name']
+                tmp['color'] = tag.get('color', default_color)
+                tmp['icon'] = tag.get('icon', default_icon)
+                tmp['label'] = tag['label']
+                tmp['comment'] = tag.get('comment', "")
                 
                 output.write(ICON_TABLE_ENTRY.format(**tmp))
-                output.write(ICON_TABLE_ENTRY_CONTENTS.format(contents = tag_data['contents']))
+                output.write(ICON_TABLE_ENTRY_CONTENTS.format(contents = tag['contents']))
                 
-                description = tag_data.get('description')
+                description = tag.get('description')
                 if description:
                     output.write(ICON_TABLE_ENTRY_DESCRIPTION.format(description = description))
             
