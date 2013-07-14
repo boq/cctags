@@ -1,5 +1,4 @@
 import Image
-import re
 import sys
 import os
 import os.path as path
@@ -14,14 +13,6 @@ OUTPUT_FOLDER = "../target/doc/"
 border_img = Image.open(BORDER)
 background_img = Image.open(BACKGROUND).resize((32,32))
 marker_img = Image.open(MARKER).resize((32,32))
-
-def iterate_property_keys(filename):
-    r = re.compile("^([^#=][^=]*)")
-    with open(filename, "r") as f:
-        for line in f:
-            match = r.match(line)
-            if match:
-                yield match.group(1).strip()
 
 def merge_image(input_file, output_file):
     print("Image: input = '%s', output = '%s'" % (input_file, output_file))
@@ -56,13 +47,13 @@ ICON_TABLE_FOOTER = "</tbody></table>\n"
 
 def do_images(input_folder, output_folder):
     html_file_path = path.join(output_folder, "cctag-icons.html")
-    with open(html_file_path, "wb") as html_file:
+    prop_file_path = path.join(input_folder, "icons.txt")
+    with open(html_file_path, "wb") as html_file, open(prop_file_path, "r") as prop_file:
         html_file.write(HTML_HEADER)
         html_file.write(ICON_TABLE_HEADER)
         
-        prop_file = path.join(input_folder, "icons.txt")
-        for entry in iterate_property_keys(prop_file):
-            file_name = "icon-" + entry + ".png"
+        for entry in prop_file:
+            file_name = "icon-" + entry.strip() + ".png"
             input_file = path.join(input_folder, file_name)
             output_file = path.join(output_folder, file_name)
             merge_image(input_file, output_file)

@@ -1,33 +1,35 @@
 {
     "move" : {
         "icon" : "forward",
+        "notes" : " 'forward', 'back', 'down', 'up' will move turtle in one direction until new tag is found.\n'pushPostamble(function)' will make argument execute after any code from tag. Previous value is saved and can be restored with 'popPostamble'",
         "tags" : {        
             "start"  : {
                 "icon" : "double-forward",
                 "label" : "Start",
                 "contents" : "pushPostamble(forward)",
                 "color" : "00FF00",
-                "comment" : "Optional marker for start"
+                "comment" : "Optional marker for start",
+                "description" : "Functionally identical to 'postamble-forward', but with different color to mark start"
             },
             "forward"  : {
                  "label" : "Forward",
                  "contents" : "forward()",
-                 "comment" : "Stop on new tag"
+                 "comment" : "Stops on new tag"
             },
             "back" : {
                 "label" : "Back",
                 "contents" : "back()",
-                "comment" : "Stop on new tag"
+                "comment" : "Stops on new tag"
             },
             "up" : {
                 "label" : "Up",
                 "contents" : "up()",
-                "comment" : "Stop on new tag"
+                "comment" : "Stops on new tag"
             },
             "down" : {
                 "label" : "Down",
                 "contents" : "down()",
-                "comment" : "Stop on new tag"
+                "comment" : "Stops on new tag"
             },
             
             "go-right" : {
@@ -75,28 +77,28 @@
                 "icon" : "double-forward",
                 "label" : "Default move: forward",
                 "contents" : "pushPostamble(forward)",
-                "comment" : "Move after all executed tags"
+                "comment" : "Call 'forward' after command from tag is executed"
             },
             
             "postamble-back" : {
                 "icon" : "double-forward",
                 "label" : "Default move: back",
                 "contents" : "pushPostamble(back)",
-                "comment" : "Move after all executed tags"
+                "comment" : "Call 'back' after command from tag is executed"
             },
             
             "postamble-up" : {
                 "icon" : "double-forward",
                 "label" : "Default move: up",
                 "contents" : "pushPostamble(up)",
-                "comment" : "Move after all executed tags"
+                "comment" : "Call 'up' after command from tag is executed"
             },
             
             "postamble-down" : {
                 "icon" : "double-forward",
                 "label" : "Default move: down",
                 "contents" : "pushPostamble(down)",
-                "comment" : "Move after all executed tags"
+                "comment" : "Call 'down' after command from tag is executed"
             },
             
             "orient-front" : {
@@ -129,13 +131,14 @@
         }
     },
     "inventory" : {
+        "notes" : "Functions like 'suck' or  'drop' will automatically try to pick proper inventory - either rotate turtle, so he is facing tag or call ...Up/..Down versions of command.\n Second argument of those functions is boolean, describing if turtle should restore its initial orientation",
         "color" : "FFFF00",
         "tags" : {
             "refuel" : {
                 "icon" : "energy",
                 "label" : "Refuel",
                 "contents" : "suck(tagDir, true) refuel()",
-                "comment" : "Will suck from inventory"
+                "comment" : "Will suck from inventory in tagged block"
             },
             "suck" : {
                 "icon" : "out",
@@ -176,6 +179,7 @@
     "condition" : {
         "color" : "0000FF",
         "icon" : "question",
+        "notes" : "Commands in this category will push result onto argument stack. 'compare' and 'detect' operate on block with tag (see notes for 'inventory')",
         "tags" : {
             "compare" : {
                 "label" : "Compare",
@@ -192,6 +196,7 @@
         }
     },
     "branch" : {
+        "notes" : "Commands in this category use argument stack. Helper function 'cond(function, ...)' is equivalent to 'if pop() then function(...) end'",
         "color" : "FF0000",
         "icon" : "branch",
         "tags" : {
@@ -213,6 +218,7 @@
         }
     },
     "logic" : {
+        "notes" : "Functions in this category operate on argument stack (pop needed arguments and push result back). For example: 'and_()' == 'push(pop() and pop())'",
         "color" : "ABABAB",
         "tags" : {
             "and" : {
@@ -236,6 +242,7 @@
         }
     },
     "arithmetic" : {
+        "notes" : "Functions in this category operate on argument stack (pop needed arguments and push result back)",
         "color" : "ABABAB",
         "tags" : {
             "zero" : {
@@ -312,23 +319,26 @@
                 "icon" : "prev",
                 "label" : "Repeat",
                 "contents" : "prev()",
-                "comment" : "Repeat last command"
+                "comment" : "Repeat command from previously read tag"
             },
             "postamble-prev" : {
                 "icon" : "push",
                 "label" : "Push default: prev",
                 "contents" : "pushPostamble(prev)",
-                "comment" : "Execute previous command after all tags"
+                "comment" : "Execute previous command after all tags",
+                "description" : "Command from previously read tag will be executed after any new one (including this)"
             },
             "postamble-pop-continue" : {
                 "icon" : "pop",
                 "label" : "Pop and call default",
-                "contents" : "p = popPostamble() p()"
+                "contents" : "p = popPostamble() p()",
+                "description" : "Restore previous postamble (command executed after tag) and call current one"
             },
             "postamble-pop" : {
                 "icon" : "pop",
                 "label" : "Pop default",
-                "contents" : "popPostamble()"
+                "contents" : "popPostamble()",
+                "description" : "Restore previous postamble (command executed after tag)"
             },
             "sleep-1" : {
                 "icon" : "hourglass",
@@ -345,7 +355,8 @@
                 "icon" : "no",
                 "label" : "Stop",
                 "contents" : "stop()",
-                "color" : "FF0000"
+                "color" : "FF0000",
+                "description" : "Exit 'follow' program - no more tags will be read after that. All postambles are deactivated"
             }
         }
     }
