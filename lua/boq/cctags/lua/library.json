@@ -1,9 +1,12 @@
-{
-    "move" : {
+[
+    {
+        "name" : "move",
         "icon" : "forward",
         "notes" : " 'forward', 'back', 'down', 'up' will move turtle in one direction until new tag is found.\n'pushPostamble(function)' will make argument execute after any code from tag. Previous value is saved and can be restored with 'popPostamble'",
-        "tags" : {        
-            "start"  : {
+        "tags" :
+        [        
+            {
+                "name" : "start",
                 "icon" : "double-forward",
                 "label" : "Start",
                 "contents" : "pushPostamble(forward)",
@@ -11,346 +14,401 @@
                 "comment" : "Optional marker for start",
                 "description" : "Functionally identical to 'postamble-forward', but with different color to mark start"
             },
-            "forward"  : {
-                 "label" : "Forward",
-                 "contents" : "forward()",
-                 "comment" : "Stops on new tag"
+            {
+                "name" : "forward",
+                "label" : "Forward",
+                "contents" : "forward()",
+                "comment" : "Stops on new tag"
             },
-            "back" : {
+            {
+                "name" : "back",
                 "label" : "Back",
                 "contents" : "back()",
                 "comment" : "Stops on new tag"
             },
-            "up" : {
+            {
+                "name" : "up",
                 "label" : "Up",
                 "contents" : "up()",
                 "comment" : "Stops on new tag"
             },
-            "down" : {
+            {
+                "name" : "down",
                 "label" : "Down",
                 "contents" : "down()",
                 "comment" : "Stops on new tag"
             },
-            
-            "go-right" : {
+            {
+                "name" : "go-right",
                 "icon" : "right",
                 "label" : "Go right",
                 "contents" : "turnRight() t.forward()",
                 "comment" : "Turn and make single step"
             },
-            "go-left" : {
+            {
+                "name" : "go-left",
                 "icon" : "left",
                 "label" : "Go left",
                 "contents" : "turnLeft() t.forward()",
                 "comment" : "Turn and make single step"
             },
-            
-            "turn-right" : {
+            {
+                "name" : "turn-right",
                 "icon" : "right",
                 "label" : "Turn right",
                 "contents" : "turnRight()"
             },
-            "turn-left" : {
+            {
+                "name" : "turn-left",
                 "icon" : "left",
                 "label" : "Turn left",
                 "contents" : "turnLeft()"
             },
             
-            "step-forward" : {
+            {
+                "name" : "step-forward",
                 "label" : "Single step forward",
                 "contents" : "t.forward()"
             },
-            "step-back" : {
+            {
+                "name" : "step-back",
                 "label" : "Single step back",
                 "contents" : "t.back()"
             },
-            "step-up" : {
+            {
+                "name" : "step-up",
                 "label" : "Single step up",
                 "contents" : "t.up()"
             },
-            "step-down" : {
+            {
+                "name" : "step-down",
                 "label" : "Single step down",
                 "contents" : "t.down()"
             },
             
-            "postamble-forward" : {
+            {
+                "name" : "postamble-forward",
                 "icon" : "double-forward",
                 "label" : "Default move: forward",
                 "contents" : "pushPostamble(forward)",
                 "comment" : "Call 'forward' after command from tag is executed"
             },
-            
-            "postamble-back" : {
+            {
+                "name" : "postamble-back",
                 "icon" : "double-forward",
                 "label" : "Default move: back",
                 "contents" : "pushPostamble(back)",
                 "comment" : "Call 'back' after command from tag is executed"
             },
-            
-            "postamble-up" : {
+            {
+                "name" : "postamble-up",
                 "icon" : "double-forward",
                 "label" : "Default move: up",
                 "contents" : "pushPostamble(up)",
                 "comment" : "Call 'up' after command from tag is executed"
             },
-            
-            "postamble-down" : {
+            {
+                "name" : "postamble-down",
                 "icon" : "double-forward",
                 "label" : "Default move: down",
                 "contents" : "pushPostamble(down)",
                 "comment" : "Call 'down' after command from tag is executed"
             },
-            
-            "orient-front" : {
+            {
+                "name" : "orient-front",
                 "icon" : "orient-front",
                 "label" : "Orient front",
                 "contents" : "orient('front')",
                 "comment" : "Rotate turtle until tag is in front"
             },
-            
-            "orient-right" : {
+            {
+                "name" : "orient-right",
                 "icon" : "orient-right",
                 "label" : "Orient right",
                 "contents" : "orient('right')",
                 "comment" : "Rotate turtle until tag is on the right side"
             },
-            
-            "orient-left" : {
+            {
+                "name" : "orient-left",
                 "icon" : "orient-left",
                 "label" : "Orient left",
                 "contents" : "orient('left')",
                 "comment" : "Rotate turtle until tag is on the left side"
             },
-            
-            "orient-back" : {
+            {
+                "name" : "orient-back",
                 "icon" : "orient-back",
                 "label" : "Orient back",
                 "contents" : "orient('back')",
                 "comment" : "Rotate turtle until tag is on back"
             }
-        }
+        ]
     },
-    "inventory" : {
+    {
+        "name" : "inventory",
         "notes" : "Functions like 'suck' or  'drop' will automatically try to pick proper inventory - either rotate turtle, so he is facing tag or call ...Up/..Down versions of command.\n Second argument of those functions is boolean, describing if turtle should restore its initial orientation",
         "color" : "FFFF00",
-        "tags" : {
-            "refuel" : {
+        "tags" :
+        [
+            {
+                "name" : "refuel",
                 "icon" : "energy",
                 "label" : "Refuel",
                 "contents" : "suck(tagDir, true) refuel()",
                 "comment" : "Will suck from inventory in tagged block"
             },
-            "suck" : {
+            {
+                "name" : "suck",
                 "icon" : "out",
                 "label" : "Suck",
                 "contents" : "suck(tagDir, true)"
             },
-            "drop" : {
+            {
+                "name" : "drop",
                 "icon" : "in",
                 "label" : "Drop",
                 "contents" : "drop(tagDir, true)"
             },
-            "first-slot" : {
+            {
+                "name" : "first-slot",
                 "category" : "inventory",
                 "icon" : "first",
                 "label" : "Select first slot",
                 "contents" : "_slot = 1 select(_slot)"
             },
-            "last-slot" : {
+            {
+                "name" : "last-slot",
                 "category" : "inventory",
                 "icon" : "last",
                 "label" : "Select last slot",
                 "contents" : "_slot = 16 select(_slot)"
             },
-            "next-slot" : {
+            {
+                "name" : "next-slot",
                 "category" : "inventory",
                 "icon" : "next",
                 "label" : "Select next slot",
                 "contents" : "_slot = math.min(_slot + 1, 16) select(_slot)"
             },
-            "prev-slot" : {
+            {
+                "name" : "prev-slot",
                 "category" : "inventory",
                 "icon" : "prev",
                 "label" : "Select previous slot",
                 "contents" : "_slot = math.max(_slot - 1, 1) select(_slot)"
             }
-        }
+        ]
     },
-    "condition" : {
+    {
+        "name" : "condition",
         "color" : "0000FF",
         "icon" : "question",
         "notes" : "Commands in this category will push result onto argument stack. 'compare' and 'detect' operate on block with tag (see notes for 'inventory')",
-        "tags" : {
-            "compare" : {
+        "tags" :
+        [
+            {
+                "name" : "compare",
                 "label" : "Compare",
                 "contents" : "push(compare(tagDir, true))",
                 "comment" : "Result on stack"
             },
-            
-            "detect" : {
+            {
+                "name" : "detect",
                 "category" : "condition",
                 "label" : "Detect",
                 "contents" : "push(detect(tagDir, true))",
                 "comment" : "Result on stack"
             }
-        }
+        ]
     },
-    "branch" : {
+    {
+        "name" : "branch",
         "notes" : "Commands in this category use argument stack. Helper function 'cond(function, ...)' is equivalent to 'if pop() then function(...) end'",
         "color" : "FF0000",
         "icon" : "branch",
-        "tags" : {
-            "branch-left" : {
+        "tags" : 
+        [
+            {
+                "name" : "branch-left",
                 "label" : "Conditional left",
                 "contents" : "cond(turnLeft)",
                 "comment" : "Condition on stack"
             },
-            "branch-right" : {
+            {
+                "name" : "branch-right",
                 "label" : "Conditional right",
                 "contents" : "cond(turnRight)",
                 "comment" : "Condition on stack"
             },
-            "branch-stop" : {
+            {
+                "name" : "branch-stop",
                 "label" : "Conditional right",
                 "contents" : "cond(stop)",
                 "comment" : "Condition on stack"
             }
-        }
+        ]
     },
-    "logic" : {
+    {
+        "name" : "logic",
         "notes" : "Functions in this category operate on argument stack (pop needed arguments and push result back). For example: 'and_()' == 'push(pop() and pop())'",
         "color" : "ABABAB",
-        "tags" : {
-            "and" : {
+        "tags" :
+        [
+            {
+                "name" : "and",
                 "label" : "Logical and",
                 "icon" : "text!and",
                 "contents" : "and_()",
                 "comment" : "Arguments on stack"
             },
-            "or" : {
+            {
+                "name" : "or",
                 "label" : "Logical or",
                 "icon" : "text!or",
                 "contents" : "or_()",
                 "comment" : "Arguments on stack"
             },
-            "not" : {
+            {
+                "name" : "not",
                 "label" : "Logical not",
                 "icon" : "text!not",
                 "contents" : "not_()",
                 "comment" : "Argument on stack"
             }
-        }
+        ]
     },
-    "arithmetic" : {
+    {
+        "name" : "arithmetic",
         "notes" : "Functions in this category operate on argument stack (pop needed arguments and push result back)",
         "color" : "ABABAB",
-        "tags" : {
-            "zero" : {
+        "tags" :
+        [
+            {
+                "name" : "zero",
                 "label" : "Push zero",
                 "icon" : "dni-zero",
                 "contents" : "push(0)"
             },
-            "one" : {
+            {
+                "name" : "one",
                 "label" : "Push one",
                 "icon" : "dni-one",
                 "contents" : "push(1)"
             },
-            "add" : {
+            {
+                "name" : "add",
                 "label" : "Add",
                 "icon" : "text!add",
                 "contents" : "add()",
                 "comment" : "Arguments on stack"
             },
-            "sub" : {
+            {
+                "name" : "sub",
                 "label" : "Subtract",
                 "icon" : "text!sub",
                 "contents" : "sub()",
                 "comment" : "Arguments on stack"
             },
             
-            "mul" : {
+            {
+                "name" : "mul",
                 "label" : "Muliply",
                 "icon" : "text!mul",
                 "contents" : "mul()",
                 "comment" : "Arguments on stack"
             },
-            "div" : {
+            {
+                "name" : "div",
                 "label" : "Divide",
                 "icon" : "text!div",
                 "contents" : "div()",
                 "comment" : "Arguments on stack"
             },
-            "inc" : {
+            {
+                "name" : "inc",
                 "label" : "Increment",
                 "icon" : "text!++",
                 "contents" : "inc()",
                 "comment" : "Argument on stack"
             },
-            "dec" : {
+            {
+                "name" : "dec",
                 "label" : "Decrement",
                 "icon" : "text!--",
                 "contents" : "dec()",
                 "comment" : "Argument on stack"
             },
-            "neg" : {
+            {
+                "name" : "neg",
                 "label" : "Negate",
                 "icon" : "text!neg",
                 "contents" : "neg()",
                 "comment" : "Argument on stack"
             }
-        }
+        ]
     },
-    "control" : {
+    {
+        "name" : "control",
         "color" : "FFFFFF",
-        "tags" : {
-            "print" : {
+        "tags" :
+        [
+            {
+                "name" : "print",
                 "icon" : "question",
                 "label" : "Print",
                 "contents" : "print(top())",
                 "comment" : "Print top of stack"
             },
-            "pop" : {
+            {
+                "name" : "pop",
                 "icon" : "pop",
                 "label" : "Pop",
                 "contents" : "pop()",
                 "comment" : "Pop top of stack"
             },
-            "repeat" : {
+            {
+                "name" : "repeat",
                 "icon" : "prev",
                 "label" : "Repeat",
                 "contents" : "prev()",
                 "comment" : "Repeat command from previously read tag"
             },
-            "postamble-prev" : {
+            {
+                "name" : "postamble-prev",
                 "icon" : "push",
                 "label" : "Push default: prev",
                 "contents" : "pushPostamble(prev)",
                 "comment" : "Execute previous command after all tags",
                 "description" : "Command from previously read tag will be executed after any new one (including this)"
             },
-            "postamble-pop-continue" : {
+            {
+                "name" : "postamble-pop-continue",
                 "icon" : "pop",
                 "label" : "Pop and call default",
                 "contents" : "p = popPostamble() p()",
                 "description" : "Restore previous postamble (command executed after tag) and call current one"
             },
-            "postamble-pop" : {
+            {
+                "name" : "postamble-pop",
                 "icon" : "pop",
                 "label" : "Pop default",
                 "contents" : "popPostamble()",
                 "description" : "Restore previous postamble (command executed after tag)"
             },
-            "sleep-1" : {
+            {
+                "name" : "sleep-1",
                 "icon" : "hourglass",
                 "label" : "Sleep one second",
                 "contents" : "sleep(1)"
             },
-            "sleep-0.5" : {
+            {
+                "name" : "sleep-0.5",
                 "icon" : "hourglass",
                 "label" : "Sleep half second",
                 "contents" : "sleep(0.5)"
             },
-            "stop" : {
+            {
+                "name" : "stop",
                 "comment" : "Stop program execution",
                 "icon" : "no",
                 "label" : "Stop",
@@ -358,6 +416,6 @@
                 "color" : "FF0000",
                 "description" : "Exit 'follow' program - no more tags will be read after that. All postambles are deactivated"
             }
-        }
+        ]
     }
-}
+]

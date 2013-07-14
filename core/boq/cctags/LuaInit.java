@@ -4,8 +4,8 @@ import static boq.utils.misc.Utils.checkArg;
 import static boq.utils.misc.Utils.wrap;
 
 import java.io.*;
-import java.util.*;
-import java.util.Map.Entry;
+import java.util.List;
+import java.util.Map;
 
 import argo.jdom.*;
 import argo.saj.InvalidSyntaxException;
@@ -108,18 +108,14 @@ public class LuaInit {
             JsonRootNode root = parser.parse(reader);
 
             ImmutableMap.Builder<String, LibEntry> builder = ImmutableMap.builder();
-            for (Entry<JsonStringNode, JsonNode> cat : root.getFields().entrySet()) {
-                String category = cat.getKey().getText();
-                JsonNode categoryData = cat.getValue();
-
+            for (JsonNode categoryData : root.getElements()) {
+                String category = categoryData.getStringValue("name");
                 int categoryColor = getColor(categoryData, CCTags.config.DEFAULT_LIB_TAG_COLOR);
                 String categoryIcon = categoryData.isNode("icon") ? categoryData.getNullableStringValue("icon") : null;
 
                 JsonNode tags = categoryData.getNode("tags");
-                for (Entry<JsonStringNode, JsonNode> entry : tags.getFields().entrySet()) {
-                    String name = entry.getKey().getText();
-
-                    JsonNode data = entry.getValue();
+                for (JsonNode data : tags.getElements()) {
+                    String name = data.getStringValue("name");
                     String icon = data.isNode("icon") ? data.getNullableStringValue("icon") : categoryIcon;
                     String label = data.isNode("label") ? data.getNullableStringValue("label") : null;
                     String comment = data.isNode("comment") ? data.getNullableStringValue("comment") : null;

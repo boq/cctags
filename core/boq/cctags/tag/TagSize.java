@@ -1,9 +1,9 @@
 package boq.cctags.tag;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public enum TagSize {
     TAG_BROKEN("cctags:tag-broken", 0, "\u00A7kKAPUT\u00A7r") {
