@@ -89,6 +89,11 @@ end
 local postamble = stack(function() end)
 work_env.pushPostamble = postamble.push
 work_env.popPostamble = postamble.pop
+function work_env.pausePostamble() 
+    local p = postamble.pop()
+    postamble.push(function () end)
+    p()
+end
 
 local values = stack(nil)
 work_env._args = values
@@ -103,6 +108,8 @@ function work_env.pop()
     return value 
 end
 work_env.top = values.top
+
+work_env._counters = {}
 
 local finished = false
 local lastSerial = 0

@@ -214,10 +214,36 @@
             },
             {
                 "name" : "detect",
-                "category" : "condition",
                 "label" : "Detect",
                 "contents" : "push(detect(tagDir, true))",
                 "comment" : "Result on stack"
+            }
+        ]
+    },
+    {
+        "name" : "redstone",
+        "color" : "FF0000",
+        "icon" : "dust",
+        "notes" : "Commands in this category will push result onto argument stack",
+        "tags" :
+        [
+            {
+                "name" : "redstone-get",
+                "label" : "Read redstone",
+                "contents" : "push(redstone.getAnalogInput(tagDir))",
+                "comment" : "Result on stack"
+            },
+            {
+                "name" : "redstone-set-analog",
+                "label" : "Set redstone output (analog)",
+                "contents" : "redstone.setAnalogOutput(pop())",
+                "comment" : "Argument on stack"
+            },
+            {
+                "name" : "redstone-set-digital",
+                "label" : "Set redstone output (digital)",
+                "contents" : "redstone.setOutput(pop())",
+                "comment" : "Argument on stack"
             }
         ]
     },
@@ -251,7 +277,7 @@
     {
         "name" : "logic",
         "notes" : "Functions in this category operate on argument stack (pop needed arguments and push result back). For example: 'and_()' == 'push(pop() and pop())'",
-        "color" : "ABABAB",
+        "color" : "FF911C",
         "tags" :
         [
             {
@@ -280,7 +306,7 @@
     {
         "name" : "arithmetic",
         "notes" : "Functions in this category operate on argument stack (pop needed arguments and push result back)",
-        "color" : "ABABAB",
+        "color" : "FF911C",
         "tags" :
         [
             {
@@ -348,6 +374,104 @@
         ]
     },
     {
+        "name" : "relations",
+        "color" : "FF911C",
+        "tags" :
+        [
+            {
+                "name" : "gt",
+                "label" : "Greater than",
+                "icon" : "text!a>b",
+                "contents" : "gt()",
+                "comment" : "Arguments on stack"
+            },
+            {
+                "name" : "lt",
+                "label" : "Less than",
+                "icon" : "text!a<b",
+                "contents" : "lt()",
+                "comment" : "Arguments on stack"
+            },
+            {
+                "name" : "eq",
+                "label" : "Equal",
+                "icon" : "text!a==b",
+                "contents" : "eq()",
+                "comment" : "Arguments on stack"
+            },
+            {
+                "name" : "neq",
+                "label" : "Not equal",
+                "icon" : "text!a!=b",
+                "contents" : "neq()",
+                "comment" : "Arguments on stack"
+            },
+            {
+            "name" : "lt0",
+                "label" : "Less than zero",
+                "icon" : "text!a<0",
+                "contents" : "push(pop() < 0)",
+                "comment" : "Argument on stack"
+            },
+            {
+            "name" : "gt0",
+                "label" : "Greater than zero",
+                "icon" : "text!a>0",
+                "contents" : "push(pop() > 0)",
+                "comment" : "Argument on stack"
+            },
+            {
+                "name" : "eq0",
+                "label" : "Equal to zero",
+                "icon" : "text!a==0",
+                "contents" : "push(pop() == 0)",
+                "comment" : "Argument on stack"
+            },
+            {
+                "name" : "neq0",
+                "label" : "Not equal to zero",
+                "icon" : "text!a~=0",
+                "contents" : "push(pop() ~= 0)",
+                "comment" : "Argument on stack"
+            },
+            {
+                "name" : "nil",
+                "label" : "Is nil?",
+                "icon" : "text!a == nil",
+                "contents" : "push(pop() == nil)",
+                "comment" : "Argument on stack"
+            }
+        ]
+    },
+    {
+        "name" : "text",
+        "color" : "FF911C",
+        "tags" :
+        [
+            {
+                "name" : "tostring",
+                "label" : "Convert to string",
+                "icon" : "text!a->str",
+                "contents" : "push(tostring(pop()))",
+                "comment" : "Argument on stack"
+            },
+            {
+                "name" : "tonumber",
+                "label" : "Convert to number",
+                "icon" : "text!a->num",
+                "contents" : "push(tonumber(pop()))",
+                "comment" : "Argument on stack"
+            },
+            {
+                "name" : "concat",
+                "label" : "Concatenate",
+                "icon" : "text!a..b",
+                "contents" : "concat()",
+                "comment" : "Argument on stack"
+            }
+        ]
+    },
+    {
         "name" : "control",
         "color" : "FFFFFF",
         "tags" :
@@ -367,11 +491,25 @@
                 "comment" : "Pop top of stack"
             },
             {
+                "name" : "dup",
+                "icon" : "copy",
+                "label" : "Duplicate",
+                "contents" : "dup()",
+                "comment" : "Duplicate top of stack"
+            },
+            {
                 "name" : "repeat",
-                "icon" : "prev",
+                "icon" : "gear",
                 "label" : "Repeat",
                 "contents" : "prev()",
                 "comment" : "Repeat command from previously read tag"
+            },
+            {
+                "name" : "repeat-times",
+                "icon" : "gear",
+                "label" : "Repeat n",
+                "contents" : "for i=0,pop() do prev() end",
+                "comment" : "Repeat command from previously read tag n times (value on stack)"
             },
             {
                 "name" : "postamble-prev",
@@ -396,6 +534,14 @@
                 "description" : "Restore previous postamble (command executed after tag)"
             },
             {
+                "name" : "postamble-disable",
+                "icon" : "pause",
+                "label" : "Disable postamble",
+                "contents" : "pausePostamble()",
+                "comment" : "Restore with popPostamble()",
+                "description" : "Temporarily disable postamble. Will repeat current postamble, since otherwise turtle would stop."
+            },
+            {
                 "name" : "sleep-1",
                 "icon" : "hourglass",
                 "label" : "Sleep one second",
@@ -415,6 +561,21 @@
                 "contents" : "stop()",
                 "color" : "FF0000",
                 "description" : "Exit 'follow' program - no more tags will be read after that. All postambles are deactivated"
+            }
+        ]
+    },
+    {
+        "name" : "misc",
+        "color" : "ACACAC",
+        "tags" :
+        [
+            {
+                "name" : "counter-inc",
+                "label" : "Increment current tag",
+                "icon" : "text!tag[]++",
+                "contents" : "counters.inc(serial)",
+                "comment" : "Increment counter for tag and push to stack",
+                "description" : "Counters are kept on turtle, so they can't be shared. Values do not persist between runs."
             }
         ]
     }

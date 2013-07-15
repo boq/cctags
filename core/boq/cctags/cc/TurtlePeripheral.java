@@ -114,10 +114,10 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
         if (direction == null || "front".equals(direction))
             return result;
 
-        if ("up".equals(direction))
+        if ("top".equals(direction))
             return ForgeDirection.UP;
 
-        if ("down".equals(direction))
+        if ("bottom".equals(direction))
             return ForgeDirection.DOWN;
 
         if ("back".equals(direction))

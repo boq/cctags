@@ -4,13 +4,15 @@ end
 
 function getPeripheral(side)
     local t = peripheral.getType(side)
-    if not isReader(t) then
+    if t == nul then
+        error("No peripheral found")
+    elseif not isReader(t) then
         error("Invalid peripheral type " .. t .. " on side " .. side)
     end
     return peripheral.wrap(side), t
 end
 
-DIRECTIONS = {"up", "down", "front", "back", "left", "right"}
+DIRECTIONS = {"top", "bottom", "front", "back", "left", "right"}
 function scanForTags(side, dirs)
     local dirs = dirs or DIRECTIONS
     local p = getPeripheral(side)
@@ -111,6 +113,25 @@ function envs(vars)
         dec = unaryStackFun(function(a) return a - 1 end),
     }
     
+    local text = {
+        concat = binaryStackFun(function(a,b) return tostring(a) .. tostring(b) end)
+    }
+    
+    local function counter_op(op)
+        return function (serial)
+            local val = vars._counters[serial] or 0
+            local new_val = op(val)
+            vars._counters[serial] = new_val
+            vars.push(new_val)
+        end
+    end
+    
+    local counters =  {
+        inc = counter_op(function(a) return a + 1 end),
+        dec = counter_op(function(a) return a - 1 end),
+        get = function (serial) return vars._counters[serial] or 0 end
+    }
+    
     local stack = {}
     
     function stack.cond(fun, ...)
@@ -124,6 +145,10 @@ function envs(vars)
         local result = fun(...)
         vars.push(result)
         return result
+    end
+    
+    function stack.dup()
+        vars.push(vars.top())
     end
 
     -- turtle API has some loading logic, so we need to delay creation of those tables
@@ -200,9 +225,9 @@ function envs(vars)
                 selectAction(turtleRotate, side)
                 
                 local result
-                if side == "up" then
+                if side == "top" then
                     result = up(unpack(args))
-                elseif side == "down" then
+                elseif side == "bottom" then
                     result = down(unpack(args))
                 else
                     result = normal(unpack(args))
@@ -288,6 +313,8 @@ function envs(vars)
         _dummy22 = {logic, 0, true},
         _dummy23 = {relational, 0, true},
         _dummy24 = {arithmetic, 0, true},
+        _dummy25 = {text, 0, true},
+        counters = {counters, 0},
         
         term = {term, 0},
         colors = {colors, 0},
@@ -306,6 +333,7 @@ function envs(vars)
         
         -- minor world interaction
         rednet = {rednet, 2},
+        redstone = {redstone, 2},
         t = {turtle_safe_hidden, 2},
         _dummy40 = {turtle_safe_global, 2, true},
         _dummy50 = {move, 2, true},
