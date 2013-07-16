@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.server.ServerListenThread;
 import net.minecraft.server.ThreadMinecraftServer;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import boq.cctags.IProxy;
 import boq.cctags.tag.EntityTag;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -15,7 +16,9 @@ public class ClientProxy implements IProxy {
 
     @Override
     public void registerRenderers() {
-        RenderingRegistry.registerEntityRenderingHandler(EntityTag.class, new EntityTagRenderer());
+        EntityTagRenderer tagRender = new EntityTagRenderer();
+        RenderingRegistry.registerEntityRenderingHandler(EntityTag.class, tagRender);
+        MinecraftForge.EVENT_BUS.register(tagRender);
     }
 
     @Override
