@@ -108,21 +108,15 @@ public class TagIcons {
 
     @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister registry) {
-        if (iconMarker == null)
-            iconMarker = registry.registerIcon("cctags:icon-marker");
+        iconMarker = registry.registerIcon("cctags:icon-marker");
+        iconBackgroundPaper = registry.registerIcon("cctags:icon-background-paper");
+        iconBackgroundGlass = registry.registerIcon("cctags:icon-background-glass");
 
-        if (iconBackgroundPaper == null)
-            iconBackgroundPaper = registry.registerIcon("cctags:icon-background-paper");
-
-        if (iconBackgroundGlass == null)
-            iconBackgroundGlass = registry.registerIcon("cctags:icon-background-glass");
-
-        for (Map.Entry<String, Icon> entry : predefinedIcons.entrySet())
-            if (entry.getValue() == null) {
-                String name = entry.getKey();
-                Icon icon = registry.registerIcon("cctags:icon-" + name);
-                entry.setValue(icon);
-            }
+        for (Map.Entry<String, Icon> entry : predefinedIcons.entrySet()) {
+            String name = entry.getKey();
+            Icon icon = registry.registerIcon("cctags:icon-" + name);
+            entry.setValue(icon);
+        }
     }
 
     private static IconType getIconType(String typeId) {

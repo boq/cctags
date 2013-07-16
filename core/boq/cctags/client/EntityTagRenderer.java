@@ -6,7 +6,9 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Icon;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.event.ForgeSubscribe;
 
 import org.lwjgl.opengl.GL11;
 
@@ -128,4 +130,8 @@ public class EntityTagRenderer extends Render {
         return renderManager.renderEngine.func_130087_a(1); // item texture
     }
 
+    @ForgeSubscribe
+    public void onTextureChange(TextureStitchEvent.Post evt) {
+        iconModels.flush();
+    }
 }
