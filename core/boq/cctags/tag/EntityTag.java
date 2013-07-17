@@ -13,6 +13,7 @@ import boq.cctags.cc.ItemMisc;
 import boq.cctags.cc.ItemMisc.Subtype;
 import boq.utils.coord.Bounds;
 import boq.utils.coord.BoundsRotator;
+import boq.utils.misc.Dyes;
 import boq.utils.misc.Utils;
 
 import com.google.common.base.Preconditions;
@@ -264,6 +265,18 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
     public boolean func_130002_c(EntityPlayer player) {
         if (!worldObj.isRemote) {
             ItemStack held = player.getHeldItem();
+
+            Integer dyeColor = Dyes.dyeStackToColor(held);
+            if (dyeColor != null && dyeColor != data.color) {
+                data.color = dyeColor;
+                EntityPacketHandler.sendUpdateToAllTrackers(this);
+
+                if (!player.capabilities.isCreativeMode)
+                    if (--held.stackSize <= 0)
+                        player.destroyCurrentEquippedItem();
+
+                return true;
+            }
 
             if (ItemMisc.checkItem(held, Subtype.HANDHELD))
                 player.sendChatToPlayer(ChatMessageComponent.func_111082_b("handheld.desc", tagDescription()));

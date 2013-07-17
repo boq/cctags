@@ -11,7 +11,7 @@ public class TagData extends SerializableData {
     public static final int EXCLUDE_IN_ITEM_NBT = SerializableField.USER_DEFINED_0;
     public static final int CLIENT_UPDATE = SerializableField.USER_DEFINED_1;
 
-    @SerializableField
+    @SerializableField(flags = SerializableField.SERIALIZABLE | CLIENT_UPDATE)
     public int color;
     public static final String TAG_COLOR = "color";
 
@@ -44,7 +44,7 @@ public class TagData extends SerializableData {
 
     public int serial(World world) {
         if (serialId <= 0)
-            serialId = world.getUniqueDataId("cctag") + 9255;
+            serialId = 0x42000000 | (world.getUniqueDataId("cctag") & 0xFF) << 16 | (world.hashCode() ^ hashCode()) & 0xFFFF;
 
         return serialId;
     }
