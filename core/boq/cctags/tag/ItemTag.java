@@ -158,15 +158,15 @@ public class ItemTag extends Item {
 
         NBTTagCompound tag = getItemTag(stack);
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-            if (tag.hasKey(CATEGORY_TAG)) {
-                String category = "cctag.category." + tag.getString(CATEGORY_TAG);
-                description.add(String.format(
-                        reg.getStringLocalization("cctag.category"),
-                        reg.getStringLocalization(category)
-                        ));
-            }
+        if (tag.hasKey(CATEGORY_TAG)) {
+            String category = "cctag.category." + tag.getString(CATEGORY_TAG);
+            description.add(String.format(
+                    reg.getStringLocalization("cctag.category"),
+                    reg.getStringLocalization(category)
+                    ));
+        }
 
+        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
             if (tag.hasKey(TagData.TAG_ICON)) {
                 String icon = tag.getString(TagData.TAG_ICON);
                 IconData data = TagIcons.instance.getIconData(icon);
@@ -285,6 +285,9 @@ public class ItemTag extends Item {
 
         TagData data = new TagData();
         data.readFromNBT(getItemTag(stack), nbtOnlySelector);
+        // hack - in creative we can use tags multiple times, so it is possible to duplicate serial
+        if (player.capabilities.isCreativeMode)
+            data.serialId = -1;
 
         data.tagSize = getSize(stack);
         data.tagType = getType(stack);
