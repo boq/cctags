@@ -2,7 +2,6 @@ follow is program that allows to use tags for controlling turtle. Program works 
 Arguments:
 <peripheral side> - on which side is mounted tag reader/printer
 <move forward on start = true> (optional) - if true, turtle will move one block before searching for tags 
-<max security level = 2> (optional) - for security purposes, expressions are executed in limited scope. This parameter descibes, how much code on tag can do. See 'api/tags' for full list.
 
 If first argument is equal to 'print' instead of moving program will print all functions available on current level and return.
 

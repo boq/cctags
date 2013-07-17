@@ -8,22 +8,8 @@ end
 
 --TODO: Get better
 local forward_start = not ((args[2] == '0') or (args[2] == 'false'))
-local max_level = tonumber(args[3]) or 3
-local work_env = {}
-local full_env = tags.envs(work_env) -- declared functions may want to see inside work_env
 
-for name,data in pairs(full_env) do
-    env, level, is_global = unpack(data)
-    if level <= max_level then
-        if is_global then
-            for k,v in pairs(env) do
-                work_env[k] = v
-             end
-        else
-            work_env[name] = env
-        end
-    end 
-end
+local work_env = tags.setup_env()
 
 if reader_side == 'print' then
     local w,h = term.getSize()
