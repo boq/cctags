@@ -106,6 +106,77 @@ function work_env.stop()
     print("stop(): finished")
 end
 
+local function createSimpleExecutor()
+    return function (fun, contents)
+        print(string.format("Step %d: executing: '%s'", work_env.step, contents))
+        return pcall(fun)
+    end
+end
+
+local function createDummyExecutor()
+    return function (fun, contents)
+        print(string.format("Step %d: ignoring: '%s'", work_env.step, contents))
+        return true
+    end
+end
+
+local function createSavingExecutor(execute)
+    local result = {}
+    
+    setmetatable(result, {
+        __call = function(self, fun, contents)
+            print(string.format("Step %d: storing: '%s'", work_env.step, contents))
+            table.insert(self, fun)
+            
+            if execute then
+                return pcall(fun)
+            end
+            
+            return true
+        end
+    })
+    
+    return result
+end
+
+local executor = createSimpleExecutor()
+
+local controlActions = {}
+
+controlActions['!pause'] = function ()
+    executor =  createDummyExecutor()
+end
+
+controlActions['!restore'] = function ()
+    executor =  createSimpleExecutor()
+end
+
+controlActions['!record'] = function ()
+    executor =  createSavingExecutor(false)
+end
+
+controlActions['!record-execute'] = function ()
+    executor =  createSavingExecutor(true)
+end
+
+controlActions['!save'] = function()
+    if type(executor) ~= 'table' then
+        error("Trying to 'save' without calling 'record'") 
+    end
+
+    local macro = executor
+    executor = createSimpleExecutor()
+   
+    local function callMacro()
+        for i,v in ipairs(macro) do
+            v()
+        end
+    end
+   
+    values.push(callMacro)
+    
+end
+
 while not finished do
     local dir, contents, _, _, serial = tags.scanForTags(reader_side)
     
@@ -129,27 +200,31 @@ while not finished do
         updatePrev = false
     end 
     
-    print(string.format("Step %d: executing: '%s'", work_env.step, contents))
-    
-    local operation, e = loadstring(contents)
-    if not operation then
-        error(string.format("Invalid operation, error: '%s'", operation, err))
-    end
-    
-    setfenv(operation, work_env)
-    local status, result = pcall(operation)
-    
-    if not status then
-        error("Error during command execution: " .. result)
-    end
-    
-    if updatePrev then
-        work_env.prev = operation
+    local action = controlActions[contents]
+    if action then
+        action()
+        print(string.format("Step %d: command '%s'", work_env.step, contents))
+    else 
+        local operation, e = loadstring(contents)
+        if not operation then
+            error(string.format("Invalid operation, error: '%s'", operation, err))
+        end
+        
+        setfenv(operation, work_env)
+        local status, result = executor(operation, contents)
+        
+        if not status then
+            error("Error during command execution: " .. result)
+        end
+        
+        if updatePrev then
+            work_env.prev = operation
+        end
+        
+        if result then
+            print(string.format("Step %d: result: '%s'", work_env.step, tostring(result)))
+        end
     end
     
     postamble.top()()
-    
-    if result then
-        print(string.format("%Step d: result: '%s'", work_env.step, result))
-    end
 end

@@ -23,6 +23,8 @@ cctag.category.condition=condition
 cctag.category.branch=branch
 cctag.category.logic=logic
 cctag.category.arithmetic=arithmetic
+cctag.category.misc=miscellaneous
+cctag.category.stack=stack
 
 cctag.icon.none=No icon
 cctag.icon.predefined=Icon: %s
