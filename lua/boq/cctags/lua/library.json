@@ -170,6 +170,13 @@
                 "contents" : "drop(tagDir, true)"
             },
             {
+                "name" : "place",
+                "icon" : "in",
+                "label" : "Place",
+                "comment" : "Place block in front of turtle",
+                "contents" : "t.place()"
+            },
+            {
                 "name" : "first-slot",
                 "category" : "inventory",
                 "icon" : "first",
@@ -322,6 +329,24 @@
                 "contents" : "push(1)"
             },
             {
+                "name" : "two",
+                "label" : "Push two",
+                "icon" : "dni-two",
+                "contents" : "push(2)"
+            },
+            {
+                "name" : "three",
+                "label" : "Push three",
+                "icon" : "dni-three",
+                "contents" : "push(3)"
+            },
+            {
+                "name" : "four",
+                "label" : "Push four",
+                "icon" : "dni-four",
+                "contents" : "push(4)"
+            },
+            {
                 "name" : "add",
                 "label" : "Add",
                 "icon" : "text!add",
@@ -472,8 +497,8 @@
         ]
     },
     {
-        "name" : "control",
-        "color" : "FFFFFF",
+        "name" : "stack",
+        "color" : "68FF9F",
         "tags" :
         [
             {
@@ -497,6 +522,34 @@
                 "contents" : "dup()",
                 "comment" : "Duplicate top of stack"
             },
+            {
+                "name" : "swap",
+                "icon" : "swap",
+                "label" : "Swap",
+                "contents" : "swap()",
+                "comment" : "Swap top stack elements"
+            },
+            {
+                "name" : "store",
+                "icon" : "in",
+                "label" : "Store",
+                "contents" : "store(pop())",
+                "comment" : "Pop index and store next stack value to slot[index]"
+            },
+            {
+                "name" : "load",
+                "icon" : "out",
+                "label" : "Load",
+                "contents" : "load(pop())",
+                "comment" : "Pop index and load value from slot[index]"
+            }
+        ]
+    },
+    {
+        "name" : "control",
+        "color" : "FFFFFF",
+        "tags" :
+        [
             {
                 "name" : "repeat",
                 "icon" : "gear",
@@ -576,6 +629,57 @@
                 "contents" : "counters.inc(serial)",
                 "comment" : "Increment counter for tag and push to stack",
                 "description" : "Counters are kept on turtle, so they can't be shared. Values do not persist between runs."
+            },
+            {
+                "name" : "record",
+                "label" : "Start macro recording",
+                "icon" : "record",
+                "contents" : "!record",
+                "comment" : "Any next command will be appended to macro",
+                "description" : "Any encountered tag won't be executed, but will be added to command list. Use tag with '!save' to finish"
+            },
+            {
+                "name" : "record-execute",
+                "label" : "Start macro recording and execute commands",
+                "icon" : "record",
+                "contents" : "!record-execute",
+                "comment" : "Any next command will be executed and appended to macro",
+                "description" : "Any encountered tag will be executed, but also added to command list. Use tag with '!save' to finish"
+            },
+            {
+                "name" : "push-macro",
+                "label" : "Push recorded macro",
+                "icon" : "push",
+                "contents" : "!save",
+                "comment" : "Recorded macro will be pushed to stack. Start recording macro with 'record'",
+                "description" : "Recorded macro will be pushed to stack. Use 'call' to replay."
+            },
+            {
+                "name" : "play-macro",
+                "label" : "Play recorded macro",
+                "icon" : "play",
+                "contents" : "pop()()",
+                "comment" : "Plays previously recorded macro"
+            },
+            {
+                "name" : "play-keep-macro",
+                "label" : "Play recorded macro, keep on stack",
+                "icon" : "play",
+                "contents" : "top()()",
+                "comment" : "Plays previously recorded macro and keep value on stack"
+            },
+            {
+                "name" : "execute-pause",
+                "label" : "Pause command execution",
+                "icon" : "pause",
+                "contents" : "!pause",
+                "comment" : "Restore execution with !restore"
+            },
+            {
+                "name" : "execute-restore",
+                "label" : "Restore command execution",
+                "icon" : "play",
+                "contents" : "!restore"
             }
         ]
     }
