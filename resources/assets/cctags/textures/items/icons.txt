@@ -53,4 +53,5 @@ record
 right
 sad
 spiral
+swap
 yes

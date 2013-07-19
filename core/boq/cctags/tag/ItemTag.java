@@ -47,7 +47,6 @@ public class ItemTag extends Item {
     public static void setupDefaultTags(ItemStack stack) {
         NBTTagCompound tag = getItemTag(stack);
         tag.setInteger(TagData.TAG_COLOR, Constants.COLOR_BLACK);
-        tag.setInteger(TagData.TAG_SERIAL, -1);
     }
 
     @SuppressWarnings({ "unchecked" })
@@ -206,7 +205,6 @@ public class ItemTag extends Item {
             ItemStack stack = new ItemStack(id, 1, e.size.ordinal());
             TagData data = new TagData();
             data.color = e.color;
-            data.serialId = -1;
             data.contents = e.contents;
             data.label = e.label;
             data.icon = e.icon;
@@ -281,9 +279,6 @@ public class ItemTag extends Item {
 
         TagData data = new TagData();
         data.readFromNBT(getItemTag(stack), nbtOnlySelector);
-        // hack - in creative we can use tags multiple times, so it is possible to duplicate serial
-        if (player.capabilities.isCreativeMode)
-            data.serialId = -1;
 
         data.tagSize = getSize(stack);
         data.tagType = getType(stack);

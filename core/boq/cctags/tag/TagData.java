@@ -1,6 +1,5 @@
 package boq.cctags.tag;
 
-import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import boq.utils.misc.Rotation;
 import boq.utils.serializable.SerializableData;
@@ -23,10 +22,6 @@ public class TagData extends SerializableData {
     public String icon;
     public static final String TAG_ICON = "icon";
 
-    @SerializableField(flags = SerializableField.NBT_SERIALIZABLE)
-    int serialId;
-    public static final String TAG_SERIAL = "serialId";
-
     @SerializableField(nullable = true, flags = SerializableField.NBT_SERIALIZABLE)
     public String contents;
 
@@ -42,10 +37,14 @@ public class TagData extends SerializableData {
     @SerializableField(flags = EXCLUDE_IN_ITEM_NBT | SerializableField.SERIALIZABLE | CLIENT_UPDATE)
     public Rotation rotation;
 
-    public int serial(World world) {
-        if (serialId <= 0)
-            serialId = 0x42000000 | (world.getUniqueDataId("cctag") & 0xFF) << 16 | (world.hashCode() ^ hashCode()) & 0xFFFF;
+    private int uid = -1;
 
-        return serialId;
+    public int uid(Object container) {
+        if (uid <= 0) {
+            int id = container == null ? 0xDEADED : container.hashCode() & 0xFFFFFF;
+            uid = 0x42000000 | id;
+        }
+
+        return uid;
     }
 }

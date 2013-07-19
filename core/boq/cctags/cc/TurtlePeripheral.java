@@ -29,6 +29,8 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
         public TagData readData();
 
         public void writeData(TagData data, boolean updateClients);
+
+        public int serial();
     }
 
     private class EntityTagAccess implements TagAccess {
@@ -62,6 +64,12 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
             if (updateClients)
                 EntityPacketHandler.sendUpdateToAllTrackers(tag);
         }
+
+        @Override
+        public int serial() {
+            return tag.data.uid(tag);
+        }
+
     }
 
     private class ItemTagAccess implements TagAccess {
@@ -89,6 +97,12 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
             ItemStack stack = turtle.getSlotContents(slotId);
             ItemTag.writeData(stack, data);
         }
+
+        @Override
+        public int serial() {
+            ItemStack stack = turtle.getSlotContents(slotId);
+            return ItemTag.readData(stack).uid(stack);
+        }
     }
 
     public TurtlePeripheral(ITurtleAccess turtle) {
@@ -109,27 +123,8 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
 
     protected ForgeDirection getDirection(String direction) {
         int turtleDir = turtle.getFacingDir();
-        ForgeDirection result = ForgeDirection.VALID_DIRECTIONS[turtleDir];
-
-        if (direction == null || "front".equals(direction))
-            return result;
-
-        if ("top".equals(direction))
-            return ForgeDirection.UP;
-
-        if ("bottom".equals(direction))
-            return ForgeDirection.DOWN;
-
-        if ("back".equals(direction))
-            return result.getOpposite();
-
-        if ("left".equals(direction))
-            return result.getRotation(ForgeDirection.DOWN);
-
-        if ("right".equals(direction))
-            return result.getRotation(ForgeDirection.UP);
-
-        throw new IllegalArgumentException("Invalid direction, must be one of: up, down, front, back, left, right");
+        ForgeDirection front = ForgeDirection.VALID_DIRECTIONS[turtleDir];
+        return SidesHelper.localToWorld(front, direction);
     }
 
     private final static double DELTA = 0.01;
@@ -204,7 +199,7 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
                 if (!isSelectedTagValid())
                     return wrap("false", "No selected tag");
 
-                int serial = tagAccess.readData().serial(turtle.getWorld());
+                int serial = tagAccess.serial();
                 return wrap(serial);
             }
 
