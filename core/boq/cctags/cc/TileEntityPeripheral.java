@@ -1,5 +1,6 @@
 package boq.cctags.cc;
 
+import static boq.utils.misc.Utils.checkArg;
 import static boq.utils.misc.Utils.wrap;
 
 import java.util.Map;
@@ -14,6 +15,7 @@ import boq.cctags.LuaInit;
 import boq.cctags.tag.ItemTag;
 import boq.cctags.tag.TagData;
 import boq.utils.log.Log;
+import boq.utils.misc.InventoryUtils;
 import boq.utils.misc.Utils;
 
 import com.google.common.collect.Maps;
@@ -97,11 +99,15 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
                 return wrap(data.tagSize.size, data.tagSize.name);
             }
             case 4: // eject
+                String direction = checkArg(arguments, 0) ? arguments[0].toString() : null;
+                if (direction != null) {
+                    ForgeDirection dir = SidesHelper.localToWorld(front().getOpposite(), direction);
+                    return wrap(ejectTag(dir, true));
+                }
                 return wrap(ejectTag(true));
 
             case 5: {// serial
-                TagData data = readData();
-                return wrap(data.serial(worldObj));
+                return wrap(readData().uid(data.tag));
             }
             case 6: // library
                 return LuaInit.instance.getLuaLibrary(arguments);
@@ -146,6 +152,27 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
 
         player.setCurrentItemOrArmor(0, ejected);
         return true;
+    }
+
+    public boolean ejectTag(ForgeDirection side, boolean update) {
+        ItemStack ejected = removeTag(update);
+
+        if (ejected == null)
+            return false;
+
+        TileEntity neighbor = worldObj.getBlockTileEntity(xCoord + side.offsetX,
+                yCoord + side.offsetY, zCoord + side.offsetZ);
+
+        if (neighbor instanceof IInventory)
+            ejected = InventoryUtils.insertStack((IInventory)neighbor, ejected, side.getOpposite());
+
+        if (ejected == null)
+            return true;
+
+        if (worldObj.getGameRules().getGameRuleBooleanValue("doTileDrops"))
+            Utils.dropItem(worldObj, xCoord, yCoord, zCoord, ejected);
+
+        return false;
     }
 
     public boolean ejectTag(boolean update) {
