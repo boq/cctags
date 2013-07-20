@@ -39,10 +39,10 @@ public class TileEntityPrinter extends TileEntityPeripheral<PrinterData> {
             return wrap(data.inkLevel);
 
         if (method == ownMethodStart + 1) {// print
-            TagData data = readData();
-
-            if (data == null)
+            if (!access.isValid())
                 return wrap(false, "No tag");
+
+            TagData data = access.readData();
 
             if (arguments[0] == null)
                 return wrap(false, "Empty icon name");
@@ -54,7 +54,7 @@ public class TileEntityPrinter extends TileEntityPeripheral<PrinterData> {
             Object[] result = helper.printTag(data, icon, label);
 
             if (result[0].equals(true))
-                writeData(data);
+                access.writeData(data, false);
 
             return result;
         }

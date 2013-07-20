@@ -3,17 +3,14 @@ package boq.cctags.cc;
 import static boq.utils.misc.Utils.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import boq.cctags.EntityPacketHandler;
 import boq.cctags.LuaInit;
-import boq.cctags.tag.*;
-import boq.utils.coord.Bounds;
-
-import com.google.common.base.Preconditions;
-
+import boq.cctags.tag.TagData;
+import boq.cctags.tag.TagSize;
+import boq.cctags.tag.access.*;
+import boq.cctags.tag.access.EntityTagAccess.IPositionProvider;
+import boq.cctags.tag.access.InventoryTagAccess.IStackProvider;
 import dan200.computer.api.IComputerAccess;
 import dan200.computer.api.IHostedPeripheral;
 import dan200.turtle.api.ITurtleAccess;
@@ -22,104 +19,10 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
 
     protected final ITurtleAccess turtle;
 
-    protected TagAccess tagAccess;
-
-    interface TagAccess {
-        public boolean isValid();
-
-        public TagData readData();
-
-        public void writeData(TagData data, boolean updateClients);
-
-        public int serial();
-    }
-
-    private class EntityTagAccess implements TagAccess {
-
-        private final EntityTag tag;
-
-        private EntityTagAccess(EntityTag tag) {
-            this.tag = tag;
-        }
-
-        @Override
-        public boolean isValid() {
-            if (tag.isDead)
-                return false;
-
-            Vec3 ownPos = turtle.getPosition();
-            Vec3 tagPos = Vec3.createVectorHelper(tag.posX, tag.posY, tag.posZ);
-
-            return ownPos.distanceTo(tagPos) < 2.0;
-        }
-
-        @Override
-        public TagData readData() {
-            return tag.data;
-        }
-
-        @Override
-        public void writeData(TagData data, boolean updateClients) {
-            Preconditions.checkState(data == tag.data);
-
-            if (updateClients)
-                EntityPacketHandler.sendUpdateToAllTrackers(tag);
-        }
-
-        @Override
-        public int serial() {
-            return tag.data.uid(tag);
-        }
-
-    }
-
-    private class ItemTagAccess implements TagAccess {
-
-        private final int slotId;
-
-        private ItemTagAccess(int slotId) {
-            this.slotId = slotId;
-        }
-
-        @Override
-        public boolean isValid() {
-            ItemStack stack = turtle.getSlotContents(slotId);
-            return stack != null && stack.getItem() instanceof ItemTag && stack.stackSize == 1;
-        }
-
-        @Override
-        public TagData readData() {
-            ItemStack stack = turtle.getSlotContents(slotId);
-            return ItemTag.readData(stack);
-        }
-
-        @Override
-        public void writeData(TagData data, boolean updateClients) {
-            ItemStack stack = turtle.getSlotContents(slotId);
-            ItemTag.writeData(stack, data);
-        }
-
-        @Override
-        public int serial() {
-            ItemStack stack = turtle.getSlotContents(slotId);
-            return ItemTag.readData(stack).uid(stack);
-        }
-    }
+    protected ITagAccess tagAccess = AccessUtils.NULL;
 
     public TurtlePeripheral(ITurtleAccess turtle) {
         this.turtle = turtle;
-    }
-
-    protected boolean isSelectedTagValid() {
-        if (tagAccess == null)
-            return false;
-
-        if (!tagAccess.isValid()) {
-            tagAccess = null;
-            return false;
-        }
-
-        return true;
     }
 
     protected ForgeDirection getDirection(String direction) {
@@ -128,68 +31,70 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
         return SidesHelper.localToWorld(front, direction);
     }
 
-    private final static double DELTA = 0.01;
-    private final static Bounds searchBounds = new Bounds(DELTA, DELTA, DELTA, 1 - DELTA, 1 - DELTA, 1 - DELTA);
-
-    protected boolean selectTag(ForgeDirection direction) {
-        Vec3 position = turtle.getPosition();
-        AxisAlignedBB unitBox = searchBounds.getAabbFromPool(position.xCoord, position.yCoord, position.zCoord);
-        World w = turtle.getWorld();
-
-        ForgeDirection tagDirection = direction.getOpposite();
-        for (Object o : w.getEntitiesWithinAABB(EntityTag.class, unitBox)) {
-            EntityTag tag = (EntityTag)o;
-            if (tag.data.side == tagDirection) {
-                tagAccess = new EntityTagAccess(tag);
-                return true;
-            }
-        }
-        return false;
-    }
-
     protected final static String[] commonMethods = { "isTagValid", "scanForTag", "selectFromSlot", "contents", "write", "size", "serial", "library" };
 
     @Override
     public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception {
         switch (method) {
             case 0: // isTagValid
-                return wrap(isSelectedTagValid());
+                return wrap(tagAccess.isValid());
             case 1: { // scanForTag
                 String directionName = checkArg(arguments, 0) ? arguments[0].toString() : null;
-                return wrap(selectTag(getDirection(directionName)));
+                ForgeDirection dir = getDirection(directionName);
+                ITagAccess access = AccessUtils.selectTag(turtle.getWorld(), dir, new IPositionProvider() {
+                    @Override
+                    public Vec3 getPosition() {
+                        return turtle.getPosition();
+                    }
+                });
+
+                if (!access.isValid())
+                    return FALSE;
+
+                tagAccess = access;
+                return TRUE;
             }
             case 2: {// selectFromSlot
-                int slotId = checkArg(arguments, 0) ? toInt(arguments[0]) : turtle.getSelectedSlot();
-                TagAccess access = new ItemTagAccess(slotId);
+                final int slotId = checkArg(arguments, 0) ? toInt(arguments[0]) : turtle.getSelectedSlot();
+
+                ITagAccess access = new InventoryTagAccess(new IStackProvider() {
+                    @Override
+                    public ItemStack getStack() {
+                        return turtle.getSlotContents(slotId);
+                    }
+                });
+
                 if (access.isValid()) {
                     tagAccess = access;
                     return TRUE;
                 }
 
-                return FALSE;
+                return wrap(false, "No tag");
 
             }
             case 3: {// contents
+                if (!tagAccess.isValid())
+                    return wrap("false", "No selected tag");
+
                 String contents = tagAccess.readData().contents;
-                if (isSelectedTagValid())
-                    return wrap(contents, contents == null ? 0 : contents.length());
-                return null;
+                return wrap(contents, contents == null ? 0 : contents.length());
             }
             case 4: {// write
-                String newContents = arguments[0].toString();
-                if (isSelectedTagValid()) {
-                    TagData data = tagAccess.readData();
-                    if (!data.tagSize.check(newContents))
-                        return wrap("false", "Message too big");
+                if (!tagAccess.isValid())
+                    return wrap("false", "No selected tag");
 
-                    data.contents = newContents;
-                    tagAccess.writeData(data, false);
-                    return wrap(true, newContents.length());
-                }
-                return wrap(false, "No selected tag");
+                String newContents = arguments[0].toString();
+
+                TagData data = tagAccess.readData();
+                if (!data.tagSize.check(newContents))
+                    return wrap("false", "Message too big");
+
+                data.contents = newContents;
+                tagAccess.writeData(data, false);
+                return wrap(true, newContents.length());
             }
             case 5: { // size
-                if (!isSelectedTagValid())
+                if (!tagAccess.isValid())
                     return wrap("false", "No selected tag");
 
                 TagSize size = tagAccess.readData().tagSize;
@@ -197,10 +102,10 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
             }
 
             case 6: { // serial
-                if (!isSelectedTagValid())
+                if (!tagAccess.isValid())
                     return wrap("false", "No selected tag");
 
-                int serial = tagAccess.serial();
+                int serial = tagAccess.uid();
                 return wrap(serial);
             }
 

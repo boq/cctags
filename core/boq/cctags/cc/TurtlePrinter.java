@@ -72,7 +72,7 @@ public class TurtlePrinter extends TurtlePeripheral implements PrinterHelper.Pri
         }
 
         if (method == ownMethodStart + 2) { // print
-            if (!isSelectedTagValid())
+            if (!tagAccess.isValid())
                 return wrap(false, "No tag");
 
             String icon = arguments[0].toString();
