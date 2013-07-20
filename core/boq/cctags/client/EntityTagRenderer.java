@@ -61,11 +61,11 @@ public class EntityTagRenderer extends Render {
         public void compile(Key param) {
             final TagIcons icons = TagIcons.instance;
             GL11.glDisable(GL11.GL_CULL_FACE);
+            GL11.glNormal3f(0, 0, 1);
 
             Tessellator tes = new Tessellator();
             tes.setColorOpaque(255, 255, 255);
             tes.startDrawingQuads();
-            tes.setNormal(0.0F, 0.0F, -1.0F);
             tes.setTranslation(0, 0, 2 * Z_FIGHTER);
             final double size = param.type == TagType.BIG ? 0.5 : 0.25;
             final Icon background = param.type == TagType.GLASS ? icons.iconBackgroundGlass : icons.iconBackgroundPaper;
@@ -80,9 +80,7 @@ public class EntityTagRenderer extends Render {
             GL11.glColor3d(1, 1, 1);
 
             tes.startDrawingQuads();
-            tes.setNormal(0.0F, 0.0F, -1.0F);
             tes.setTranslation(0, 0, 2 * Z_FIGHTER);
-
             RenderUtils.drawRectangle(tes, -size, -size, size, size, background);
             tes.draw();
 
