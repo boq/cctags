@@ -56,12 +56,12 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
             case 2: {// selectFromSlot
                 final int slotId = checkArg(arguments, 0) ? toInt(arguments[0]) : turtle.getSelectedSlot();
 
-                ITagAccess access = new InventoryMergedAccess(new IStackProvider() {
+                ITagAccess access = new ItemAccess(new IStackProvider() {
                     @Override
                     public ItemStack getStack() {
                         return turtle.getSlotContents(slotId);
                     }
-                });
+                }, AccessUtils.mergedAccess);
 
                 if (access.isValid()) {
                     tagAccess = access;

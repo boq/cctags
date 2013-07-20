@@ -15,6 +15,7 @@ function waitForTag(verbose)
             local contents,size = p.contents()
             local size_val, size_name = p.size()
             local serial = p.serial()
+            print(size_name)
             p.eject()
             return arg, contents, size, size_val, size_name, serial
         elseif event == 'key' then
