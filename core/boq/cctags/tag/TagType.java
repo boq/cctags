@@ -6,18 +6,16 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public enum TagType {
-    NORMAL("item.cctag.normal", true, "cctags:tag-background"),
-    GLASS("item.cctag.glass", true, "cctags:tag-background-glass"),
-    BIG("item.cctag.big", true, "cctags:tag-background-big");
+    NORMAL("item.cctag.normal", "cctags:tag-background"),
+    GLASS("item.cctag.glass", "cctags:tag-background-glass"),
+    BIG("item.cctag.big", "cctags:tag-background-big");
 
-    public final boolean visible;
     public final String unlocalizedName;
     private final String backgroundName;
     public Icon backgroundIcon;
 
-    private TagType(String name, boolean visible, String backgroundName) {
-        unlocalizedName = name;
-        this.visible = visible;
+    private TagType(String unlocalizedName, String backgroundName) {
+        this.unlocalizedName = unlocalizedName;
         this.backgroundName = backgroundName;
     }
 

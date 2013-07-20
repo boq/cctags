@@ -623,6 +623,20 @@
         "tags" :
         [
             {
+                "name" : "debug-on",
+                "label" : "Debug output on",
+                "icon" : "question",
+                "contents" : "debug(true)",
+                "description" : "Will print informations like stack operations"
+            },
+            {
+                "name" : "debug-off",
+                "label" : "Debug output off",
+                "icon" : "question",
+                "contents" : "debug(false)",
+                "description" : "Will print informations like stack operations"
+            },
+            {
                 "name" : "counter-inc",
                 "label" : "Increment current tag",
                 "icon" : "text!tag[]++",
@@ -632,7 +646,7 @@
             },
             {
                 "name" : "record",
-                "label" : "Start macro recording",
+                "label" : "Record macro",
                 "icon" : "record",
                 "contents" : "!record",
                 "comment" : "Any next command will be appended to macro",
@@ -640,7 +654,7 @@
             },
             {
                 "name" : "record-execute",
-                "label" : "Start macro recording and execute commands",
+                "label" : "Record and execute macro",
                 "icon" : "record",
                 "contents" : "!record-execute",
                 "comment" : "Any next command will be executed and appended to macro",
@@ -648,7 +662,7 @@
             },
             {
                 "name" : "push-macro",
-                "label" : "Push recorded macro",
+                "label" : "Save macro",
                 "icon" : "push",
                 "contents" : "!save",
                 "comment" : "Recorded macro will be pushed to stack. Start recording macro with 'record'",
@@ -656,17 +670,17 @@
             },
             {
                 "name" : "play-macro",
-                "label" : "Play recorded macro",
+                "label" : "Play macro (pop)",
                 "icon" : "play",
                 "contents" : "pop()()",
-                "comment" : "Plays previously recorded macro"
+                "comment" : "Plays previously recorded macro (pop value from stack)"
             },
             {
                 "name" : "play-keep-macro",
-                "label" : "Play recorded macro, keep on stack",
+                "label" : "Play macro (keep)",
                 "icon" : "play",
                 "contents" : "top()()",
-                "comment" : "Plays previously recorded macro and keep value on stack"
+                "comment" : "Plays previously recorded macro (keep value on stack)"
             },
             {
                 "name" : "execute-pause",

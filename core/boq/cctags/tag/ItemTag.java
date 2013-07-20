@@ -1,13 +1,14 @@
 package boq.cctags.tag;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.*;
-import net.minecraft.nbt.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Icon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -17,11 +18,10 @@ import org.lwjgl.input.Keyboard;
 
 import boq.cctags.*;
 import boq.cctags.LuaInit.LibEntry;
+import boq.cctags.tag.EntityTagsListener.TagProperty;
 import boq.cctags.tag.TagIcons.IconData;
 import boq.utils.misc.PlayerOrientation;
 import boq.utils.misc.Rotation;
-import boq.utils.serializable.ISelectableSerializableData.IFieldSelector;
-import boq.utils.serializable.SerializableField;
 
 import com.google.common.base.Strings;
 
@@ -33,94 +33,10 @@ public class ItemTag extends Item {
     private final static String CATEGORY_TAG = "Category";
     private final static String COMMENT_TAG = "Comment";
 
-    public static NBTTagCompound getItemTag(ItemStack stack) {
-        NBTTagCompound result = stack.getTagCompound();
-
-        if (result == null) {
-            result = new NBTTagCompound("tag");
-            stack.setTagCompound(result);
-        }
-
-        return result;
-    }
-
-    public static void setupDefaultTags(ItemStack stack) {
-        NBTTagCompound tag = getItemTag(stack);
-        tag.setInteger(TagData.TAG_COLOR, Constants.COLOR_BLACK);
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    private static <T extends NBTBase> T getTag(ItemStack stack, String name) {
-        NBTTagCompound tag = getItemTag(stack);
-        return (T)tag.getTag(name);
-    }
-
-    public static int getTag(ItemStack stack, String name, int def) {
-        NBTTagInt value = getTag(stack, name);
-        return (value != null) ? value.data : def;
-    }
-
-    public static String getTag(ItemStack stack, String name, String def) {
-        NBTTagString value = getTag(stack, name);
-        return (value != null) ? value.data : def;
-    }
-
-    public static TagSize getSize(int damage) {
-        damage &= 0xFF;
-        if (damage > TagSize.VALUES.length)
-            return TagSize.TAG_BROKEN;
-
-        return TagSize.VALUES[damage];
-    }
-
-    public static TagSize getSize(ItemStack stack) {
-        return getSize(stack.getItemDamage());
-    }
-
-    public static TagType getType(int damage) {
-        damage = (damage >> 8) & 0xFF;
-        if (damage > TagType.VALUES.length)
-            return TagType.NORMAL;
-
-        return TagType.VALUES[damage];
-    }
-
-    public static TagType getType(ItemStack stack) {
-        return getType(stack.getItemDamage());
-    }
-
-    public static int calculateDamage(TagType type, TagSize size) {
-        return (type.ordinal() << 8) + size.ordinal();
-    }
-
-    public static int getColor(ItemStack stack) {
-        final int black = ItemDye.dyeColors[0];
-        return getTag(stack, TagData.TAG_COLOR, black);
-    }
-
-    public static TagData readData(ItemStack stack) {
-        NBTTagCompound tag = stack.stackTagCompound;
-        if (tag == null)
-            return null;
-
-        TagData result = new TagData();
-        result.readFromNBT(tag, nbtOnlySelector);
-
-        result.tagSize = getSize(stack);
-        result.tagType = getType(stack);
-        return result;
-    }
-
-    public static void writeData(ItemStack stack, TagData data) {
-        NBTTagCompound tag = new NBTTagCompound("tag");
-        data.writeToNBT(tag, nbtOnlySelector);
-        stack.stackTagCompound = tag;
-    }
-
     public ItemStack createFromData(TagData data) {
-        int damage = calculateDamage(data.tagType, data.tagSize);
+        int damage = ItemTagUtils.calculateDamage(data.tagType, data.tagSize);
         ItemStack result = new ItemStack(this, 1, damage);
-        writeData(result, data);
+        ItemTagUtils.writeData(result, data);
         return result;
     }
 
@@ -149,11 +65,11 @@ public class ItemTag extends Item {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List description, boolean extended) {
-        TagSize size = getSize(stack);
+        TagSize size = ItemTagUtils.getSize(stack);
 
         description.add(StatCollector.translateToLocalFormatted("cctag.size", size.name));
 
-        NBTTagCompound tag = getItemTag(stack);
+        NBTTagCompound tag = ItemTagUtils.getItemTag(stack);
 
         if (tag.hasKey(CATEGORY_TAG)) {
             String category = "cctag.category." + tag.getString(CATEGORY_TAG);
@@ -175,12 +91,12 @@ public class ItemTag extends Item {
 
     @Override
     public String getUnlocalizedName(ItemStack stack) {
-        return getType(stack).unlocalizedName;
+        return ItemTagUtils.getType(stack).unlocalizedName;
     }
 
     @Override
     public String getItemDisplayName(ItemStack stack) {
-        String label = getTag(stack, TagData.TAG_LABEL, null);
+        String label = ItemTagUtils.getTag(stack, TagData.TAG_LABEL, null);
 
         if (Strings.isNullOrEmpty(label))
             return super.getItemDisplayName(stack);
@@ -193,13 +109,12 @@ public class ItemTag extends Item {
     @SideOnly(Side.CLIENT)
     public void getSubItems(int id, CreativeTabs tab, List results) {
         for (TagType type : TagType.VALUES)
-            if (type.visible)
-                for (TagSize size : TagSize.VALUES)
-                    if (size.visible()) {
-                        ItemStack stack = new ItemStack(id, 1, calculateDamage(type, size));
-                        setupDefaultTags(stack);
-                        results.add(stack);
-                    }
+            for (TagSize size : TagSize.VALUES)
+                if (size.visible()) {
+                    ItemStack stack = new ItemStack(id, 1, ItemTagUtils.calculateDamage(type, size));
+                    ItemTagUtils.setupDefaultTags(stack);
+                    results.add(stack);
+                }
 
         for (LibEntry e : LuaInit.instance.getLibrary().values()) {
             ItemStack stack = new ItemStack(id, 1, e.size.ordinal());
@@ -209,8 +124,8 @@ public class ItemTag extends Item {
             data.label = e.label;
             data.icon = e.icon;
 
-            NBTTagCompound tag = getItemTag(stack);
-            data.writeToNBT(tag, nbtOnlySelector);
+            NBTTagCompound tag = ItemTagUtils.getItemTag(stack);
+            data.writeToNBT(tag, ItemTagUtils.nbtOnlySelector);
 
             if (e.category != null)
                 tag.setString(CATEGORY_TAG, e.category);
@@ -237,7 +152,7 @@ public class ItemTag extends Item {
     @Override
     @SideOnly(Side.CLIENT)
     public int getColorFromItemStack(ItemStack stack, int renderPass) {
-        return (renderPass == 1) ? getColor(stack) : Constants.COLOR_WHITE;
+        return (renderPass == 1) ? ItemTagUtils.getColor(stack) : Constants.COLOR_WHITE;
     }
 
     @Override
@@ -245,24 +160,14 @@ public class ItemTag extends Item {
     public Icon getIconFromDamageForRenderPass(int damage, int pass) {
         switch (pass) {
             case 0:
-                return getType(damage).backgroundIcon;
+                return ItemTagUtils.getType(damage).backgroundIcon;
             case 2:
-                return getSize(damage).icon;
+                return ItemTagUtils.getSize(damage).icon;
             default:
                 return itemIcon;
 
         }
     }
-
-    public final static IFieldSelector nbtOnlySelector = new IFieldSelector() {
-
-        @Override
-        public boolean canVisit(Field field, int flags) {
-            boolean isNBT = (flags & SerializableField.NBT_SERIALIZABLE) != 0;
-            boolean notExcluded = (flags & TagData.EXCLUDE_IN_ITEM_NBT) == 0;
-            return isNBT && notExcluded;
-        }
-    };
 
     public boolean isBlockSideAvailable(ForgeDirection dir, World world, int x, int y, int z) {
         for (EntityTag e : TagUtils.getBlockTags(world, x, y, z))
@@ -277,11 +182,8 @@ public class ItemTag extends Item {
         if (world.isRemote || !player.canPlayerEdit(x, y, z, side, stack))
             return false;
 
-        TagData data = new TagData();
-        data.readFromNBT(getItemTag(stack), nbtOnlySelector);
+        TagData data = ItemTagUtils.createFromStack(stack);
 
-        data.tagSize = getSize(stack);
-        data.tagType = getType(stack);
         data.side = ForgeDirection.VALID_DIRECTIONS[side];
 
         if (!isBlockSideAvailable(data.side, world, x, y, z))
@@ -313,11 +215,16 @@ public class ItemTag extends Item {
         return true;
     }
 
-    public static ItemStack upgradeToType(ItemStack stack, TagType type) {
-        TagSize size = getSize(stack);
-        int newDamage = calculateDamage(type, size);
-        ItemStack result = stack.copy();
-        result.setItemDamage(newDamage);
-        return result;
+    @Override
+    public boolean func_111207_a(ItemStack stack, EntityPlayer player, EntityLivingBase entity) {
+        TagProperty prop = EntityTagsListener.getProperty(entity);
+
+        if (prop != null && prop.tagData == null) {
+            prop.tagData = ItemTagUtils.createFromStack(stack);
+            stack.stackSize--;
+            return true;
+        }
+
+        return false;
     }
 }

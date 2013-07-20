@@ -114,7 +114,7 @@ public class BlockTagPeripheral extends BlockContainer {
     @Override
     public int damageDropped(int metadata) {
         PeripheralType type = getType(metadata);
-        return calculateMeta(ForgeDirection.SOUTH, type);
+        return calculateMeta(ForgeDirection.WEST, type);
     }
 
     private static boolean isItemTag(ItemStack stack) {

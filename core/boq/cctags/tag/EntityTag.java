@@ -9,15 +9,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import boq.cctags.CCTags;
 import boq.cctags.EntityPacketHandler;
-import boq.cctags.cc.ItemMisc;
+import boq.cctags.cc.*;
 import boq.cctags.cc.ItemMisc.Subtype;
 import boq.utils.coord.Bounds;
 import boq.utils.coord.BoundsRotator;
 import boq.utils.misc.Dyes;
-import boq.utils.misc.Utils;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 
@@ -241,26 +239,6 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
         return 0;
     }
 
-    private Object[] tagDescription() {
-        String label;
-
-        if (Strings.isNullOrEmpty(data.label)) {
-            String un = CCTags.instance.itemTag.getUnlocalizedName() + ".name";
-            label = StatCollector.translateToLocal(un);
-        } else
-            label = data.label;
-
-        String contents;
-
-        if (Strings.isNullOrEmpty(data.contents))
-            contents = StatCollector.translateToLocal("cctag.empty");
-        else
-            contents = data.contents;
-
-        String serial = String.format("%06X", data.uid(this));
-        return Utils.wrap(label, serial, data.tagSize.name, Strings.nullToEmpty(contents));
-    }
-
     @Override
     public boolean func_130002_c(EntityPlayer player) {
         if (!worldObj.isRemote) {
@@ -278,8 +256,10 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
                 return true;
             }
 
-            if (ItemMisc.checkItem(held, Subtype.HANDHELD))
-                player.sendChatToPlayer(ChatMessageComponent.func_111082_b("handheld.desc", tagDescription()));
+            if (held.getItem() instanceof ItemReader || ItemMisc.checkItem(held, Subtype.HANDHELD_OLD)) {
+                Object[] params = data.tagDescription(this);
+                player.sendChatToPlayer(ChatMessageComponent.func_111082_b("handheld.desc", params));
+            }
             else {
                 data.rotation = data.rotation.rotateCCW();
                 EntityPacketHandler.sendUpdateToAllTrackers(this);

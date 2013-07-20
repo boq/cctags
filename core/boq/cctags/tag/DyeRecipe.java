@@ -61,7 +61,7 @@ public class DyeRecipe implements IRecipe {
     private static ItemStack createTag(ItemStack item, int dyeOreId) {
         ItemStack newItem = item.copy();
         newItem.stackSize = 1;
-        NBTTagCompound itemTag = ItemTag.getItemTag(newItem);
+        NBTTagCompound itemTag = ItemTagUtils.getItemTag(newItem);
         itemTag.setInteger(TagData.TAG_COLOR, dyeOreId);
         return newItem;
     }

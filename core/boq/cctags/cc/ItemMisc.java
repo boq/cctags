@@ -14,16 +14,18 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemMisc extends Item {
 
     public enum Subtype {
-        WRITER_PCB("item.pcb-writer", "cctags:pcb-writer"),
-        PRINTER_PCB("item.pcb-printer", "cctags:pcb-printer"),
-        HANDHELD("item.handheld", "cctags:handheld");
+        WRITER_PCB("item.pcb-writer", "cctags:pcb-writer", true),
+        PRINTER_PCB("item.pcb-printer", "cctags:pcb-printer", true),
+        HANDHELD_OLD("item.tag-reader.old", "cctags:handheld", false);
         public final String name;
         public final String iconName;
+        public final boolean visible;
         private Icon icon;
 
-        private Subtype(String name, String iconName) {
+        private Subtype(String name, String iconName, boolean visible) {
             this.name = name;
             this.iconName = iconName;
+            this.visible = visible;
         }
     }
 
@@ -70,7 +72,8 @@ public class ItemMisc extends Item {
     @Override
     public void getSubItems(int id, CreativeTabs tab, List result) {
         for (Subtype s : types)
-            result.add(new ItemStack(id, 1, s.ordinal()));
+            if (s.visible)
+                result.add(new ItemStack(id, 1, s.ordinal()));
     }
 
     public static boolean checkItem(ItemStack stack, Subtype subtype) {

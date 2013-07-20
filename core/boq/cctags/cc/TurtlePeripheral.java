@@ -9,8 +9,8 @@ import boq.cctags.LuaInit;
 import boq.cctags.tag.TagData;
 import boq.cctags.tag.TagSize;
 import boq.cctags.tag.access.*;
-import boq.cctags.tag.access.EntityTagAccess.IPositionProvider;
-import boq.cctags.tag.access.InventoryTagAccess.IStackProvider;
+import boq.cctags.tag.access.EntityAccess.IPositionProvider;
+import boq.cctags.tag.access.ItemAccess.IStackProvider;
 import dan200.computer.api.*;
 import dan200.turtle.api.ITurtleAccess;
 
@@ -30,7 +30,7 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
         return SidesHelper.localToWorld(front, direction);
     }
 
-    protected final static String[] commonMethods = { "isTagValid", "scanForTag", "selectFromSlot", "contents", "write", "size", "serial", "library" };
+    protected final static String[] commonMethods = { "isTagValid", "scanForTag", "selectFromSlot", "contents", "write", "size", "serial", "library", "source" };
 
     @Override
     public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception {
@@ -56,7 +56,7 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
             case 2: {// selectFromSlot
                 final int slotId = checkArg(arguments, 0) ? toInt(arguments[0]) : turtle.getSelectedSlot();
 
-                ITagAccess access = new InventoryTagAccess(new IStackProvider() {
+                ITagAccess access = new InventoryMergedAccess(new IStackProvider() {
                     @Override
                     public ItemStack getStack() {
                         return turtle.getSlotContents(slotId);
@@ -68,7 +68,7 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
                     return TRUE;
                 }
 
-                return wrap(false, "No tag");
+                return wrap(false, "Invalid or missing tag");
 
             }
             case 3: {// contents
@@ -110,6 +110,9 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
 
             case 7: // library
                 return LuaInit.instance.getLuaLibrary(arguments);
+
+            case 8: // source
+                return wrap(tagAccess.name());
         }
 
         throw new IllegalArgumentException("Invalid method id: " + method);

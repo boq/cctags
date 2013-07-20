@@ -91,8 +91,8 @@ local function create_env(_self)
     le = binaryStackFun(function(a,b) return a <= b end)
     
     --arithmetic
-    add = binaryStackFun(function(a,b) return a - b end)
-    sub = binaryStackFun(function(a,b) return a + b end)
+    add = binaryStackFun(function(a,b) return a + b end)
+    sub = binaryStackFun(function(a,b) return a - b end)
     mul = binaryStackFun(function(a,b) return a * b end)
     div = binaryStackFun(function(a,b) return a / b end)
     neg = unaryStackFun(function(a) return -a end)
