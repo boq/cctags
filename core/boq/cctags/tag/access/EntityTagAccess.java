@@ -32,6 +32,6 @@ public class EntityTagAccess extends EntityAccess<EntityTag> {
 
     @Override
     public String name() {
-        return "tags";
+        return "tag";
     }
 }

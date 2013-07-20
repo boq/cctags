@@ -34,12 +34,12 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
 
     public TileEntityPeripheral(final T data) {
         this.data = data;
-        access = new InventoryMergedAccess(new IStackProvider() {
+        access = new ItemAccess(new IStackProvider() {
             @Override
             public ItemStack getStack() {
                 return data.insertedItem;
             }
-        });
+        }, AccessUtils.mergedAccess);
     }
 
     private ForgeDirection front() {

@@ -4,45 +4,46 @@ import net.minecraft.item.ItemStack;
 import boq.cctags.tag.ItemTagUtils;
 import boq.cctags.tag.TagData;
 
-public abstract class ItemAccess implements ITagAccess {
+public class ItemAccess implements ITagAccess {
 
     public interface IStackProvider {
         public ItemStack getStack();
     }
 
     private final IStackProvider provider;
+    private final IItemStackDataAccess access;
 
-    public ItemAccess(IStackProvider provider) {
+    public ItemAccess(IStackProvider provider, IItemStackDataAccess access) {
         this.provider = provider;
+        this.access = access;
     }
 
     @Override
     public boolean isValid() {
         ItemStack stack = provider.getStack();
-        return stack != null && stack.stackSize == 1 && isValid(stack);
+        return stack != null && stack.stackSize == 1 && access.isValid(stack);
     }
-
-    public abstract boolean isValid(ItemStack is);
 
     @Override
     public final TagData readData() {
         ItemStack stack = provider.getStack();
-        return readData(stack);
+        return access.readData(stack);
     }
-
-    protected abstract TagData readData(ItemStack stack);
 
     @Override
     public final void writeData(TagData data, boolean updateClients) {
         ItemStack stack = provider.getStack();
-        writeData(data, stack);
+        access.writeData(stack, data);
     }
-
-    protected abstract void writeData(TagData data, ItemStack stack);
 
     @Override
     public int uid() {
         ItemStack stack = provider.getStack();
         return ItemTagUtils.readData(stack).uid(stack);
+    }
+
+    @Override
+    public String name() {
+        return "inventory item";
     }
 }
