@@ -18,9 +18,9 @@ public class Recipes {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private static ItemStack createTagStack(List recipes, ItemTag item, int count, TagSize size) {
-        int damage = ItemTag.calculateDamage(TagType.NORMAL, size);
+        int damage = ItemTagUtils.calculateDamage(TagType.NORMAL, size);
         ItemStack result = new ItemStack(item, count, damage);
-        ItemTag.setupDefaultTags(result);
+        ItemTagUtils.setupDefaultTags(result);
 
         recipes.add(new BigTagRecipe(result, size));
         return result;
@@ -30,7 +30,7 @@ public class Recipes {
     private static void addTagRecipes(List recipes, ItemStack stack, Object... recipe) {
         Object[] recipeWithP = ObjectArrays.concat(recipe, 'P');
         recipes.add(new ShapedOreRecipe(stack.copy(), ObjectArrays.concat(recipeWithP, Item.paper)));
-        ItemStack glassStack = ItemTag.upgradeToType(stack, TagType.GLASS);
+        ItemStack glassStack = ItemTagUtils.upgradeToType(stack, TagType.GLASS);
         recipes.add(new ShapedOreRecipe(glassStack, ObjectArrays.concat(recipeWithP, Block.thinGlass)));
     }
 
@@ -53,8 +53,11 @@ public class Recipes {
         ItemStack itemTag64K = createTagStack(recipes, mod.itemTag, 8, TagSize.TAG_4K);
         addTagRecipes(recipes, itemTag64K, "PSP", "RRR", "PGP", 'S', Item.slimeBall, 'R', Item.redstone, 'G', Item.ingotGold);
 
-        ItemStack itemHandheld = mod.itemMisc.getStack(Subtype.HANDHELD);
+        ItemStack itemHandheld = new ItemStack(mod.itemReader);
         recipes.add(new ShapedOreRecipe(itemHandheld, "WRW", "IDG", "WRW", 'W', "plankWood", 'R', Item.redstone, 'G', Block.thinGlass, 'D', "dyeGreen", 'I', Item.ingotIron));
+
+        ItemStack itemHandheldOld = mod.itemMisc.getStack(Subtype.HANDHELD_OLD);
+        manager.addShapelessRecipe(itemHandheld, itemHandheldOld);
 
         ItemStack itemWriterPcb = mod.itemMisc.getStack(Subtype.WRITER_PCB);
         manager.addRecipe(itemWriterPcb, "GGG", " R ", " I ", 'G', Item.goldNugget, 'R', Item.redstone, 'I', Item.ingotIron);
@@ -69,5 +72,7 @@ public class Recipes {
 
         ItemStack itemPrinter = mod.blockPeripheral.getDefaultItem(PeripheralType.PRINTER);
         manager.addShapelessRecipe(itemPrinter, itemWriter, itemPrinterPcb);
+
+        recipes.add(new EmbeddedTagRecipe());
     }
 }

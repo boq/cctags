@@ -4,7 +4,8 @@ item.cctag.glass.name=Glass tag
 
 item.pcb-writer.name=Tag Writer Module
 item.pcb-printer.name=Tag Printer Module
-item.handheld.name=Tag Reader
+item.tag-reader.old.name=Obsolete (update with crafting bench)
+item.tag-reader.name=Tag Reader
 
 tile.tag_writer.name=Tag Writer
 tile.tag_printer.name=Tag Printer

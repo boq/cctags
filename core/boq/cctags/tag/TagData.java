@@ -1,14 +1,19 @@
 package boq.cctags.tag;
 
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.ForgeDirection;
+import boq.cctags.CCTags;
 import boq.utils.misc.Rotation;
 import boq.utils.serializable.SerializableData;
 import boq.utils.serializable.SerializableField;
+
+import com.google.common.base.Strings;
 
 public class TagData extends SerializableData {
 
     public static final int EXCLUDE_IN_ITEM_NBT = SerializableField.USER_DEFINED_0;
     public static final int CLIENT_UPDATE = SerializableField.USER_DEFINED_1;
+    public static final int EXCLUDE_IN_EMBEDDED_TAG = SerializableField.USER_DEFINED_2;
 
     @SerializableField(flags = SerializableField.SERIALIZABLE | CLIENT_UPDATE)
     public int color;
@@ -31,10 +36,10 @@ public class TagData extends SerializableData {
     @SerializableField(flags = SerializableField.SERIALIZABLE | EXCLUDE_IN_ITEM_NBT)
     public TagType tagType;
 
-    @SerializableField(flags = EXCLUDE_IN_ITEM_NBT | SerializableField.SERIALIZABLE)
+    @SerializableField(flags = SerializableField.SERIALIZABLE | EXCLUDE_IN_ITEM_NBT | EXCLUDE_IN_EMBEDDED_TAG)
     public ForgeDirection side;
 
-    @SerializableField(flags = EXCLUDE_IN_ITEM_NBT | SerializableField.SERIALIZABLE | CLIENT_UPDATE)
+    @SerializableField(flags = SerializableField.SERIALIZABLE | EXCLUDE_IN_ITEM_NBT | EXCLUDE_IN_EMBEDDED_TAG | CLIENT_UPDATE)
     public Rotation rotation;
 
     private int uid = -1;
@@ -46,5 +51,24 @@ public class TagData extends SerializableData {
         }
 
         return uid;
+    }
+
+    public String tagDescription(Object owner) {
+        String printLabel;
+
+        if (Strings.isNullOrEmpty(label)) {
+            String un = CCTags.instance.itemTag.getUnlocalizedName() + ".name";
+            printLabel = StatCollector.translateToLocal(un);
+        } else
+            printLabel = label;
+
+        String printContents;
+
+        if (Strings.isNullOrEmpty(contents))
+            printContents = StatCollector.translateToLocal("cctag.empty");
+        else
+            printContents = contents;
+        
+        return String.format("%s (#%06X, %s): %s", printLabel, uid(this), tagSize.name, Strings.nullToEmpty(printContents));
     }
 }

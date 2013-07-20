@@ -12,10 +12,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import boq.cctags.LuaInit;
-import boq.cctags.tag.ItemTag;
 import boq.cctags.tag.TagData;
 import boq.cctags.tag.access.*;
-import boq.cctags.tag.access.InventoryTagAccess.IStackProvider;
+import boq.cctags.tag.access.ItemAccess.IStackProvider;
 import boq.utils.log.Log;
 import boq.utils.misc.InventoryUtils;
 import boq.utils.misc.Utils;
@@ -35,10 +34,10 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
 
     public TileEntityPeripheral(final T data) {
         this.data = data;
-        access = new InventoryTagAccess(new IStackProvider() {
+        access = new InventoryMergedAccess(new IStackProvider() {
             @Override
             public ItemStack getStack() {
-                return data.tag;
+                return data.insertedItem;
             }
         });
     }
@@ -58,13 +57,13 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
         return type().peripheralType;
     }
 
-    protected final static String[] commonMethods = { "hasTag", "contents", "write", "size", "eject", "serial", "library" };
+    protected final static String[] commonMethods = { "hasTag", "contents", "write", "size", "eject", "serial", "library", "source" };
 
     @Override
     public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception {
         switch (method) {
             case 0: // hasTag
-                return wrap(data.tag != null);
+                return wrap(access.isValid());
             case 1: { // contents
                 if (!access.isValid())
                     return wrap(false, "No tag");
@@ -111,6 +110,8 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
             }
             case 6: // library
                 return LuaInit.instance.getLuaLibrary(arguments);
+            case 7: // source
+                return wrap(access.name());
             default:
                 throw new IllegalArgumentException("Unknown method: " + method);
         }
@@ -188,11 +189,11 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
     }
 
     public ItemStack removeTag(boolean update) {
-        if (data.tag == null)
+        if (data.insertedItem == null)
             return null;
 
-        ItemStack tmp = data.tag;
-        data.tag = null;
+        ItemStack tmp = data.insertedItem;
+        data.insertedItem = null;
 
         if (update) {
             int meta = BlockTagPeripheral.clearActive(getBlockMetadata());
@@ -203,20 +204,22 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
     }
 
     protected void onTagInsert() {
-        for (Map.Entry<IComputerAccess, String> access : computers.entrySet())
-            access.getKey().queueEvent("tag", wrap(access.getValue()));
+        if (access.isValid()) {
+            for (Map.Entry<IComputerAccess, String> access : computers.entrySet())
+                access.getKey().queueEvent("tag", wrap(access.getValue()));
 
-        int meta = BlockTagPeripheral.setActive(getBlockMetadata());
-        worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, meta, 3);
+            int meta = BlockTagPeripheral.setActive(getBlockMetadata());
+            worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, meta, 3);
+        }
         onInventoryChanged();
     }
 
     public boolean insertTag(ItemStack equipped) {
-        if (data.tag != null && !ejectTag(false))
+        if (data.insertedItem != null && !ejectTag(false))
             return false;
 
-        data.tag = equipped.copy();
-        data.tag.stackSize = 1;
+        data.insertedItem = equipped.copy();
+        data.insertedItem.stackSize = 1;
         onTagInsert();
         return true;
     }
@@ -234,7 +237,7 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
     }
 
     public ItemStack getDroppedItem() {
-        return data.tag;
+        return data.insertedItem;
     }
 
     @Override
@@ -244,7 +247,7 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
 
     @Override
     public ItemStack getStackInSlot(int slot) {
-        return (slot == 0) ? data.tag : null;
+        return (slot == 0) ? data.insertedItem : null;
     }
 
     @Override
@@ -252,8 +255,8 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
         if (slot != 0)
             return null;
 
-        ItemStack stack = data.tag;
-        data.tag = null;
+        ItemStack stack = data.insertedItem;
+        data.insertedItem = null;
         onInventoryChanged();
         return stack;
     }
@@ -266,7 +269,7 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
     @Override
     public void setInventorySlotContents(int slot, ItemStack stack) {
         if (slot == 0) {
-            data.tag = stack;
+            data.insertedItem = stack;
             onTagInsert();
         }
     }
@@ -300,8 +303,7 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
     @Override
     public boolean isStackValidForSlot(int i, ItemStack stack) {
         return (i == 0) &&
-                (data.tag == null) && // only one item allowed
-                (stack != null) &&
-                (stack.getItem() instanceof ItemTag);
+                (data.insertedItem == null) && // only one item allowed
+                (stack != null);
     }
 }

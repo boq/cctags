@@ -1,42 +1,31 @@
 package boq.cctags.tag.access;
 
 import net.minecraft.item.ItemStack;
-import boq.cctags.tag.ItemTag;
-import boq.cctags.tag.TagData;
+import boq.cctags.tag.*;
 
-public class InventoryTagAccess implements ITagAccess {
-
-    public interface IStackProvider {
-        public ItemStack getStack();
-    }
-
-    private final IStackProvider provider;
+public class InventoryTagAccess extends ItemAccess {
 
     public InventoryTagAccess(IStackProvider provider) {
-        this.provider = provider;
+        super(provider);
     }
 
     @Override
-    public boolean isValid() {
-        ItemStack stack = provider.getStack();
-        return stack != null && stack.getItem() instanceof ItemTag && stack.stackSize == 1;
+    public boolean isValid(ItemStack stack) {
+        return stack.getItem() instanceof ItemTag;
     }
 
     @Override
-    public TagData readData() {
-        ItemStack stack = provider.getStack();
-        return ItemTag.readData(stack);
+    protected TagData readData(ItemStack stack) {
+        return ItemTagUtils.readData(stack);
     }
 
     @Override
-    public void writeData(TagData data, boolean updateClients) {
-        ItemStack stack = provider.getStack();
-        ItemTag.writeData(stack, data);
+    protected void writeData(TagData data, ItemStack stack) {
+        ItemTagUtils.writeData(stack, data);
     }
 
     @Override
-    public int uid() {
-        ItemStack stack = provider.getStack();
-        return ItemTag.readData(stack).uid(stack);
+    public String name() {
+        return "inventory tag";
     }
 }

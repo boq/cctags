@@ -23,7 +23,7 @@ public class BigTagRecipe extends ShapedRecipes {
     private final TagSize size;
 
     public BigTagRecipe(ItemStack smallTag, TagSize size) {
-        super(3, 3, bigTagPattern(smallTag), ItemTag.upgradeToType(smallTag, TagType.BIG));
+        super(3, 3, bigTagPattern(smallTag), ItemTagUtils.upgradeToType(smallTag, TagType.BIG));
         this.size = size;
     }
 
@@ -50,14 +50,14 @@ public class BigTagRecipe extends ShapedRecipes {
 
         return tag != null &&
                 tag.getItem() instanceof ItemTag &&
-                ItemTag.getSize(tag) == size &&
-                ItemTag.getType(tag) == TagType.NORMAL;
+                ItemTagUtils.getSize(tag) == size &&
+                ItemTagUtils.getType(tag) == TagType.NORMAL;
     }
 
     @Override
     public ItemStack getCraftingResult(InventoryCrafting inv) {
         ItemStack center = inv.getStackInRowAndColumn(1, 1);
-        ItemStack result = ItemTag.upgradeToType(center, TagType.BIG);
+        ItemStack result = ItemTagUtils.upgradeToType(center, TagType.BIG);
         result.stackSize = 1;
         return result;
     }

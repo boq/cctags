@@ -6,6 +6,6 @@ import boq.utils.serializable.SerializableField;
 
 public class WriterData extends SerializableData {
     @SerializableField(nullable = true)
-    public ItemStack tag;
+    public ItemStack insertedItem;
 
 }

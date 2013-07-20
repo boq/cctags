@@ -9,14 +9,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import boq.cctags.CCTags;
 import boq.cctags.EntityPacketHandler;
-import boq.cctags.cc.ItemMisc;
+import boq.cctags.cc.*;
 import boq.cctags.cc.ItemMisc.Subtype;
 import boq.utils.coord.Bounds;
 import boq.utils.coord.BoundsRotator;
 import boq.utils.misc.Dyes;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 
@@ -240,26 +239,7 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
         }
         return 0;
     }
-
-    private String tagDescription() {
-        String label;
-
-        if (Strings.isNullOrEmpty(data.label)) {
-            String un = CCTags.instance.itemTag.getUnlocalizedName() + ".name";
-            label = LanguageRegistry.instance().getStringLocalization(un);
-        } else
-            label = data.label;
-
-        String contents;
-
-        if (Strings.isNullOrEmpty(data.contents))
-            contents = LanguageRegistry.instance().getStringLocalization("cctag.empty");
-        else
-            contents = data.contents;
-
-        return String.format("%s (#%06X, %s): %s", label, data.uid(this), data.tagSize.name, Strings.nullToEmpty(contents));
-    }
-
+    
     @Override
     public boolean interact(EntityPlayer player) {
         if (!worldObj.isRemote) {
@@ -277,8 +257,8 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
                 return true;
             }
 
-            if (ItemMisc.checkItem(held, Subtype.HANDHELD))
-                player.sendChatToPlayer(tagDescription());
+            if (held.getItem() instanceof ItemReader || ItemMisc.checkItem(held, Subtype.HANDHELD_OLD))
+                player.sendChatToPlayer(data.tagDescription(this));
             else {
                 data.rotation = data.rotation.rotateCCW();
                 EntityPacketHandler.sendUpdateToAllTrackers(this);

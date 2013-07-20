@@ -10,4 +10,6 @@ public interface ITagAccess {
     public void writeData(TagData data, boolean updateClients);
 
     public int uid();
+
+    public String name();
 }

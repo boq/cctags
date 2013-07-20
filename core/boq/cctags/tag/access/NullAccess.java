@@ -24,4 +24,9 @@ public class NullAccess implements ITagAccess {
         throw new IllegalAccessError();
     }
 
+    @Override
+    public String name() {
+        return "none";
+    }
+
 }

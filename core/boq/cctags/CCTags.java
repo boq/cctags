@@ -2,6 +2,7 @@ package boq.cctags;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.MinecraftForge;
 import boq.cctags.cc.*;
 import boq.cctags.tag.*;
 import boq.utils.lang.LangList;
@@ -35,6 +36,9 @@ public class CCTags {
     private int itemTagId;
     public ItemTag itemTag;
 
+    private int itemReaderId;
+    public ItemReader itemReader;
+
     private int blockPeripheralId;
     public BlockTagPeripheral blockPeripheral;
 
@@ -49,6 +53,7 @@ public class CCTags {
             cfg.load();
             itemTagId = cfg.getItem("itemTag", 27412).getInt();
             itemMiscId = cfg.getItem("itemMisc", 27413).getInt();
+            itemReaderId = cfg.getItem("itemReader", 27414).getInt();
             blockPeripheralId = cfg.getBlock("blockTagPeripheral", 2324).getInt();
 
             config = new Config(cfg);
@@ -71,6 +76,9 @@ public class CCTags {
         itemMisc = new ItemMisc(itemMiscId);
         GameRegistry.registerItem(itemMisc, "cctagMisc");
 
+        itemReader = new ItemReader(itemReaderId);
+        GameRegistry.registerItem(itemReader, "cctagReader");
+
         blockPeripheral = new BlockTagPeripheral(blockPeripheralId);
         GameRegistry.registerBlock(blockPeripheral, ItemPeripheral.class, "tagPeripheral");
 
@@ -78,6 +86,8 @@ public class CCTags {
         GameRegistry.registerTileEntity(TileEntityPrinter.class, "tag-printer");
 
         EntityRegistry.registerModEntity(EntityTag.class, "CCTag", Constants.ENTITY_TAG, this, 160, Integer.MAX_VALUE, false);
+
+        MinecraftForge.EVENT_BUS.register(new EntityTagsListener());
 
         proxy.registerRenderers();
         TagIcons.instance.loadPredefinedIcons();
