@@ -26,7 +26,7 @@ public class EntityTagAccess implements ITagAccess {
     @Override
     public boolean isValid() {
         EntityTag e = tag.get();
-        
+
         if (e == null)
             return false;
 
