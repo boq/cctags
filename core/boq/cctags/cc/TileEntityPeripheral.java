@@ -14,6 +14,8 @@ import net.minecraftforge.common.ForgeDirection;
 import boq.cctags.LuaInit;
 import boq.cctags.tag.ItemTag;
 import boq.cctags.tag.TagData;
+import boq.cctags.tag.access.*;
+import boq.cctags.tag.access.InventoryTagAccess.IStackProvider;
 import boq.utils.log.Log;
 import boq.utils.misc.InventoryUtils;
 import boq.utils.misc.Utils;
@@ -24,27 +26,20 @@ import dan200.computer.api.*;
 
 public abstract class TileEntityPeripheral<T extends WriterData> extends TileEntity implements IPeripheral, IInventory {
 
-    protected TagData readData() {
-        if (data.tag == null)
-            return null;
-
-        return ItemTag.readData(data.tag);
-    }
-
-    protected boolean writeData(TagData tagData) {
-        if (data.tag == null)
-            return false;
-
-        ItemTag.writeData(data.tag, tagData);
-        return true;
-    }
+    protected ITagAccess access;
 
     protected final T data;
 
     protected Map<IComputerAccess, String> computers = Maps.newIdentityHashMap();
 
-    public TileEntityPeripheral(T data) {
+    public TileEntityPeripheral(final T data) {
         this.data = data;
+        access = new InventoryTagAccess(new IStackProvider() {
+            @Override
+            public ItemStack getStack() {
+                return data.tag;
+            }
+        });
     }
 
     private ForgeDirection front() {
@@ -70,30 +65,32 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
             case 0: // hasTag
                 return wrap(data.tag != null);
             case 1: { // contents
-                TagData data = readData();
-                if (data == null)
-                    return null;
+                if (!access.isValid())
+                    return wrap(false, "No tag");
 
+                TagData data = access.readData();
                 String contents = data.contents;
                 return wrap(contents, contents == null ? 0 : contents.length());
             }
             case 2: { // write
-                String newContents = arguments[0].toString();
-                TagData data = readData();
-                if (data == null)
+                if (!access.isValid())
                     return wrap(false, "No tag");
+
+                String newContents = arguments[0].toString();
+                TagData data = access.readData();
 
                 if (!data.tagSize.check(newContents))
                     return wrap(false, "Message to big");
 
                 data.contents = newContents;
-                writeData(data);
+                access.writeData(data, false);
                 return wrap(true, data.contents.length());
             }
             case 3: { // size
-                TagData data = readData();
-                if (data == null)
-                    return null;
+                if (!access.isValid())
+                    return wrap(false, "No tag");
+
+                TagData data = access.readData();
 
                 return wrap(data.tagSize.size, data.tagSize.name);
             }
@@ -106,7 +103,10 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
                 return wrap(ejectTag(true));
 
             case 5: {// serial
-                return wrap(readData().uid(data.tag));
+                if (!access.isValid())
+                    return wrap(false, "No tag");
+
+                return wrap(access.uid());
             }
             case 6: // library
                 return LuaInit.instance.getLuaLibrary(arguments);
