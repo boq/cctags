@@ -81,16 +81,26 @@ function work_env.pausePostamble()
     p()
 end
 
+local debugPrint = false
+
+function work_env.debug(arg)
+    debugPrint = arg
+end
+
 local values = stack(nil)
 work_env._args = values
 function work_env.push(value) 
     values.push(value)
-    print('Push: ' .. tostring(value))
+    if debugPrint then
+        print('Push: ' .. tostring(value))
+    end
 end
 
 function work_env.pop()
     value = values.pop()
-    print('Pop: ' .. tostring(value))
+    if debugPrint then
+        print('Pop: ' .. tostring(value))
+    end
     return value 
 end
 work_env.top = values.top
