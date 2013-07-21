@@ -1,7 +1,7 @@
 package boq.cctags.tag.access;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayer;
@@ -63,8 +63,8 @@ public class AccessUtils {
                     return access;
             }
 
-            if (o instanceof EntityLivingBase) {
-                ITagAccess access = new EntityLivingAccess((EntityLivingBase)o, provider);
+            if (o instanceof EntityLiving) {
+                ITagAccess access = new EntityLivingAccess((EntityLiving)o, provider);
                 if (access.isValid())
                     return access;
             }

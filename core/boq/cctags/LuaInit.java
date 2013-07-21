@@ -4,8 +4,8 @@ import static boq.utils.misc.Utils.checkArg;
 import static boq.utils.misc.Utils.wrap;
 
 import java.io.*;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.Map.Entry;
 
 import argo.jdom.*;
 import argo.saj.InvalidSyntaxException;

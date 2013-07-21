@@ -68,7 +68,7 @@ public class TagData extends SerializableData {
             printContents = StatCollector.translateToLocal("cctag.empty");
         else
             printContents = contents;
-        
+
         return String.format("%s (#%06X, %s): %s", printLabel, uid(this), tagSize.name, Strings.nullToEmpty(printContents));
     }
 }

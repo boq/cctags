@@ -4,7 +4,7 @@ import java.util.List;
 
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -220,7 +220,7 @@ public class ItemTag extends Item {
     }
 
     @Override
-    public boolean func_111207_a(ItemStack stack, EntityPlayer player, EntityLivingBase entity) {
+    public boolean itemInteractionForEntity(ItemStack stack, EntityLiving entity) {
         TagProperty prop = EntityTagsListener.getProperty(entity);
 
         if (prop != null && prop.tagData == null) {

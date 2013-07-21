@@ -20,7 +20,6 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -239,7 +238,7 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
         }
         return 0;
     }
-    
+
     @Override
     public boolean interact(EntityPlayer player) {
         if (!worldObj.isRemote) {

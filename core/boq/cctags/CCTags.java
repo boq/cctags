@@ -68,7 +68,7 @@ public class CCTags {
 
     @Init
     public void load(FMLInitializationEvent evt) {
-        LangList.loadAll("/mods/cctags/lang/", true);
+        LangList.loadAll("/mods/cctags/lang/", false);
 
         itemTag = new ItemTag(itemTagId);
         GameRegistry.registerItem(itemTag, "cctag");
