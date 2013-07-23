@@ -16,7 +16,7 @@ DIRECTIONS = {"top", "bottom", "front", "back", "left", "right"}
 function scanForTags(side, dirs)
     local dirs = dirs or DIRECTIONS
     local p = getPeripheral(side)
-    for _,dir in pairs(DIRECTIONS) do
+    for _,dir in pairs(dirs) do
         if p.scanForTag(dir) then
             local contents, size = p.contents()
             return dir, contents, size, p.size(), p.serial()
@@ -40,6 +40,41 @@ local function append(target, source)
     end
 end
 
+function stack(initial)
+    local empty = {
+        value = initial
+    }
+    
+    empty.prev = empty
+    
+    local head = empty
+    
+    local result = {}
+    
+    function result.push(v)
+        head = {
+            value = v,
+            prev = head
+        }
+    end
+    
+    function result.pop()
+        local c = head.value
+        head = head.prev
+        return c
+    end
+    
+    function result.top()
+        return head.value
+    end
+    
+    function result.clear()
+        head = empty
+    end
+    
+    return result
+end
+
 -- it's a big function, but we want to inject runtime variables into scope during function declaration and delay few things until APIs are loaded
 -- all functions declared here will be visible for tags
 -- all runtime variables from follow (like tagDir, reader, etc) are visible inside this function
@@ -47,6 +82,31 @@ local function create_env(_self)
     local function include(t)
         append(_self, t)
     end
+    
+    local debugPrint = false
+
+    function debug(arg)
+       debugPrint = arg
+    end
+    
+    _args = tags.stack(nil)
+    
+    function push(value) 
+        _args.push(value)
+        if debugPrint then
+            print('Push: ' .. tostring(value))
+        end
+    end
+    
+    function pop()
+        value = _args.pop()
+        if debugPrint then
+            print('Pop: ' .. tostring(value))
+        end
+        return value 
+    end
+    
+    top = _args.top
 
     pullEvent = os.pullEvent
     scan = scanForTags
@@ -215,6 +275,21 @@ local function create_env(_self)
         selectAction(turtleRotate, side)
     end
     
+    local moveSide = {
+        top = up,
+        bottom = down,
+        forward = forward,
+        back = back
+    }
+    
+    function replacePostamble(side)
+        action = moveSide[side]
+        if action then
+            popPostamble()
+            pushPostamble(action)
+        end
+    end
+    
     local function dirAction(normal, up, down)
         return function(side, reverse, ...)
             local args = {...}
@@ -245,6 +320,24 @@ local function create_env(_self)
     suck = dirAction(turtle.suck, turtle.suckUp, turtle.suckDown)
     detect = dirAction(turtle.detect, turtle.detectUp, turtle.detectDown)
     compare = dirAction(turtle.compare, turtle.compareUp, turtle.compareDown)
+    
+    function scanRedstone(dirs)
+        local dirs = dirs or tags.DIRECTIONS
+        for _,dir in pairs(dirs) do
+            if redstone.getInput(dir) then
+                return dir
+            end
+        end
+    end
+    
+    function waitForRedstone(side)
+        while true do
+            os.pullEvent('redstone')
+            if redstone.getInput(side) then
+                break
+            end
+        end
+    end
     
     t = turtle -- shortcut
     

@@ -37,73 +37,15 @@ end
 work_env.prev = function() end
 work_env.step = 0
 
-local function stack(initial)
-    local empty = {
-        value = initial
-    }
-    
-    empty.prev = empty
-    
-    local head = empty
-    
-    local result = {}
-    
-    function result.push(v)
-        head = {
-            value = v,
-            prev = head
-        }
-    end
-    
-    function result.pop()
-        local c = head.value
-        head = head.prev
-        return c
-    end
-    
-    function result.top()
-        return head.value
-    end
-    
-    function result.clear()
-        head = empty
-    end
-    
-    return result
-end
-
-local postamble = stack(function() end)
+local postamble = tags.stack(function() end)
 work_env.pushPostamble = postamble.push
 work_env.popPostamble = postamble.pop
+
 function work_env.pausePostamble() 
     local p = postamble.pop()
     postamble.push(function () end)
     p()
 end
-
-local debugPrint = false
-
-function work_env.debug(arg)
-    debugPrint = arg
-end
-
-local values = stack(nil)
-work_env._args = values
-function work_env.push(value) 
-    values.push(value)
-    if debugPrint then
-        print('Push: ' .. tostring(value))
-    end
-end
-
-function work_env.pop()
-    value = values.pop()
-    if debugPrint then
-        print('Pop: ' .. tostring(value))
-    end
-    return value 
-end
-work_env.top = values.top
 
 work_env._counters = {}
 
