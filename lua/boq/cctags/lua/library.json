@@ -217,6 +217,34 @@
                 "icon" : "prev",
                 "label" : "Select previous slot",
                 "contents" : "_slot = math.max(_slot - 1, 1) select(_slot)"
+            },
+            {
+                "name" : "push-slot",
+                "category" : "inventory",
+                "icon" : "push",
+                "label" : "Push current slot",
+                "contents" : "push(_slot)"
+            },
+            {
+                "name" : "pop-slot",
+                "category" : "inventory",
+                "icon" : "pop",
+                "label" : "Select slot from stack",
+                "contents" : "_slot = pop() select(_slot)"
+            },
+            {
+                "name" : "item-count",
+                "category" : "inventory",
+                "icon" : "question",
+                "label" : "Get item count in slot",
+                "contents" : "push(getItemCount(pop()))"
+            },
+            {
+                "name" : "item-count-current",
+                "category" : "inventory",
+                "icon" : "question",
+                "label" : "Get item count in current slot",
+                "contents" : "push(getItemCount(_slot))"
             }
         ]
     },
@@ -286,6 +314,13 @@
                 "icon" : "hourglass",
                 "contents" : "waitForRedstone(tagDir)",
                 "comment" : "Wait for redstone signal from tag side"
+            },
+            {
+                "name" : "redstone-read-top",
+                "label" : "Read top signal",
+                "icon" : "push",
+                "contents" : "push(rs.getInput('top'))",
+                "comment" : "Wait for redstone signal from tag side"
             }
         ]
     },
@@ -310,9 +345,21 @@
             },
             {
                 "name" : "branch-stop",
-                "label" : "Conditional right",
-                "contents" : "cond(stop)",
+                "label" : "Conditional stop",
+                "contents" : "if pop() then stop() return end",
                 "comment" : "Condition on stack"
+            },
+            {
+                "name" : "branch-skip",
+                "label" : "Conditional skip next command",
+                "contents" : "cond(control.skip())",
+                "comment" : "Condition on stack"
+            },
+            {
+                "name" : "junction",
+                "label" : "Junction",
+                "contents" : "if pop() then turnRight() else turnLeft() end",
+                "comment" : "Turn left on true, right on false"
             }
         ]
     },
@@ -474,10 +521,24 @@
                 "comment" : "Argument on stack"
             },
             {
+                "name" : "le0",
+                "label" : "Less or equal zero",
+                "icon" : "text!a<=0",
+                "contents" : "push(pop() <= 0)",
+                "comment" : "Argument on stack"
+            },
+            {
             "name" : "gt0",
                 "label" : "Greater than zero",
                 "icon" : "text!a>0",
                 "contents" : "push(pop() > 0)",
+                "comment" : "Argument on stack"
+            },
+            {
+                "name" : "ge0",
+                "label" : "Greater or equal zero",
+                "icon" : "text!a>=0",
+                "contents" : "push(pop() >= 0)",
                 "comment" : "Argument on stack"
             },
             {
@@ -685,7 +746,14 @@
                 "icon" : "push",
                 "contents" : "push(tagDir)",
                 "comment" : "Push current tag direction (relative to turtle)"
-            },
+            }
+        ]
+    },
+    {
+        "name" : "control",
+        "color" : "33CCCC",
+        "tags" :
+        [
             {
                 "name" : "record",
                 "label" : "Record macro",
@@ -698,9 +766,16 @@
                 "name" : "record-execute",
                 "label" : "Record and execute macro",
                 "icon" : "record",
-                "contents" : "!record-execute",
+                "contents" : "!record_execute",
                 "comment" : "Any next command will be executed and appended to macro",
                 "description" : "Any encountered tag will be executed, but also added to command list. Use tag with '!save' to finish"
+            },
+            {
+                "name" : "skip-next",
+                "label" : "Skip next tag",
+                "icon" : "next",
+                "contents" : "!skip",
+                "comment" : "Skip any next tag"
             },
             {
                 "name" : "push-macro",
@@ -736,6 +811,37 @@
                 "label" : "Restore command execution",
                 "icon" : "play",
                 "contents" : "!restore"
+            },
+            {
+                "name" : "postamble-macro",
+                "label" : "Set macro as postamble",
+                "icon" : "gear",
+                "contents" : "pushPostamble(pop())",
+                "comment" : "Sets previously recorded macro as postamble"
+            },
+            {
+                "name" : "reader-disable",
+                "label" : "Stop reading tags",
+                "icon" : "off",
+                "contents" : "readTags=false"
+            },
+            {
+                "name" : "reader-enable",
+                "label" : "Restore reading tags",
+                "icon" : "on",
+                "contents" : "readTags=true"
+            },
+            {
+                "name" : "missing-ignore",
+                "label" : "Ignore missing tags",
+                "icon" : "on",
+                "contents" : "ignoreMissing=true"
+            },
+            {
+                "name" : "missing-fail",
+                "label" : "Stop on missing tags",
+                "icon" : "off",
+                "contents" : "ignoreMissing=false"
             }
         ]
     }

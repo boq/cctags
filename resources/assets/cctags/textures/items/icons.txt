@@ -38,6 +38,8 @@ left
 line
 next
 no
+off
+on
 orient-back
 orient-front
 orient-left
