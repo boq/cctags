@@ -73,7 +73,7 @@ public class EntityTagsListener {
 
     @ForgeSubscribe
     public void onEntityInteraction(EntityInteractEvent evt) {
-        if (evt.entity instanceof EntityLiving) {
+        if (evt.target instanceof EntityLiving) {
             ItemStack stack = evt.entityPlayer.getHeldItem();
 
             if (stack != null && (stack.getItem() instanceof ItemReader)) {

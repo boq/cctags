@@ -61,7 +61,7 @@ local function parseLine(line)
     return "free",contents, quantity, icon, label
 end
 
-local function writeTag(type, contents, icon, label)
+local function writeTag(type, contents, icon, label, side)
     print("Writing '".. contents .. "'. Insert tag or press space to skip. Press any other key to abort")
     while true do
         local event, arg = os.pullEvent()
@@ -89,7 +89,7 @@ local function writeTag(type, contents, icon, label)
                 end
             end
             
-            p.eject()
+            p.eject(side)
             return true
         elseif event == "key" then
             return arg == keys.space
@@ -99,11 +99,12 @@ end
 
 local args = { ... }
 if #args <= 0 then
-    print("Usage: progtag <path to file>")
+    print("Usage: progtag <path to file> [<side>]")
     return
 end
 
 local path = shell.resolve(args[1])
+local side = args[2]
 
 if not fs.exists(path) or fs.isDir(path) then
     print("File " .. path .. " is directory")
@@ -127,7 +128,7 @@ while line and not finished do
     elseif type == "lib" or type == "free" then
         print(string.format("Printing %d tag(s) from line %d", quantity, lineNum))
         for i = 1,quantity do
-            if not writeTag(type, command, icon, label) then
+            if not writeTag(type, command, icon, label, side) then
                 finished = true
                 break
             end

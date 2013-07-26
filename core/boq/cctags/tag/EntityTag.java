@@ -256,7 +256,7 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
                 return true;
             }
 
-            if (held.getItem() instanceof ItemReader || ItemMisc.checkItem(held, Subtype.HANDHELD_OLD))
+            if (held != null && (held.getItem() instanceof ItemReader || ItemMisc.checkItem(held, Subtype.HANDHELD_OLD)))
                 player.sendChatToPlayer(data.tagDescription(this));
             else {
                 data.rotation = data.rotation.rotateCCW();

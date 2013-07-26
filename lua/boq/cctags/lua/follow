@@ -9,12 +9,12 @@ end
 --TODO: Get better
 local forward_start = not ((args[2] == '0') or (args[2] == 'false'))
 
-local work_env = tags.setup_env()
+local workEnv = tags.setup_env()
 
 if reader_side == 'print' then
     local w,h = term.getSize()
     local s = {}
-    for k,_ in pairs(work_env) do
+    for k,_ in pairs(workEnv) do
         table.insert(s, k)
     end
     
@@ -22,11 +22,7 @@ if reader_side == 'print' then
     return
 end
 
-if fs.exists("follow-env") then
-    os.run(work_env, "follow-env")
-end
-
-work_env["reader"] = reader_side
+workEnv["reader"] = reader_side
 
 if forward_start then
     if not turtle.forward() then
@@ -34,108 +30,72 @@ if forward_start then
     end
 end
 
-work_env.prev = function() end
-work_env.step = 0
+workEnv.prev = function() end
+workEnv.step = 0
 
-local function stack(initial)
-    local empty = {
-        value = initial
-    }
-    
-    empty.prev = empty
-    
-    local head = empty
-    
-    local result = {}
-    
-    function result.push(v)
-        head = {
-            value = v,
-            prev = head
-        }
-    end
-    
-    function result.pop()
-        local c = head.value
-        head = head.prev
-        return c
-    end
-    
-    function result.top()
-        return head.value
-    end
-    
-    function result.clear()
-        head = empty
-    end
-    
-    return result
-end
+local postamble = tags.stack(function() end)
+workEnv.pushPostamble = postamble.push
+workEnv.popPostamble = postamble.pop
 
-local postamble = stack(function() end)
-work_env.pushPostamble = postamble.push
-work_env.popPostamble = postamble.pop
-function work_env.pausePostamble() 
+function workEnv.pausePostamble() 
     local p = postamble.pop()
     postamble.push(function () end)
     p()
 end
 
-local debugPrint = false
-
-function work_env.debug(arg)
-    debugPrint = arg
-end
-
-local values = stack(nil)
-work_env._args = values
-function work_env.push(value) 
-    values.push(value)
-    if debugPrint then
-        print('Push: ' .. tostring(value))
-    end
-end
-
-function work_env.pop()
-    value = values.pop()
-    if debugPrint then
-        print('Pop: ' .. tostring(value))
-    end
-    return value 
-end
-work_env.top = values.top
-
-work_env._counters = {}
+workEnv._counters = {}
 
 local finished = false
 local lastSerial = 0
 
-function work_env.stop() 
+function workEnv.stop() 
     finished = true
     postamble.clear()
     print("stop(): finished")
 end
 
-local function createSimpleExecutor()
-    return function (fun, contents)
-        print(string.format("Step %d: executing: '%s'", work_env.step, contents))
-        return pcall(fun)
-    end
+local executors = {}
+local executor = nil
+workEnv.special = {}
+local controlActions = {}
+
+local function addSpecial(name, fun)
+    workEnv.special[name] = fun
+    controlActions['!' .. name] = fun
 end
 
-local function createDummyExecutor()
-    return function (fun, contents)
-        print(string.format("Step %d: ignoring: '%s'", work_env.step, contents))
-        return true
-    end
+local function createExecutorReplacer(name, fun)
+    addSpecial(name, function()
+        executor = fun
+    end)    
 end
+
+function executors.simple(fun, contents)
+    print(string.format("Step %d: executing: '%s'", workEnv.step, contents))
+    return pcall(fun)
+end
+createExecutorReplacer('restore', executors.simple)
+
+function executors.dummy(fun, contents)
+    print(string.format("Step %d: ignoring: '%s'", workEnv.step, contents))
+    return true
+end
+createExecutorReplacer('pause', executors.dummy)
+
+function executors.singleSkip(fun, contents)
+    print(string.format("Step %d: ignoring: '%s'", workEnv.step, contents))
+    executor = executors.simple
+    return true
+end
+createExecutorReplacer('skip', executors.singleSkip)
 
 local function createSavingExecutor(execute)
     local result = {}
     
     setmetatable(result, {
         __call = function(self, fun, contents)
-            print(string.format("Step %d: storing: '%s'", work_env.step, contents))
+            print(string.format("Step %d: storing: '%s'", workEnv.step, contents))
+            table.insert(self, function() print("Macro call:" .. tostring(contents)) end)
             table.insert(self, fun)
             
             if execute then
@@ -148,34 +108,18 @@ local function createSavingExecutor(execute)
     
     return result
 end
+createExecutorReplacer('record', createSavingExecutor(false))
+createExecutorReplacer('record_execute', createSavingExecutor(true))
 
-local executor = createSimpleExecutor()
+executor = executors.simple
 
-local controlActions = {}
-
-controlActions['!pause'] = function ()
-    executor =  createDummyExecutor()
-end
-
-controlActions['!restore'] = function ()
-    executor =  createSimpleExecutor()
-end
-
-controlActions['!record'] = function ()
-    executor =  createSavingExecutor(false)
-end
-
-controlActions['!record-execute'] = function ()
-    executor =  createSavingExecutor(true)
-end
-
-controlActions['!save'] = function()
+addSpecial('save', function()
     if type(executor) ~= 'table' then
         error("Trying to 'save' without calling 'record'") 
     end
 
     local macro = executor
-    executor = createSimpleExecutor()
+    executor = executors.simple
    
     local function callMacro()
         for i,v in ipairs(macro) do
@@ -183,56 +127,71 @@ controlActions['!save'] = function()
         end
     end
    
-    values.push(callMacro)
-    
+    workEnv._args.push(callMacro)
+end)
+
+workEnv.readTags = true
+workEnv.ignoreMissing = false
+
+if fs.exists("follow-env") then
+    print("Found 'follow-env', executing")
+    if not os.run(workEnv, "follow-env") then
+        error("Invalid 'follow-env'")
+    end
 end
 
 while not finished do
-    local dir, contents, _, _, serial = tags.scanForTags(reader_side)
-    
-    if not dir then
-        error("No tag found")
-    end
-    
-    if serial == lastSerial then
-        error("Tag " .. serial .. " was read twice in row")
-    end
-    
-    lastSerial = serial
-     
-    work_env.tagDir = dir
-    work_env.serial = serial
-    work_env.step = work_env.step + 1
-    
-    local updatePrev = true
-    
-    function work_env.holdPrev()
-        updatePrev = false
-    end 
-    
-    local action = controlActions[contents]
-    if action then
-        action()
-        print(string.format("Step %d: command '%s'", work_env.step, contents))
-    else 
-        local operation, e = loadstring(contents)
-        if not operation then
-            error(string.format("Invalid operation, error: '%s'", operation, err))
-        end
+    workEnv.step = workEnv.step + 1
+    if workEnv.readTags then
+        dir, contents, _, _, serial = tags.scanForTags(reader_side)
         
-        setfenv(operation, work_env)
-        local status, result = executor(operation, contents)
-        
-        if not status then
-            error("Error during command execution: " .. result)
-        end
-        
-        if updatePrev then
-            work_env.prev = operation
-        end
-        
-        if result then
-            print(string.format("Step %d: result: '%s'", work_env.step, tostring(result)))
+        if not dir then
+            if not workEnv.ignoreMissing then
+                error("No tag found")
+            else
+                print(string.format("Step %d: no tag, calling only postamble", workEnv.step))
+            end
+        else
+            if serial == lastSerial then
+                error("Tag " .. serial .. " was read twice in row")
+            end
+            
+            lastSerial = serial
+         
+            workEnv.tagDir = dir
+            workEnv.serial = serial
+            
+            local updatePrev = true
+            
+            function workEnv.holdPrev()
+                updatePrev = false
+            end 
+            
+            local action = controlActions[contents]
+            if action then
+                action()
+                print(string.format("Step %d: command '%s'", workEnv.step, contents))
+            else 
+                local operation, e = loadstring(contents)
+                if not operation then
+                    error(string.format("Invalid operation, error: '%s'", operation, err))
+                end
+                
+                setfenv(operation, workEnv)
+                local status, result = executor(operation, contents)
+                
+                if not status then
+                    error("Error during command execution: " .. result)
+                end
+                
+                if updatePrev then
+                    workEnv.prev = operation
+                end
+                
+                if result then
+                    print(string.format("Step %d: result: '%s'", workEnv.step, tostring(result)))
+                end
+            end
         end
     end
     

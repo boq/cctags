@@ -84,7 +84,7 @@
 	    <property name="jarname" value="${modname}-${cctags.version.tag}" />
 		
 		<jar destfile="${basedir}/target/${jarname}.jar">
-			<fileset dir="${mcp.obfoutput.classes}" includes="**/*.class" excludes="net/**/*" />
+			<fileset dir="${mcp.obfoutput.classes}" includes="boq/**/*.class" excludes="net/**/*" />
 			<fileset dir="${basedir}/core" includes="mcmod.info" />
 			<fileset dir="${basedir}" includes="version.properties" />
 
@@ -93,6 +93,7 @@
 
 			<fileset dir="${resource.dir}">
 				<include name="**/*.png" />
+				<include name="**/*.lang" />
 				<include name="**/*.xml" />
 				<include name="**/*.txt" />
 				<include name="**/*.properties" />
@@ -109,3 +110,4 @@
 		</delete>
 	</target>
 </project>
+
