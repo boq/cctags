@@ -25,9 +25,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
 
-    public static double AABB_THICKNESS = 0.05;
-    public static double AABB_MARGIN = 0.05;
-    public static int POOL_PERIOD = 20;
+    public final static double AABB_THICKNESS = 0.05;
+    public final static double AABB_MARGIN = 0.00;
+    public final static int POOL_PERIOD = 20;
     private int tickCounter;
 
     private Bounds relativeBounds() {
@@ -269,6 +269,12 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
     @Override
     public boolean shouldRenderInPass(int pass) {
         return (data.tagType == TagType.GLASS ? 1 : 0) == pass;
+    }
+    
+    @Override
+    public float getCollisionBorderSize()
+    {
+        return 0;
     }
 
 }
