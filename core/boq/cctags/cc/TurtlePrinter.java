@@ -3,7 +3,6 @@ package boq.cctags.cc;
 import static boq.utils.misc.Utils.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import boq.cctags.LuaInit;
 import boq.cctags.tag.TagData;
 
 import com.google.common.collect.ObjectArrays;
@@ -104,9 +103,9 @@ public class TurtlePrinter extends TurtlePeripheral implements PrinterHelper.Pri
     public void attach(IComputerAccess computer) {
         super.attach(computer);
 
-        LuaInit.mount(computer, "rom/programs/loadink", "loadink");
-        LuaInit.mount(computer, "rom/help/icons", "icons");
-        LuaInit.mount(computer, "rom/help/tag-printer", "turtle-printer-help");
+        MountHelper.mount(computer, "rom/programs/loadink", "loadink");
+        MountHelper.mount(computer, "rom/help/icons", "icons");
+        MountHelper.mount(computer, "rom/help/tag-printer", "turtle-printer-help");
     }
 
 }

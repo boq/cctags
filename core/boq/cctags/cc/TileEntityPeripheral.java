@@ -11,7 +11,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import boq.cctags.LuaInit;
 import boq.cctags.tag.TagData;
 import boq.cctags.tag.access.*;
 import boq.cctags.tag.access.ItemAccess.IStackProvider;
@@ -108,7 +107,7 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
                 return wrap(access.uid());
             }
             case 6: // library
-                return LuaInit.instance.getLuaLibrary(arguments);
+                return TagLibrary.instance.getLuaLibrary(arguments);
             case 7: // source
                 return wrap(access.name());
             default:
@@ -125,16 +124,16 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
     @Override
     public void attach(IComputerAccess computer) {
         computers.put(computer, computer.getAttachmentName());
-        LuaInit.mount(computer, "rom/apis/tags", "tags-computer");
+        MountHelper.mount(computer, "rom/apis/tags", "tags-computer");
 
-        LuaInit.mount(computer, "rom/programs/clonetag", "clonetag");
-        LuaInit.mount(computer, "rom/programs/writetag", "writetag");
-        LuaInit.mount(computer, "rom/programs/readtag", "readtag");
-        LuaInit.mount(computer, "rom/programs/progtag", "program");
+        MountHelper.mount(computer, "rom/programs/clonetag", "clonetag");
+        MountHelper.mount(computer, "rom/programs/writetag", "writetag");
+        MountHelper.mount(computer, "rom/programs/readtag", "readtag");
+        MountHelper.mount(computer, "rom/programs/progtag", "program");
 
-        LuaInit.mount(computer, "rom/help/progtag", "program-help");
-        LuaInit.mount(computer, "rom/help/clonetag", "clonetag-help");
-        LuaInit.mount(computer, "rom/help/tag-writer", "computer-writer-help");
+        MountHelper.mount(computer, "rom/help/progtag", "program-help");
+        MountHelper.mount(computer, "rom/help/clonetag", "clonetag-help");
+        MountHelper.mount(computer, "rom/help/tag-writer", "computer-writer-help");
     }
 
     @Override

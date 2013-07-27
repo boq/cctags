@@ -3,7 +3,6 @@ package boq.cctags.cc;
 import static boq.utils.misc.Utils.checkArg;
 import static boq.utils.misc.Utils.wrap;
 import net.minecraft.item.ItemStack;
-import boq.cctags.LuaInit;
 import boq.cctags.tag.TagData;
 
 import com.google.common.collect.ObjectArrays;
@@ -75,9 +74,9 @@ public class TileEntityPrinter extends TileEntityPeripheral<PrinterData> {
     @Override
     public void attach(IComputerAccess computer) {
         super.attach(computer);
-        LuaInit.mount(computer, "rom/programs/printtag", "printtag");
-        LuaInit.mount(computer, "rom/help/icons", "icons");
-        LuaInit.mount(computer, "rom/help/tag-printer", "computer-printer-help");
+        MountHelper.mount(computer, "rom/programs/printtag", "printtag");
+        MountHelper.mount(computer, "rom/help/icons", "icons");
+        MountHelper.mount(computer, "rom/help/tag-printer", "computer-printer-help");
     }
 
 }

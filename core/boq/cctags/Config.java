@@ -3,7 +3,7 @@ package boq.cctags;
 import net.minecraftforge.common.Configuration;
 
 public class Config {
-    public final String category = "gameplay";
+    public final static String CATEGORY_GAMEPLAY = "gameplay";
 
     public final int PRINTER_USES_PER_INKSACK;
     public final int MAX_PRINTER_CAPACITY;
@@ -15,15 +15,19 @@ public class Config {
     public final int MAX_TEXT_TAG_SIZE;
     public final int MAX_CRAFTABLE_TEXT_TAG_SIZE;
 
+    public final boolean SHOW_LIBRARY;
+
     public Config(Configuration config) {
-        PRINTER_USES_PER_INKSACK = config.get(category, "usesPerInksack", 10).getInt();
-        MAX_PRINTER_CAPACITY = config.get(category, "maxPrinterCapacity", 100).getInt();
-        DEFAULT_LIB_TAG_COLOR = config.get(category, "defaultLibTagColor", Constants.COLOR_BLUE).getInt();
+        PRINTER_USES_PER_INKSACK = config.get(CATEGORY_GAMEPLAY, "usesPerInksack", 10).getInt();
+        MAX_PRINTER_CAPACITY = config.get(CATEGORY_GAMEPLAY, "maxPrinterCapacity", 100).getInt();
+        DEFAULT_LIB_TAG_COLOR = config.get(CATEGORY_GAMEPLAY, "defaultLibTagColor", Constants.COLOR_BLUE).getInt();
 
-        MAX_BITMAP_TAG_SIZE = config.get(category, "maxBitmapTagSize", 32, "Maximum number of pixels on custom bitmap tag").getInt();
-        MAX_CRAFTABLE_BITMAP_TAG_SIZE = config.get(category, "maxCraftableBitmapTagSize", 16, "Maximum number of pixels on custom bitmap tag that can be used by player").getInt();
+        MAX_BITMAP_TAG_SIZE = config.get(CATEGORY_GAMEPLAY, "maxBitmapTagSize", 32, "Maximum number of pixels on custom bitmap tag").getInt();
+        MAX_CRAFTABLE_BITMAP_TAG_SIZE = config.get(CATEGORY_GAMEPLAY, "maxCraftableBitmapTagSize", 16, "Maximum number of pixels on custom bitmap tag that can be used by player").getInt();
 
-        MAX_TEXT_TAG_SIZE = config.get(category, "maxTextTagSize", 32, "Maximum length of custom tag text").getInt();
-        MAX_CRAFTABLE_TEXT_TAG_SIZE = config.get(category, "maxCraftableTextTagSize", 16, "Maximum length of custom tag text that can be used by player").getInt();
+        MAX_TEXT_TAG_SIZE = config.get(CATEGORY_GAMEPLAY, "maxTextTagSize", 32, "Maximum length of custom tag text").getInt();
+        MAX_CRAFTABLE_TEXT_TAG_SIZE = config.get(CATEGORY_GAMEPLAY, "maxCraftableTextTagSize", 16, "Maximum length of custom tag text that can be used by player").getInt();
+
+        SHOW_LIBRARY = config.get(CATEGORY_GAMEPLAY, "showLibraryInCreative", true).getBoolean(true);
     }
 }

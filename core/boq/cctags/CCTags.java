@@ -5,7 +5,11 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import boq.cctags.cc.*;
 import boq.cctags.tag.*;
+import boq.cctags.tag.access.TagLibrary;
 import boq.utils.log.Log;
+
+import com.google.common.base.Throwables;
+
 import cpw.mods.fml.common.*;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -91,7 +95,11 @@ public class CCTags {
 
     @EventHandler
     public void modsLoaded(FMLPostInitializationEvent evt) {
-        LuaInit.instance.setup();
+        try {
+            TagLibrary.instance.readLibrary();
+        } catch (Throwable t) {
+            throw Throwables.propagate(t);
+        }
         for (PeripheralType type : PeripheralType.TYPES)
             TurtleAPI.registerUpgrade(type);
     }

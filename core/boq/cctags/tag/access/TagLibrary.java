@@ -1,70 +1,23 @@
-package boq.cctags;
+package boq.cctags.tag.access;
 
 import static boq.utils.misc.Utils.checkArg;
 import static boq.utils.misc.Utils.wrap;
 
 import java.io.*;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.io.Charsets;
-import org.apache.commons.io.IOUtils;
 
 import argo.jdom.*;
-import argo.saj.InvalidSyntaxException;
+import boq.cctags.CCTags;
 import boq.cctags.tag.TagSize;
 
-import com.google.common.base.*;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import com.google.common.io.Closer;
 
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.IMount;
+public class TagLibrary {
+    public final static TagLibrary instance = new TagLibrary();
 
-public class LuaInit {
-    public final static LuaInit instance = new LuaInit();
-
-    private LuaInit() {}
-
-    private Map<String, IMount> mounts = Maps.newHashMap();
-
-    private static final String filePrefix = "/boq/cctags/lua/";
-
-    private static class ResourceMount implements IMount {
-
-        private final String file;
-
-        public ResourceMount(String file) {
-            this.file = file;
-        }
-
-        @Override
-        public boolean exists(String path) throws IOException {
-            return Strings.isNullOrEmpty(path);
-        }
-
-        @Override
-        public boolean isDirectory(String path) throws IOException {
-            return false;
-        }
-
-        @Override
-        public void list(String path, List<String> contents) throws IOException {
-
-        }
-
-        @Override
-        public long getSize(String path) throws IOException {
-            return 0;
-        }
-
-        @Override
-        public InputStream openForRead(String path) throws IOException {
-            return LuaInit.class.getResourceAsStream(file);
-        }
-
-    }
+    private TagLibrary() {}
 
     public static class LibEntry {
         public final String icon;
@@ -90,27 +43,12 @@ public class LuaInit {
 
     private static final JdomParser parser = new JdomParser();
 
-    public IMount getMount(String fileName) {
-        IMount result = mounts.get(fileName);
-        Preconditions.checkNotNull(result, "Lua file %s cannot be found", fileName);
-        return result;
-    }
-
     public LibEntry getLibraryEntry(String name) {
         return library.get(name);
     }
 
     public ImmutableMap<String, LibEntry> getLibrary() {
         return library;
-    }
-
-    public void setup() {
-        try {
-            setupFiles();
-            readLibrary();
-        } catch (Throwable e) {
-            Throwables.propagate(e);
-        }
     }
 
     private static int getColor(JsonNode node, int defaultValue) {
@@ -122,13 +60,18 @@ public class LuaInit {
         return defaultValue;
     }
 
-    private void readLibrary() throws IOException, InvalidSyntaxException {
+    public void readLibrary() throws IOException {
         Closer closer = Closer.create();
         try {
-            InputStream listFile = closer.register(LuaInit.class.getResourceAsStream("/boq/cctags/lua/library.json"));
+            InputStream listFile = closer.register(TagLibrary.class.getResourceAsStream("/boq/cctags/lua/library.json"));
             Reader reader = new InputStreamReader(listFile);
 
-            JsonRootNode root = parser.parse(reader);
+            JsonRootNode root;
+            try {
+                root = parser.parse(reader);
+            } catch (Throwable e) {
+                throw Throwables.propagate(e);
+            }
 
             ImmutableMap.Builder<String, LibEntry> builder = ImmutableMap.builder();
             for (JsonNode categoryData : root.getElements()) {
@@ -153,26 +96,6 @@ public class LuaInit {
         } finally {
             closer.close();
         }
-    }
-
-    private void setupFiles() throws IOException {
-        Closer closer = Closer.create();
-        try {
-            InputStream listFile = closer.register(LuaInit.class.getResourceAsStream("/boq/cctags/lua/files.txt"));
-
-            for (String file : IOUtils.readLines(listFile, Charsets.UTF_8))
-                mounts.put(file, new ResourceMount(filePrefix + file));
-
-        } finally {
-            closer.close();
-        }
-    }
-
-    public static void mount(IComputerAccess computer, String path, String fileId) {
-        IMount relPath = instance.getMount(fileId);
-        String actualPath = computer.mount(path, relPath);
-        if (!actualPath.equals(path))
-            computer.unmount(actualPath);
     }
 
     public Object[] getLuaLibrary(Object[] arguments) {
