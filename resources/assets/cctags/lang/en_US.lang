@@ -29,6 +29,7 @@ cctag.category.stack=stack
 cctag.category.redstone=redstone
 cctag.category.control=control
 cctag.category.relations=relations
+cctag.category.text=text
 
 cctag.icon.none=No icon
 cctag.icon.predefined=Icon: %s

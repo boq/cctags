@@ -8,14 +8,27 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import boq.cctags.CCTags;
+import boq.cctags.Recipes;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemMisc extends Item {
 
     public enum Subtype {
-        WRITER_PCB("item.pcb-writer", "cctags:pcb-writer", true),
-        PRINTER_PCB("item.pcb-printer", "cctags:pcb-printer", true),
+        WRITER_PCB("item.pcb-writer", "cctags:pcb-writer", true) {
+            @Override
+            protected void addAdditionalItems(int itemId, List<ItemStack> list) {
+                Recipes.addUpgradedTurtles(list, PeripheralType.WRITER);
+            }
+        },
+        PRINTER_PCB("item.pcb-printer", "cctags:pcb-printer", true) {
+
+            @Override
+            protected void addAdditionalItems(int itemId, List<ItemStack> list) {
+                Recipes.addUpgradedTurtles(list, PeripheralType.PRINTER);
+            }
+
+        },
         HANDHELD_OLD("item.tag-reader.old", "cctags:handheld", false);
         public final String name;
         public final String iconName;
@@ -26,6 +39,12 @@ public class ItemMisc extends Item {
             this.name = name;
             this.iconName = iconName;
             this.visible = visible;
+        }
+
+        protected void addAdditionalItems(int itemId, List<ItemStack> list) {}
+
+        public ItemStack getItemStack(int itemId) {
+            return new ItemStack(itemId, 1, ordinal());
         }
     }
 
@@ -72,8 +91,10 @@ public class ItemMisc extends Item {
     @Override
     public void getSubItems(int id, CreativeTabs tab, List result) {
         for (Subtype s : types)
-            if (s.visible)
-                result.add(new ItemStack(id, 1, s.ordinal()));
+            if (s.visible) {
+                result.add(s.getItemStack(id));
+                s.addAdditionalItems(id, result);
+            }
     }
 
     public static boolean checkItem(ItemStack stack, Subtype subtype) {
@@ -83,6 +104,6 @@ public class ItemMisc extends Item {
     }
 
     public ItemStack getStack(Subtype subtype) {
-        return new ItemStack(this, 1, subtype.ordinal());
+        return subtype.getItemStack(itemID);
     }
 }
