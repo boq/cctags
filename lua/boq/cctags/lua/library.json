@@ -643,7 +643,7 @@
     },
     {
         "name" : "control",
-        "color" : "FFFFFF",
+        "color" : "33CCCC",
         "tags" :
         [
             {
@@ -710,50 +710,7 @@
                 "contents" : "stop()",
                 "color" : "FF0000",
                 "description" : "Exit 'follow' program - no more tags will be read after that. All postambles are deactivated"
-            }
-        ]
-    },
-    {
-        "name" : "misc",
-        "color" : "ACACAC",
-        "tags" :
-        [
-            {
-                "name" : "debug-on",
-                "label" : "Debug output on",
-                "icon" : "question",
-                "contents" : "debug(true)",
-                "description" : "Will print informations like stack operations"
             },
-            {
-                "name" : "debug-off",
-                "label" : "Debug output off",
-                "icon" : "question",
-                "contents" : "debug(false)",
-                "description" : "Will print informations like stack operations"
-            },
-            {
-                "name" : "counter-inc",
-                "label" : "Increment current tag",
-                "icon" : "text!tag[]++",
-                "contents" : "counters.inc(serial)",
-                "comment" : "Increment counter for tag and push to stack",
-                "description" : "Counters are kept on turtle, so they can't be shared. Values do not persist between runs."
-            },
-            {
-                "name" : "push-tag-dir",
-                "label" : "Push tag dir",
-                "icon" : "push",
-                "contents" : "push(tagDir)",
-                "comment" : "Push current tag direction (relative to turtle)"
-            }
-        ]
-    },
-    {
-        "name" : "control",
-        "color" : "33CCCC",
-        "tags" :
-        [
             {
                 "name" : "record",
                 "label" : "Record macro",
@@ -842,6 +799,42 @@
                 "label" : "Stop on missing tags",
                 "icon" : "off",
                 "contents" : "ignoreMissing=false"
+            }
+        ]
+    },
+    {
+        "name" : "misc",
+        "color" : "ACACAC",
+        "tags" :
+        [
+            {
+                "name" : "debug-on",
+                "label" : "Debug output on",
+                "icon" : "question",
+                "contents" : "debug(true)",
+                "description" : "Will print informations like stack operations"
+            },
+            {
+                "name" : "debug-off",
+                "label" : "Debug output off",
+                "icon" : "question",
+                "contents" : "debug(false)",
+                "description" : "Will print informations like stack operations"
+            },
+            {
+                "name" : "counter-inc",
+                "label" : "Increment current tag",
+                "icon" : "text!tag[]++",
+                "contents" : "counters.inc(serial)",
+                "comment" : "Increment counter for tag and push to stack",
+                "description" : "Counters are kept on turtle, so they can't be shared. Values do not persist between runs."
+            },
+            {
+                "name" : "push-tag-dir",
+                "label" : "Push tag dir",
+                "icon" : "push",
+                "contents" : "push(tagDir)",
+                "comment" : "Push current tag direction (relative to turtle)"
             }
         ]
     }
