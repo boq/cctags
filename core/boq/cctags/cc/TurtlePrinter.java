@@ -40,7 +40,7 @@ public class TurtlePrinter extends TurtlePeripheral implements PrinterHelper.Pri
 
     @Override
     public String getType() {
-        return PeripheralType.PRINTER.peripheralType;
+        return TurtlePeripheralType.PRINTER.peripheralType;
     }
 
     @Override

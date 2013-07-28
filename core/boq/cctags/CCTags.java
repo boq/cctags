@@ -100,7 +100,7 @@ public class CCTags {
         } catch (Throwable t) {
             throw Throwables.propagate(t);
         }
-        for (PeripheralType type : PeripheralType.TYPES)
+        for (TurtlePeripheralType type : TurtlePeripheralType.TYPES)
             TurtleAPI.registerUpgrade(type);
     }
 }

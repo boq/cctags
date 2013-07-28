@@ -9,8 +9,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import boq.cctags.CCTags;
 import boq.cctags.EntityPacketHandler;
-import boq.cctags.cc.*;
-import boq.cctags.cc.ItemMisc.Subtype;
+import boq.cctags.cc.ItemMisc;
+import boq.cctags.cc.ItemReader;
 import boq.utils.coord.Bounds;
 import boq.utils.coord.BoundsRotator;
 import boq.utils.misc.Dyes;
@@ -256,7 +256,7 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
                 return true;
             }
 
-            if (held != null && (held.getItem() instanceof ItemReader || ItemMisc.checkItem(held, Subtype.HANDHELD_OLD))) {
+            if (held != null && (held.getItem() instanceof ItemReader || ItemMisc.checkItem(held, ItemMisc.HANDHELD_OLD))) {
                 Object[] params = data.tagDescription(this);
                 player.sendChatToPlayer(ChatMessageComponent.func_111082_b("handheld.desc", params));
             } else {
