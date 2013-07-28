@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import boq.cctags.cc.ItemMisc.Subtype;
 import boq.cctags.cc.PeripheralType;
@@ -13,7 +14,12 @@ import boq.cctags.tag.*;
 
 import com.google.common.collect.ObjectArrays;
 
+import cpw.mods.fml.common.registry.GameRegistry;
+import dan200.turtle.api.ITurtleUpgrade;
+
 public class Recipes {
+    private static final int NUMBER_OF_TURTLE_TOOLS = 7;
+
     private Recipes() {}
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -74,5 +80,43 @@ public class Recipes {
         manager.addShapelessRecipe(itemPrinter, itemWriter, itemPrinterPcb);
 
         recipes.add(new EmbeddedTagRecipe());
+    }
+
+    public static ItemStack getExpandedTurtleItemStack() {
+        return GameRegistry.findItemStack("CCTurtle", "CC-TurtleExpanded", 1);
+    }
+
+    public static ItemStack getAdvancedTurtleItemStack() {
+        return GameRegistry.findItemStack("CCTurtle", "CC-TurtleAdvanced", 1);
+    }
+
+    public static ItemStack createTurtleItemStack(boolean advanced, ITurtleUpgrade left, short right) {
+        ItemStack turtle = advanced ? getAdvancedTurtleItemStack() : getExpandedTurtleItemStack();
+
+        if (turtle == null)
+            return null;
+
+        NBTTagCompound tag = turtle.getTagCompound();
+        if (tag == null) {
+            tag = new NBTTagCompound();
+            turtle.setTagCompound(tag);
+        }
+
+        tag.setShort("leftUpgrade", (short)left.getUpgradeID());
+        tag.setShort("rightUpgrade", right);
+
+        return turtle;
+    }
+
+    private static void addUpgradedTurtles(List<ItemStack> result, ITurtleUpgrade upgrade, boolean advanced) {
+        for (int i = 0; i < NUMBER_OF_TURTLE_TOOLS; i++)
+            result.add(createTurtleItemStack(advanced, upgrade, (short)i));
+    }
+
+    public static void addUpgradedTurtles(List<ItemStack> result, ITurtleUpgrade upgrade) {
+        if (CCTags.config.ADD_OWN_TURTLES) {
+            addUpgradedTurtles(result, upgrade, false);
+            addUpgradedTurtles(result, upgrade, true);
+        }
     }
 }

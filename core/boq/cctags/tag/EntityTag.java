@@ -270,7 +270,7 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
     public boolean shouldRenderInPass(int pass) {
         return (data.tagType == TagType.GLASS ? 1 : 0) == pass;
     }
-    
+
     @Override
     public float getCollisionBorderSize()
     {
