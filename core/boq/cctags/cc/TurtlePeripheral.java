@@ -39,36 +39,26 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
             case 1: { // scanForTag
                 String directionName = checkArg(arguments, 0) ? arguments[0].toString() : null;
                 ForgeDirection dir = getDirection(directionName);
-                ITagAccess access = AccessUtils.selectTag(turtle.getWorld(), dir, new IPositionProvider() {
+                tagAccess = AccessUtils.selectTag(turtle.getWorld(), dir, new IPositionProvider() {
                     @Override
                     public Vec3 getPosition() {
                         return turtle.getPosition();
                     }
                 });
 
-                if (!access.isValid())
-                    return FALSE;
-
-                tagAccess = access;
-                return TRUE;
+                return wrap(tagAccess.isValid());
             }
             case 2: {// selectFromSlot
                 final int slotId = checkArg(arguments, 0) ? toInt(arguments[0]) : turtle.getSelectedSlot();
 
-                ITagAccess access = new ItemAccess(new IStackProvider() {
+                tagAccess = new ItemAccess(new IStackProvider() {
                     @Override
                     public ItemStack getStack() {
                         return turtle.getSlotContents(slotId);
                     }
                 }, AccessUtils.mergedAccess);
 
-                if (access.isValid()) {
-                    tagAccess = access;
-                    return TRUE;
-                }
-
-                return wrap(false, "Invalid or missing tag");
-
+                return wrap(tagAccess.isValid());
             }
             case 3: {// contents
                 if (!tagAccess.isValid())
