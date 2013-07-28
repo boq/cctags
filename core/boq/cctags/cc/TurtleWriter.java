@@ -12,7 +12,7 @@ public class TurtleWriter extends TurtlePeripheral {
 
     @Override
     public String getType() {
-        return PeripheralType.WRITER.peripheralType;
+        return TurtlePeripheralType.WRITER.peripheralType;
     }
 
     @Override

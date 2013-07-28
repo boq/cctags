@@ -24,7 +24,7 @@ public class ItemPeripheral extends ItemBlock {
 
     @Override
     public String getUnlocalizedName(ItemStack stack) {
-        PeripheralType type = BlockTagPeripheral.getType(stack.getItemDamage());
+        ComputerPeripheralType type = BlockTagPeripheral.getType(stack.getItemDamage());
         return type.unlocalizedName;
     }
 

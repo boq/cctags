@@ -47,7 +47,7 @@ public abstract class TileEntityPeripheral<T extends WriterData> extends TileEnt
         return BlockTagPeripheral.getFront(meta);
     }
 
-    private PeripheralType type() {
+    private ComputerPeripheralType type() {
         int meta = getBlockMetadata();
         return BlockTagPeripheral.getType(meta);
     }

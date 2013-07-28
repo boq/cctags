@@ -36,7 +36,7 @@ public class BlockTagPeripheral extends BlockContainer {
 
     @Override
     public TileEntity createTileEntity(World world, int metadata) {
-        PeripheralType type = getType(metadata);
+        ComputerPeripheralType type = getType(metadata);
         return type.createNewTileEntity();
     }
 
@@ -45,9 +45,9 @@ public class BlockTagPeripheral extends BlockContainer {
         return ForgeDirection.VALID_DIRECTIONS[side + 2];
     }
 
-    public static PeripheralType getType(int metadata) {
+    public static ComputerPeripheralType getType(int metadata) {
         int type = metadata & 1;
-        return PeripheralType.TYPES[type];
+        return ComputerPeripheralType.TYPES[type];
     }
 
     public static boolean isActive(int metadata) {
@@ -62,7 +62,7 @@ public class BlockTagPeripheral extends BlockContainer {
         return metadata & ~2;
     }
 
-    public static int calculateMeta(ForgeDirection side, PeripheralType type) {
+    public static int calculateMeta(ForgeDirection side, ComputerPeripheralType type) {
         int typePart = type.ordinal() & 3;
         int sidePart = (side.ordinal() - 2) & 3;
         return (sidePart << 2) | typePart;
@@ -75,7 +75,7 @@ public class BlockTagPeripheral extends BlockContainer {
         ForgeDirection front = getFront(metadata);
 
         if (side == front) {
-            PeripheralType type = getType(metadata);
+            ComputerPeripheralType type = getType(metadata);
             return isActive(metadata) ? type.activeBlockIcon : type.inactiveBlockIcon;
         }
 
@@ -87,14 +87,17 @@ public class BlockTagPeripheral extends BlockContainer {
     public void registerIcons(IconRegister registry) {
         blockIcon = registry.registerIcon("cctags:peripheral-top");
 
-        for (PeripheralType type : PeripheralType.TYPES)
+        for (ComputerPeripheralType type : ComputerPeripheralType.TYPES)
             type.registerIcons(registry);
 
+        for (TurtlePeripheralType type : TurtlePeripheralType.TYPES)
+            type.registerIcons(registry);
     }
 
     @Override
+
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving player, ItemStack stack) {
-        PeripheralType type = getType(stack.getItemDamage());
+        ComputerPeripheralType type = getType(stack.getItemDamage());
 
         PlayerOrientation orient = PlayerOrientation.getEntityOrientation(player);
         ForgeDirection side = orient.toDirection().getOpposite();
@@ -107,13 +110,13 @@ public class BlockTagPeripheral extends BlockContainer {
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubBlocks(int id, CreativeTabs tab, List result) {
-        for (PeripheralType type : PeripheralType.TYPES)
+        for (ComputerPeripheralType type : ComputerPeripheralType.TYPES)
             result.add(getDefaultItem(type));
     }
 
     @Override
     public int damageDropped(int metadata) {
-        PeripheralType type = getType(metadata);
+        ComputerPeripheralType type = getType(metadata);
         return calculateMeta(ForgeDirection.WEST, type);
     }
 
@@ -173,7 +176,7 @@ public class BlockTagPeripheral extends BlockContainer {
         super.breakBlock(world, x, y, z, blockId, metadata);
     }
 
-    public ItemStack getDefaultItem(PeripheralType type) {
+    public ItemStack getDefaultItem(ComputerPeripheralType type) {
         int meta = calculateMeta(ForgeDirection.WEST, type);
         return new ItemStack(this, 1, meta);
     }

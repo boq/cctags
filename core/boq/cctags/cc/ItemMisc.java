@@ -1,6 +1,7 @@
 package boq.cctags.cc;
 
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -9,54 +10,65 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import boq.cctags.CCTags;
 import boq.cctags.Recipes;
+
+import com.google.common.collect.ImmutableMap;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemMisc extends Item {
 
-    public enum Subtype {
-        WRITER_PCB("item.pcb-writer", "cctags:pcb-writer", true) {
-            @Override
-            protected void addAdditionalItems(int itemId, List<ItemStack> list) {
-                Recipes.addUpgradedTurtles(list, PeripheralType.WRITER);
-            }
-        },
-        PRINTER_PCB("item.pcb-printer", "cctags:pcb-printer", true) {
-
-            @Override
-            protected void addAdditionalItems(int itemId, List<ItemStack> list) {
-                Recipes.addUpgradedTurtles(list, PeripheralType.PRINTER);
-            }
-
-        },
-        HANDHELD_OLD("item.tag-reader.old", "cctags:handheld", false);
-        public final String name;
-        public final String iconName;
-        public final boolean visible;
+    public static abstract class SubItem {
+        private final String iconName;
         private Icon icon;
+        public final String unlocalizedName;
+        public final int id;
 
-        private Subtype(String name, String iconName, boolean visible) {
-            this.name = name;
+        private SubItem(int id, String unlocalizedName, String iconName) {
+            this.id = id;
+            this.unlocalizedName = unlocalizedName;
             this.iconName = iconName;
+        }
+
+        public abstract void addCreativeItems(int itemId, List<ItemStack> list);
+
+        public void registerIcons(IconRegister registry) {
+            icon = registry.registerIcon(iconName);
+        }
+
+        public Icon icon() {
+            return icon;
+        }
+    }
+
+    private static class TurtlePeripheralItem extends SubItem {
+        private final TurtlePeripheralType type;
+        private final boolean visible;
+
+        private TurtlePeripheralItem(TurtlePeripheralType type, int id, String name, String iconName, boolean visible) {
+            super(id, name, iconName);
+            this.type = type;
             this.visible = visible;
         }
 
-        protected void addAdditionalItems(int itemId, List<ItemStack> list) {}
-
-        public ItemStack getItemStack(int itemId) {
-            return new ItemStack(itemId, 1, ordinal());
+        @Override
+        public void addCreativeItems(int itemId, List<ItemStack> list) {
+            if (visible) {
+                list.add(new ItemStack(itemId, 1, id));
+                Recipes.addUpgradedTurtles(list, type);
+            }
         }
     }
 
-    private final static Subtype[] types = Subtype.values();
+    public static final SubItem WRITER_PCB = new TurtlePeripheralItem(TurtlePeripheralType.WRITER, 0, "item.pcb-writer", "cctags:pcb-writer", true);
+    public static final SubItem PRINTER_PCB = new TurtlePeripheralItem(TurtlePeripheralType.PRINTER, 1, "item.pcb-printer", "cctags:pcb-printer", true);
 
-    private static Subtype getSubtype(int id) {
-        try {
-            return types[id];
-        } catch (ArrayIndexOutOfBoundsException e) {
-            return null;
-        }
-    }
+    public static final SubItem HANDHELD_OLD = new SubItem(3, "item.tag-reader.old", "cctags:handheld") {
+        @Override
+        public void addCreativeItems(int itemId, List<ItemStack> list) {}
+    };
+
+    private final Map<Integer, SubItem> types;
 
     public ItemMisc(int id) {
         super(id);
@@ -64,46 +76,48 @@ public class ItemMisc extends Item {
         setHasSubtypes(true);
         setCreativeTab(CCTags.instance.tabTags);
         setUnlocalizedName("cctags-misc");
+
+        ImmutableMap.Builder<Integer, SubItem> builder = ImmutableMap.builder();
+        builder.put(WRITER_PCB.id, WRITER_PCB);
+        builder.put(PRINTER_PCB.id, PRINTER_PCB);
+        builder.put(HANDHELD_OLD.id, HANDHELD_OLD);
+        types = builder.build();
     }
 
     @Override
     public Icon getIconFromDamage(int damage) {
-        Subtype t = getSubtype(damage);
-
-        return t != null ? t.icon : itemIcon;
+        SubItem t = types.get(damage);
+        return t != null ? t.icon() : itemIcon;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister registry) {
         itemIcon = registry.registerIcon("cctags:broken-item");
-        for (Subtype s : types)
-            s.icon = registry.registerIcon(s.iconName);
+        for (SubItem s : types.values())
+            s.registerIcons(registry);
     }
 
     @Override
     public String getUnlocalizedName(ItemStack stack) {
-        Subtype t = getSubtype(stack.getItemDamage());
-        return t != null ? t.name : "broken!";
+        SubItem t = types.get(stack.getItemDamage());
+        return t != null ? t.unlocalizedName : "broken!";
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void getSubItems(int id, CreativeTabs tab, List result) {
-        for (Subtype s : types)
-            if (s.visible) {
-                result.add(s.getItemStack(id));
-                s.addAdditionalItems(id, result);
-            }
+        for (SubItem s : types.values())
+            s.addCreativeItems(id, result);
     }
 
-    public static boolean checkItem(ItemStack stack, Subtype subtype) {
+    public ItemStack getStack(SubItem subtype) {
+        return new ItemStack(this, 1, subtype.id);
+    }
+
+    public static boolean checkItem(ItemStack stack, SubItem subtype) {
         return stack != null &&
                 stack.getItem() instanceof ItemMisc &&
-                getSubtype(stack.getItemDamage()) == subtype;
-    }
-
-    public ItemStack getStack(Subtype subtype) {
-        return subtype.getItemStack(itemID);
+                stack.getItemDamage() == subtype.id;
     }
 }

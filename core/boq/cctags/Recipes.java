@@ -8,8 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-import boq.cctags.cc.ItemMisc.Subtype;
-import boq.cctags.cc.PeripheralType;
+import boq.cctags.cc.*;
 import boq.cctags.tag.*;
 
 import com.google.common.collect.ObjectArrays;
@@ -62,21 +61,21 @@ public class Recipes {
         ItemStack itemHandheld = new ItemStack(mod.itemReader);
         recipes.add(new ShapedOreRecipe(itemHandheld, "WRW", "IDG", "WRW", 'W', "plankWood", 'R', Item.redstone, 'G', Block.thinGlass, 'D', "dyeGreen", 'I', Item.ingotIron));
 
-        ItemStack itemHandheldOld = mod.itemMisc.getStack(Subtype.HANDHELD_OLD);
+        ItemStack itemHandheldOld = mod.itemMisc.getStack(ItemMisc.HANDHELD_OLD);
         manager.addShapelessRecipe(itemHandheld, itemHandheldOld);
 
-        ItemStack itemWriterPcb = mod.itemMisc.getStack(Subtype.WRITER_PCB);
+        ItemStack itemWriterPcb = mod.itemMisc.getStack(ItemMisc.WRITER_PCB);
         manager.addRecipe(itemWriterPcb, "GGG", " R ", " I ", 'G', Item.goldNugget, 'R', Item.redstone, 'I', Item.ingotIron);
-        PeripheralType.WRITER.craftingItem = itemWriterPcb;
+        TurtlePeripheralType.WRITER.craftingItem = itemWriterPcb;
 
-        ItemStack itemPrinterPcb = mod.itemMisc.getStack(Subtype.PRINTER_PCB);
+        ItemStack itemPrinterPcb = mod.itemMisc.getStack(ItemMisc.PRINTER_PCB);
         manager.addRecipe(itemPrinterPcb, "GGG", "RRR", "IBI", 'G', Item.goldNugget, 'R', Item.redstone, 'I', Item.ingotIron, 'B', new ItemStack(Item.dyePowder, 1, 0));
-        PeripheralType.PRINTER.craftingItem = itemPrinterPcb;
+        TurtlePeripheralType.PRINTER.craftingItem = itemPrinterPcb;
 
-        ItemStack itemWriter = mod.blockPeripheral.getDefaultItem(PeripheralType.WRITER);
+        ItemStack itemWriter = mod.blockPeripheral.getDefaultItem(ComputerPeripheralType.WRITER);
         manager.addRecipe(itemWriter, "SSS", "SRS", "SWS", 'S', Block.stone, 'R', Item.redstone, 'W', itemWriterPcb);
 
-        ItemStack itemPrinter = mod.blockPeripheral.getDefaultItem(PeripheralType.PRINTER);
+        ItemStack itemPrinter = mod.blockPeripheral.getDefaultItem(ComputerPeripheralType.PRINTER);
         manager.addShapelessRecipe(itemPrinter, itemWriter, itemPrinterPcb);
 
         recipes.add(new EmbeddedTagRecipe());

@@ -2,7 +2,6 @@ package boq.cctags.tag;
 
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.ForgeDirection;
-import boq.cctags.CCTags;
 import boq.utils.misc.Rotation;
 import boq.utils.serializable.SerializableData;
 import boq.utils.serializable.SerializableField;
@@ -57,7 +56,7 @@ public class TagData extends SerializableData {
         String printLabel;
 
         if (Strings.isNullOrEmpty(label)) {
-            String un = CCTags.instance.itemTag.getUnlocalizedName() + ".name";
+            String un = tagType.unlocalizedName + ".name";
             printLabel = StatCollector.translateToLocal(un);
         } else
             printLabel = label;
