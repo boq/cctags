@@ -5,6 +5,8 @@ import boq.cctags.tag.TagData;
 public interface ITagAccess {
     public boolean isValid();
 
+    public boolean isPrintable();
+
     public TagData readData();
 
     public void writeData(TagData data, boolean updateClients);

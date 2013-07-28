@@ -1,8 +1,13 @@
 package boq.cctags.cc;
 
+import net.minecraft.item.ItemStack;
+import boq.utils.serializable.SerializableData;
 import boq.utils.serializable.SerializableField;
 
-public class PrinterData extends WriterData implements PrinterHelper.Printer {
+public class PrinterData extends SerializableData implements PrinterHelper.Printer {
+    @SerializableField(nullable = true)
+    public ItemStack insertedItem;
+
     @SerializableField
     public int inkLevel;
 

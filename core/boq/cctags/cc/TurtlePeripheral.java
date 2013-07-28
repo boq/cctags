@@ -1,25 +1,34 @@
 package boq.cctags.cc;
 
 import static boq.utils.misc.Utils.*;
+
+import java.util.List;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import boq.cctags.tag.TagData;
-import boq.cctags.tag.TagSize;
+import boq.cctags.cc.CommonCommands.IAccessHolder;
 import boq.cctags.tag.access.*;
 import boq.cctags.tag.access.EntityAccess.IPositionProvider;
 import boq.cctags.tag.access.ItemAccess.IStackProvider;
+
+import com.google.common.collect.ImmutableList;
+
 import dan200.computer.api.*;
 import dan200.turtle.api.ITurtleAccess;
 
 public abstract class TurtlePeripheral implements IHostedPeripheral {
 
+    protected final TurtlePeripheralType type;
+
     protected final ITurtleAccess turtle;
 
     protected ITagAccess tagAccess = AccessUtils.NULL;
 
-    public TurtlePeripheral(ITurtleAccess turtle) {
+    public TurtlePeripheral(TurtlePeripheralType type, ITurtleAccess turtle) {
+        this.type = type;
         this.turtle = turtle;
     }
 
@@ -29,26 +38,67 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
         return SidesHelper.localToWorld(front, direction);
     }
 
-    protected final static String[] commonMethods = { "isTagValid", "scanForTag", "selectFromSlot", "contents", "write", "size", "serial", "library", "source" };
+    @Override
+    public String getType() {
+        return type.peripheralType;
+    }
+
+    protected final IAccessHolder holder = new IAccessHolder() {
+
+        @Override
+        public void setAccess(ITagAccess access) {
+            tagAccess = access;
+        }
+
+        @Override
+        public ITagAccess getAccess() {
+            return tagAccess;
+        }
+    };
+
+    protected final IPositionProvider position = new IPositionProvider() {
+        @Override
+        public Vec3 getPosition() {
+            return turtle.getPosition();
+        }
+
+        @Override
+        public ForgeDirection getOrientation() {
+            return ForgeDirection.VALID_DIRECTIONS[turtle.getFacingDir()];
+        }
+
+        @Override
+        public World getWorld() {
+            return turtle.getWorld();
+        }
+    };
+
+    private List<Command> commands;
+    private String[] commandNames;
+
+    private List<Command> commands() {
+        if (commands == null) {
+            ImmutableList.Builder<Command> b = ImmutableList.builder();
+            addCommands(b);
+            commands = b.build();
+        }
+
+        return commands;
+    }
 
     @Override
-    public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception {
-        switch (method) {
-            case 0: // isTagValid
-                return wrap(tagAccess.isValid());
-            case 1: { // scanForTag
-                String directionName = checkArg(arguments, 0) ? arguments[0].toString() : null;
-                ForgeDirection dir = getDirection(directionName);
-                tagAccess = AccessUtils.selectTag(turtle.getWorld(), dir, new IPositionProvider() {
-                    @Override
-                    public Vec3 getPosition() {
-                        return turtle.getPosition();
-                    }
-                });
+    public String[] getMethodNames() {
+        if (commandNames == null)
+            commandNames = Command.extractNames(commands());
+        return commandNames;
+    }
 
-                return wrap(tagAccess.isValid());
-            }
-            case 2: {// selectFromSlot
+    protected void addCommands(ImmutableList.Builder<Command> commands) {
+        commands.add(CommonCommands.createIsValid("isTagValid", holder));
+
+        commands.add(new Command("selectFromSlot") {
+            @Override
+            public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception {
                 final int slotId = checkArg(arguments, 0) ? toInt(arguments[0]) : turtle.getSelectedSlot();
 
                 tagAccess = new ItemAccess(new IStackProvider() {
@@ -60,51 +110,20 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
 
                 return wrap(tagAccess.isValid());
             }
-            case 3: {// contents
-                if (!tagAccess.isValid())
-                    return wrap("false", "No selected tag");
+        });
 
-                String contents = tagAccess.readData().contents;
-                return wrap(contents, contents == null ? 0 : contents.length());
-            }
-            case 4: {// write
-                if (!tagAccess.isValid())
-                    return wrap("false", "No selected tag");
+        commands.add(CommonCommands.createScanForTag("scanForTag", holder, position));
+        commands.add(CommonCommands.createGetContents("contents", holder));
+        commands.add(CommonCommands.createWriteContents("write", holder));
+        commands.add(CommonCommands.createGetSize("size", holder));
+        commands.add(CommonCommands.createGetSerial("serial", holder));
+        commands.add(CommonCommands.createGetLibrary("library"));
+        commands.add(CommonCommands.createGetAccessName("source", holder));
+    }
 
-                String newContents = arguments[0].toString();
-
-                TagData data = tagAccess.readData();
-                if (!data.tagSize.check(newContents))
-                    return wrap("false", "Message too big");
-
-                data.contents = newContents;
-                tagAccess.writeData(data, false);
-                return wrap(true, newContents.length());
-            }
-            case 5: { // size
-                if (!tagAccess.isValid())
-                    return wrap("false", "No selected tag");
-
-                TagSize size = tagAccess.readData().tagSize;
-                return wrap(size.size, size.name);
-            }
-
-            case 6: { // serial
-                if (!tagAccess.isValid())
-                    return wrap("false", "No selected tag");
-
-                int serial = tagAccess.uid();
-                return wrap(serial);
-            }
-
-            case 7: // library
-                return TagLibrary.instance.getLuaLibrary(arguments);
-
-            case 8: // source
-                return wrap(tagAccess.name());
-        }
-
-        throw new IllegalArgumentException("Invalid method id: " + method);
+    @Override
+    public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception {
+        return Command.call(commands(), computer, context, method, arguments);
     }
 
     @Override

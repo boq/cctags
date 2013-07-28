@@ -4,11 +4,14 @@ item.cctag.glass.name=Glass tag
 
 item.pcb-writer.name=Tag Writer Module
 item.pcb-printer.name=Tag Printer Module
+item.pcb-antenna.name=Antenna Upgrade
 item.tag-reader.old.name=Obsolete (update with crafting bench)
 item.tag-reader.name=Tag Reader
+item.tag-manipulator.name=Tag Manipulator
 
-tile.tag_writer.name=Tag Writer
-tile.tag_printer.name=Tag Printer
+tile.tag-writer.name=Tag Writer
+tile.tag-printer.name=Tag Printer
+tile.tag-scanner.name=Tag Scanner
 
 cctag.size=Size: %s
 cctag.empty=<empty>
@@ -35,5 +38,7 @@ cctag.icon.none=No icon
 cctag.icon.predefined=Icon: %s
 cctag.icon.text=Text: %s
 cctag.icon.bitmap=Bitmap iconn
+
+cctag.printer-promo=Now with printing capabilities!
 
 itemGroup.cctags=CCTags

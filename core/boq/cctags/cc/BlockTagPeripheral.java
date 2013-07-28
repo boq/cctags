@@ -135,38 +135,39 @@ public class BlockTagPeripheral extends BlockContainer {
 
         ItemStack equipped = player.getCurrentEquippedItem();
 
-        boolean used = false;
+        if (te instanceof TileEntityPrinter) {
+            boolean used = ((TileEntityPrinter)te).addInk(equipped);
 
-        if (te instanceof TileEntityPrinter)
-            used = ((TileEntityPrinter)te).addInk(equipped);
+            if (!used) {
+                TileEntityPrinter tep = (TileEntityPrinter)te;
 
-        if (!used && te instanceof TileEntityPeripheral) {
-            TileEntityPeripheral<?> tep = (TileEntityPeripheral<?>)te;
+                if (isItemTag(equipped))
+                    used = tep.insertTag(equipped);
+                else if (player.isSneaking() && equipped == null)
+                    tep.giveTagToPlayer(player, true);
+                else
+                    return tep.ejectTag(true);
+            }
 
-            if (isItemTag(equipped))
-                used = tep.insertTag(equipped);
-            else if (player.isSneaking() && equipped == null)
-                tep.giveTagToPlayer(player, true);
-            else
-                return tep.ejectTag(true);
+            if (used) {
+                equipped.stackSize--;
+
+                if (equipped.stackSize <= 0)
+                    player.destroyCurrentEquippedItem();
+
+                return true;
+            }
         }
 
-        if (used) {
-            equipped.stackSize--;
-
-            if (equipped.stackSize <= 0)
-                player.destroyCurrentEquippedItem();
-        }
-
-        return used;
+        return false;
     }
 
     @Override
     public void breakBlock(World world, int x, int y, int z, int blockId, int metadata) {
         TileEntity te = world.getBlockTileEntity(x, y, z);
 
-        if (te instanceof TileEntityPeripheral<?>) {
-            ItemStack is = ((TileEntityPeripheral<?>)te).getDroppedItem();
+        if (te instanceof TileEntityPrinter) {
+            ItemStack is = ((TileEntityPrinter)te).getDroppedItem();
 
             if (is != null)
                 Utils.dropItem(world, x, y, z, is);
