@@ -15,16 +15,12 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 
 public class PrinterHelper {
+    private PrinterHelper() {}
+
     public interface Printer {
         public void setInkLevel(int inkLevel);
 
         public int getInkLevel();
-    }
-
-    private final Printer owner;
-
-    public PrinterHelper(Printer owner) {
-        this.owner = owner;
     }
 
     private static boolean isBlackDye(ItemStack stack) {
@@ -32,7 +28,7 @@ public class PrinterHelper {
         return oreId != -1 && OreDictionary.getOreName(oreId).equals("dyeBlack");
     }
 
-    public boolean tryPrint() {
+    public static boolean tryPrint(Printer owner) {
         int level = owner.getInkLevel();
         if (level <= 0)
             return false;
@@ -41,7 +37,7 @@ public class PrinterHelper {
         return true;
     }
 
-    public boolean tryAdd(int amount) {
+    public static boolean tryAdd(Printer owner, int amount) {
         int newAmount = owner.getInkLevel() + amount;
         if (newAmount > CCTags.config.MAX_PRINTER_CAPACITY)
             return false;
@@ -50,18 +46,18 @@ public class PrinterHelper {
         return true;
     }
 
-    public boolean addInk(ItemStack stack) {
+    public static boolean addInk(Printer owner, ItemStack stack) {
         if (isBlackDye(stack))
-            return tryAdd(CCTags.config.PRINTER_USES_PER_INKSACK);
+            return tryAdd(owner, CCTags.config.PRINTER_USES_PER_INKSACK);
 
         return false;
     }
 
-    public Object[] printTag(TagData data, String icon, String label) {
+    public static Object[] printTag(Printer owner, TagData data, String icon, String label) {
         if (!TagIcons.instance.canIconBeCrafted(icon))
             return wrap(false, "Invalid icon name: " + icon);
 
-        if (!tryPrint())
+        if (!tryPrint(owner))
             return wrap(false, "No ink");
 
         data.icon = icon;
@@ -70,7 +66,7 @@ public class PrinterHelper {
         return TRUE;
     }
 
-    public String printIconList(String iconType) {
+    public static String printIconList(String iconType) {
         List<String> icons = TagIcons.instance.listIcons(iconType);
         return Joiner.on(',').join(icons);
     }

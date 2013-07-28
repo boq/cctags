@@ -4,6 +4,8 @@ import java.lang.ref.WeakReference;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 import boq.cctags.tag.TagData;
 
 import com.google.common.base.Preconditions;
@@ -12,6 +14,10 @@ public abstract class EntityAccess<E extends Entity> implements ITagAccess {
 
     public interface IPositionProvider {
         public Vec3 getPosition();
+
+        public ForgeDirection getOrientation();
+
+        public World getWorld();
     }
 
     private WeakReference<E> entity;
@@ -38,6 +44,11 @@ public abstract class EntityAccess<E extends Entity> implements ITagAccess {
         }
 
         entity.clear();
+        return false;
+    }
+
+    @Override
+    public boolean isPrintable() {
         return false;
     }
 

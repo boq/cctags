@@ -1,11 +1,14 @@
-Tag writer is peripheral that allows to read and write tag contents.
+Tag writer is peripheral that allows to read, write and print on tag contents.
 Available methods:
 bool hasTag() - does peripheral contain valid tag?
 bool eject() - eject current tag
 string,int contents() - return current tag contents (text and size)
 bool,int write(string new_contents) - write data to tag
+bool print([string icon], [string label]) - print (or remove if argument is omitted/nil) new icon (and optional label) on currently inserted tag
 string,int size() - return current tag size as (size_description, size_in_bytes) pair
 int serial() - return current tag serial id
 string,string,string library(string id) - get tag data from library (returns contents,icon,label)
+int inkLevel() - return current ink level
 
+Every printing will use one unit of ink. Refuel by using black ink on block. Currently, no visible tag property can be read by any peripheral. Peripheral has all writer methods (see 'help tag_writer').
 Peripheral will emit ("tag",side) event once tag is inserted

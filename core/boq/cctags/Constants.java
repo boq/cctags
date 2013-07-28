@@ -18,4 +18,8 @@ public class Constants {
     public static final int ENTITY_TAG = 0;
 
     public static final String DEFAULT_ICON = "coord";
+
+    public static final int TURTLE_WRITER_OLD = 9255;
+    public static final int TURTLE_WRITER = 9256;
+    public static final int TURTLE_MANIPULATOR = 9257;
 }

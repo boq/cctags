@@ -41,6 +41,9 @@ public class CCTags {
     private int itemReaderId;
     public ItemReader itemReader;
 
+    private int itemManipulatorId;
+    public ItemManipulator itemManipulator;
+
     private int blockPeripheralId;
     public BlockTagPeripheral blockPeripheral;
 
@@ -56,6 +59,7 @@ public class CCTags {
             itemTagId = cfg.getItem("itemTag", 27412).getInt();
             itemMiscId = cfg.getItem("itemMisc", 27413).getInt();
             itemReaderId = cfg.getItem("itemReader", 27414).getInt();
+            itemManipulatorId = cfg.getItem("itemManipulator", 27415).getInt();
             blockPeripheralId = cfg.getBlock("blockTagPeripheral", 2324).getInt();
 
             config = new Config(cfg);
@@ -81,11 +85,14 @@ public class CCTags {
         itemReader = new ItemReader(itemReaderId);
         GameRegistry.registerItem(itemReader, "cctagReader");
 
+        itemManipulator = new ItemManipulator(itemManipulatorId);
+        GameRegistry.registerItem(itemManipulator, "cctagManipulator");
+
         blockPeripheral = new BlockTagPeripheral(blockPeripheralId);
         GameRegistry.registerBlock(blockPeripheral, ItemPeripheral.class, "tagPeripheral");
 
-        GameRegistry.registerTileEntity(TileEntityWriter.class, "tag-writer");
         GameRegistry.registerTileEntity(TileEntityPrinter.class, "tag-printer");
+        GameRegistry.registerTileEntity(TileEntityScanner.class, "tag-scanner");
 
         EntityRegistry.registerModEntity(EntityTag.class, "CCTag", Constants.ENTITY_TAG, this, 160, Integer.MAX_VALUE, false);
 
@@ -106,5 +113,7 @@ public class CCTags {
         }
         for (TurtlePeripheralType type : TurtlePeripheralType.TYPES)
             TurtleAPI.registerUpgrade(type);
+
+        TurtleAPI.registerUpgrade(TurtlePeripheralType.MANIPULATOR);
     }
 }

@@ -10,6 +10,11 @@ public class NullAccess implements ITagAccess {
     }
 
     @Override
+    public boolean isPrintable() {
+        return false;
+    }
+
+    @Override
     public TagData readData() {
         throw new IllegalAccessError();
     }

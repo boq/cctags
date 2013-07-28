@@ -8,7 +8,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-import boq.cctags.cc.*;
+import boq.cctags.cc.ComputerPeripheralType;
+import boq.cctags.cc.TurtlePeripheralType;
 import boq.cctags.tag.*;
 
 import com.google.common.collect.ObjectArrays;
@@ -61,22 +62,28 @@ public class Recipes {
         ItemStack itemHandheld = new ItemStack(mod.itemReader);
         recipes.add(new ShapedOreRecipe(itemHandheld, "WRW", "IDG", "WRW", 'W', "plankWood", 'R', Item.redstone, 'G', Block.thinGlass, 'D', "dyeGreen", 'I', Item.ingotIron));
 
-        ItemStack itemHandheldOld = mod.itemMisc.getStack(ItemMisc.HANDHELD_OLD);
+        ItemStack itemManipulator = new ItemStack(mod.itemManipulator);
+        manager.addRecipe(itemManipulator, "SI", "RS", 'S', Item.stick, 'R', Item.redstone, 'I', Item.ingotIron);
+
+        ItemStack itemHandheldOld = mod.itemMisc.HANDHELD_OLD.getStack();
         manager.addShapelessRecipe(itemHandheld, itemHandheldOld);
 
-        ItemStack itemWriterPcb = mod.itemMisc.getStack(ItemMisc.WRITER_PCB);
+        ItemStack itemWriterPcb = mod.itemMisc.WRITER_PCB.getStack();
         manager.addRecipe(itemWriterPcb, "GGG", " R ", " I ", 'G', Item.goldNugget, 'R', Item.redstone, 'I', Item.ingotIron);
-        TurtlePeripheralType.WRITER.craftingItem = itemWriterPcb;
+        TurtlePeripheralType.WRITER_OLD.craftingItem = itemWriterPcb;
 
-        ItemStack itemPrinterPcb = mod.itemMisc.getStack(ItemMisc.PRINTER_PCB);
+        ItemStack itemPrinterPcb = mod.itemMisc.PRINTER_PCB.getStack();
         manager.addRecipe(itemPrinterPcb, "GGG", "RRR", "IBI", 'G', Item.goldNugget, 'R', Item.redstone, 'I', Item.ingotIron, 'B', new ItemStack(Item.dyePowder, 1, 0));
-        TurtlePeripheralType.PRINTER.craftingItem = itemPrinterPcb;
+        TurtlePeripheralType.WRITER.craftingItem = itemPrinterPcb;
 
-        ItemStack itemWriter = mod.blockPeripheral.getDefaultItem(ComputerPeripheralType.WRITER);
-        manager.addRecipe(itemWriter, "SSS", "SRS", "SWS", 'S', Block.stone, 'R', Item.redstone, 'W', itemWriterPcb);
+        ItemStack itemAntennaPcb = mod.itemMisc.ANTENA_UPGRADE.getStack();
+        manager.addRecipe(itemAntennaPcb, "GGG", "IRI", " I ", 'G', Item.goldNugget, 'R', Item.redstone, 'I', Item.ingotIron);
 
-        ItemStack itemPrinter = mod.blockPeripheral.getDefaultItem(ComputerPeripheralType.PRINTER);
-        manager.addShapelessRecipe(itemPrinter, itemWriter, itemPrinterPcb);
+        ItemStack itemPrinter = mod.blockPeripheral.getDefaultItem(ComputerPeripheralType.WRITER);
+        manager.addRecipe(itemPrinter, "SSS", "WRP", "SSS", 'S', Block.stone, 'R', Item.redstone, 'W', itemWriterPcb, 'P', itemPrinterPcb);
+
+        ItemStack itemScanner = mod.blockPeripheral.getDefaultItem(ComputerPeripheralType.SCANNER);
+        manager.addRecipe(itemScanner, "SSS", "WRA", "SSS", 'S', Block.stone, 'R', Item.redstone, 'W', itemWriterPcb, 'A', itemAntennaPcb);
 
         recipes.add(new EmbeddedTagRecipe());
     }
@@ -89,7 +96,13 @@ public class Recipes {
         return GameRegistry.findItemStack("CCTurtle", "CC-TurtleAdvanced", 1);
     }
 
-    public static ItemStack createTurtleItemStack(boolean advanced, ITurtleUpgrade left, short right) {
+    public static ItemStack createTurtleItemStack(boolean advanced, ITurtleUpgrade left, ITurtleUpgrade right) {
+        return createTurtleItemStack(advanced,
+                left == null ? null : (short)left.getUpgradeID(),
+                right == null ? null : (short)right.getUpgradeID());
+    }
+
+    public static ItemStack createTurtleItemStack(boolean advanced, Short left, Short right) {
         ItemStack turtle = advanced ? getAdvancedTurtleItemStack() : getExpandedTurtleItemStack();
 
         if (turtle == null)
@@ -101,15 +114,18 @@ public class Recipes {
             turtle.setTagCompound(tag);
         }
 
-        tag.setShort("leftUpgrade", (short)left.getUpgradeID());
-        tag.setShort("rightUpgrade", right);
+        if (left != null)
+            tag.setShort("leftUpgrade", left);
+
+        if (right != null)
+            tag.setShort("rightUpgrade", right);
 
         return turtle;
     }
 
     private static void addUpgradedTurtles(List<ItemStack> result, ITurtleUpgrade upgrade, boolean advanced) {
         for (int i = 0; i < NUMBER_OF_TURTLE_TOOLS; i++)
-            result.add(createTurtleItemStack(advanced, upgrade, (short)i));
+            result.add(createTurtleItemStack(advanced, (short)upgrade.getUpgradeID(), (short)i));
     }
 
     public static void addUpgradedTurtles(List<ItemStack> result, ITurtleUpgrade upgrade) {

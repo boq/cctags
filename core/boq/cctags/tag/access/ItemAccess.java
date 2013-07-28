@@ -25,6 +25,11 @@ public class ItemAccess implements ITagAccess {
     }
 
     @Override
+    public boolean isPrintable() {
+        return false;
+    }
+
+    @Override
     public final TagData readData() {
         ItemStack stack = provider.getStack();
         return access.readData(stack);
