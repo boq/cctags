@@ -16,20 +16,18 @@ import com.google.common.io.Closer;
 import dan200.computer.api.IComputerAccess;
 
 public class MountHelper {
-    public final static MountHelper instance = new MountHelper();
-
     private static final String RELATIVE_PATH = "cctags" + File.separatorChar + "lua";
-    
-    private Map<String, File> luaFiles;
-    
-    private File luaFolder = getLuaFolder();
-    
+
+    private static File luaFolder = getLuaFolder();
+
+    public static MountHelper instance = new MountHelper();
+
     private MountHelper() {}
-    
+
     public void copyFiles() throws IOException {
         setupFiles();
     }
-    
+
     private static Map<String, Long> readFileList() throws IOException {
         Closer closer = Closer.create();
         try {
@@ -70,7 +68,7 @@ public class MountHelper {
 
         return luaFolder;
     }
-    
+
     private static void copyResourceToDist(String source, File destination) throws IOException
     {
         Closer closer = Closer.create();
@@ -83,18 +81,12 @@ public class MountHelper {
             closer.close();
         }
     }
-    
-    public File getFilePath(String fileName) {
-        File f = luaFiles.get(fileName);
-        if (f == null) {
-            f = new File(luaFolder, fileName);
-            luaFiles.put(fileName, f);
-        }
-        
-        return f;
+
+    private static File getFilePath(String fileName) {
+        return new File(luaFolder, fileName);
     }
-    
-    private void setupFiles() throws IOException {
+
+    private static void setupFiles() throws IOException {
         Map<String, Long> files;
         files = readFileList();
 
@@ -133,12 +125,12 @@ public class MountHelper {
         }
     }
 
-    public String getMount(String fileName) {
-        return getFilePath(fileName).getAbsolutePath();
+    private static String getMount(String fileName) {
+        return RELATIVE_PATH + File.separatorChar + fileName;
     }
 
     public static void mount(IComputerAccess computer, String path, String fileId) {
-        String relPath = instance.getMount(fileId);
+        String relPath = getMount(fileId);
         String actualPath = computer.mountFixedDir(path, relPath, true, 0);
         if (!actualPath.equals(path))
             computer.unmount(actualPath);

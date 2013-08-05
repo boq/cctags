@@ -2,11 +2,9 @@ package boq.cctags.tag;
 
 import java.util.List;
 
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import boq.cctags.CCTags;
@@ -32,8 +30,8 @@ public class ItemManipulator extends Item {
     }
 
     @Override
-    public boolean func_111207_a(ItemStack stack, EntityPlayer player, EntityLivingBase entity) {
-        if (player instanceof EntityPlayerSP)
+    public boolean itemInteractionForEntity(ItemStack stack, EntityLiving entity) {
+        if (entity.worldObj.isRemote)
             return false;
 
         TagProperty prop = EntityTagsListener.getProperty(entity);

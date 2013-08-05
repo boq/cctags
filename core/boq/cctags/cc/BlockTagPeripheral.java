@@ -95,7 +95,6 @@ public class BlockTagPeripheral extends BlockContainer {
     }
 
     @Override
-
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving player, ItemStack stack) {
         ComputerPeripheralType type = getType(stack.getItemDamage());
 

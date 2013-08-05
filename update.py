@@ -37,7 +37,7 @@ def update_icon_list():
     with open(icon_file, 'wb') as output:
         output.write("\n".join(icons))
         
-    print("Rewriting 'help/icons' list %s " % icon_file)
+    print("Rewriting 'help/icons' list %s " % help_file)
     with open(help_file, 'wb') as output:
         output.write("Predefined tag icons:\n")
         output.write(",".join(icons))

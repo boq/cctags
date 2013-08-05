@@ -6,13 +6,9 @@ import java.util.List;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
-
-import cpw.mods.fml.common.registry.LanguageRegistry;
-
-import net.minecraft.util.StatCollector;
 import boq.cctags.Constants;
 import boq.cctags.Recipes;
-
+import cpw.mods.fml.common.registry.LanguageRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computer.api.IHostedPeripheral;
@@ -100,12 +96,7 @@ public enum TurtlePeripheralType implements ITurtleUpgrade {
     }
 
     public static void addManipulatorTurtles(List<ItemStack> result) {
-        addManipulatorTurtles(false, result);
-        addManipulatorTurtles(true, result);
-    }
-
-    public static void addManipulatorTurtles(boolean advanced, List<ItemStack> result) {
-        result.add(Recipes.createTurtleItemStack(advanced, null, MANIPULATOR));
-        result.add(Recipes.createTurtleItemStack(advanced, WRITER, MANIPULATOR));
+        result.add(Recipes.createTurtleItemStack(null, MANIPULATOR));
+        result.add(Recipes.createTurtleItemStack(WRITER, MANIPULATOR));
     }
 }

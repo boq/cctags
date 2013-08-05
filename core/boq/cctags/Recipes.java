@@ -92,18 +92,14 @@ public class Recipes {
         return GameRegistry.findItemStack("CCTurtle", "CC-TurtleExpanded", 1);
     }
 
-    public static ItemStack getAdvancedTurtleItemStack() {
-        return GameRegistry.findItemStack("CCTurtle", "CC-TurtleAdvanced", 1);
-    }
-
-    public static ItemStack createTurtleItemStack(boolean advanced, ITurtleUpgrade left, ITurtleUpgrade right) {
-        return createTurtleItemStack(advanced,
+    public static ItemStack createTurtleItemStack(ITurtleUpgrade left, ITurtleUpgrade right) {
+        return createTurtleItemStack(
                 left == null ? null : (short)left.getUpgradeID(),
                 right == null ? null : (short)right.getUpgradeID());
     }
 
-    public static ItemStack createTurtleItemStack(boolean advanced, Short left, Short right) {
-        ItemStack turtle = advanced ? getAdvancedTurtleItemStack() : getExpandedTurtleItemStack();
+    public static ItemStack createTurtleItemStack(Short left, Short right) {
+        ItemStack turtle = getExpandedTurtleItemStack();
 
         if (turtle == null)
             return null;
@@ -123,15 +119,9 @@ public class Recipes {
         return turtle;
     }
 
-    private static void addUpgradedTurtles(List<ItemStack> result, ITurtleUpgrade upgrade, boolean advanced) {
-        for (int i = 0; i < NUMBER_OF_TURTLE_TOOLS; i++)
-            result.add(createTurtleItemStack(advanced, (short)upgrade.getUpgradeID(), (short)i));
-    }
-
     public static void addUpgradedTurtles(List<ItemStack> result, ITurtleUpgrade upgrade) {
-        if (CCTags.config.ADD_OWN_TURTLES) {
-            addUpgradedTurtles(result, upgrade, false);
-            addUpgradedTurtles(result, upgrade, true);
-        }
+        if (CCTags.config.ADD_OWN_TURTLES)
+            for (int i = 0; i < NUMBER_OF_TURTLE_TOOLS; i++)
+                result.add(createTurtleItemStack((short)upgrade.getUpgradeID(), (short)i));
     }
 }

@@ -12,7 +12,6 @@ import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import boq.cctags.CCTags;
-import boq.cctags.cc.ItemReader;
 import boq.utils.misc.Utils;
 
 public class EntityTagsListener {

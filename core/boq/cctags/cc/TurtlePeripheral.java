@@ -9,14 +9,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-
-import boq.cctags.tag.*;
-import boq.cctags.tag.access.*;
-import boq.cctags.tag.access.EntityAccess.IPositionProvider;
-import boq.cctags.tag.access.ItemAccess.IStackProvider;
-import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.IHostedPeripheral;
-
 import boq.cctags.cc.CommonCommands.IAccessHolder;
 import boq.cctags.tag.access.*;
 import boq.cctags.tag.access.EntityAccess.IPositionProvider;
@@ -24,8 +16,8 @@ import boq.cctags.tag.access.ItemAccess.IStackProvider;
 
 import com.google.common.collect.ImmutableList;
 
-import dan200.computer.api.*;
-
+import dan200.computer.api.IComputerAccess;
+import dan200.computer.api.IHostedPeripheral;
 import dan200.turtle.api.ITurtleAccess;
 
 public abstract class TurtlePeripheral implements IHostedPeripheral {
@@ -132,7 +124,7 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
 
     @Override
     public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception {
-        return Command.call(commands(), computer, context, method, arguments);
+        return Command.call(commands(), computer, method, arguments);
     }
 
     @Override

@@ -53,7 +53,7 @@ public class TileEntityPrinter extends TileEntityPeripheral implements IInventor
 
         commands.add(new Command("eject") {
             @Override
-            public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception {
+            public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception {
                 String direction = checkArg(arguments, 0) ? arguments[0].toString() : null;
                 if (direction != null) {
                     ForgeDirection dir = SidesHelper.localToWorld(front().getOpposite(), direction);
@@ -236,7 +236,7 @@ public class TileEntityPrinter extends TileEntityPeripheral implements IInventor
     public void closeChest() {}
 
     @Override
-    public boolean isItemValidForSlot(int i, ItemStack stack) {
+    public boolean isStackValidForSlot(int i, ItemStack stack) {
         return (i == 0) &&
                 (data.insertedItem == null) && // only one item allowed
                 (stack != null);

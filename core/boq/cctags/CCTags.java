@@ -1,7 +1,5 @@
 package boq.cctags;
 
-import com.google.common.base.Throwables;
-
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
@@ -9,6 +7,9 @@ import boq.cctags.cc.*;
 import boq.cctags.tag.*;
 import boq.utils.lang.LangList;
 import boq.utils.log.Log;
+
+import com.google.common.base.Throwables;
+
 import cpw.mods.fml.common.*;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
@@ -109,7 +110,7 @@ public class CCTags {
             MountHelper.instance.copyFiles();
             TagLibrary.instance.readLibrary();
         } catch (Throwable t) {
-            Throwables.propagateIfPossible(t);
+            throw Throwables.propagate(t);
         }
         for (TurtlePeripheralType type : TurtlePeripheralType.TYPES)
             TurtleAPI.registerUpgrade(type);

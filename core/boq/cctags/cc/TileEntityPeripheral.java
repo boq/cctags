@@ -7,12 +7,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-
-import boq.cctags.tag.TagData;
-import boq.cctags.tag.TagLibrary;
-
 import boq.cctags.cc.CommonCommands.IAccessHolder;
-
 import boq.cctags.tag.access.*;
 import boq.cctags.tag.access.EntityAccess.IPositionProvider;
 import boq.utils.log.Log;
@@ -104,8 +99,8 @@ public abstract class TileEntityPeripheral extends TileEntity implements IPeriph
     }
 
     @Override
-    public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception {
-        return Command.call(commands(), computer, context, method, arguments);
+    public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception {
+        return Command.call(commands(), computer, method, arguments);
     }
 
     @Override

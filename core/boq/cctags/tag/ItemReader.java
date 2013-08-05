@@ -27,7 +27,6 @@ public class ItemReader extends Item {
         itemIcon = registry.registerIcon("cctags:handheld");
     }
 
-
     public boolean interact(ItemStack stack, EntityPlayer player, EntityLiving entity) {
         if (player instanceof EntityPlayerSP)
             return false;

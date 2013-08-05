@@ -3,7 +3,6 @@ package boq.cctags.cc;
 import java.util.List;
 
 import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.ILuaContext;
 
 public abstract class Command {
     public final String name;
@@ -12,7 +11,7 @@ public abstract class Command {
         this.name = name;
     }
 
-    public abstract Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception;
+    public abstract Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception;
 
     public static String[] extractNames(List<Command> commands) {
         String[] result = new String[commands.size()];
@@ -24,10 +23,10 @@ public abstract class Command {
         return result;
     }
 
-    public static Object[] call(List<Command> commands, IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception {
+    public static Object[] call(List<Command> commands, IComputerAccess computer, int method, Object[] arguments) throws Exception {
         try {
             Command c = commands.get(method);
-            return c.callMethod(computer, context, method, arguments);
+            return c.callMethod(computer, method, arguments);
         } catch (IndexOutOfBoundsException e) {
             throw new IllegalArgumentException("Invalid method: " + method);
         }

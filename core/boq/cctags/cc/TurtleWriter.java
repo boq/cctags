@@ -7,7 +7,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import com.google.common.collect.ImmutableList.Builder;
 
 import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.ILuaContext;
 import dan200.turtle.api.ITurtleAccess;
 
 public class TurtleWriter extends TurtlePeripheral {
@@ -27,7 +26,7 @@ public class TurtleWriter extends TurtlePeripheral {
 
         commands.add(new Command("loadInk") {
             @Override
-            public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception {
+            public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception {
                 int slot = checkArg(arguments, 0) ? toInt(arguments[0]) : turtle.getSelectedSlot();
 
                 ItemStack stack = turtle.getSlotContents(slot);

@@ -6,13 +6,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import boq.cctags.cc.PrinterHelper.Printer;
 import boq.cctags.tag.TagData;
+import boq.cctags.tag.TagLibrary;
 import boq.cctags.tag.access.*;
 import boq.cctags.tag.access.EntityAccess.IPositionProvider;
 
 import com.google.common.base.Preconditions;
 
 import dan200.computer.api.IComputerAccess;
-import dan200.computer.api.ILuaContext;
 
 public class CommonCommands {
 
@@ -25,7 +25,7 @@ public class CommonCommands {
     public static Command createScanForTag(String name, final IAccessHolder owner, final IPositionProvider position) {
         return new Command(name) {
             @Override
-            public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception {
+            public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception {
                 World w = position.getWorld();
                 Preconditions.checkNotNull(w, "Unloaded world");
 
@@ -44,7 +44,7 @@ public class CommonCommands {
     public static Command createIsValid(String name, final IAccessHolder holder) {
         return new Command(name) {
             @Override
-            public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception {
+            public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception {
                 return wrap(holder.getAccess().isValid());
             }
         };
@@ -53,7 +53,7 @@ public class CommonCommands {
     public static Command createGetContents(String name, final IAccessHolder holder) {
         return new Command(name) {
             @Override
-            public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception {
+            public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception {
                 ITagAccess access = holder.getAccess();
                 if (!access.isValid())
                     return wrap(false, "No tag");
@@ -68,7 +68,7 @@ public class CommonCommands {
     public static Command createGetSize(String name, final IAccessHolder holder) {
         return new Command(name) {
             @Override
-            public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception {
+            public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception {
                 ITagAccess access = holder.getAccess();
                 if (!access.isValid())
                     return wrap(false, "No tag");
@@ -83,7 +83,7 @@ public class CommonCommands {
     public static Command createWriteContents(String name, final IAccessHolder holder) {
         return new Command(name) {
             @Override
-            public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception {
+            public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception {
                 ITagAccess access = holder.getAccess();
 
                 if (!access.isValid())
@@ -105,7 +105,7 @@ public class CommonCommands {
     public static Command createGetSerial(String name, final IAccessHolder holder) {
         return new Command(name) {
             @Override
-            public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception {
+            public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception {
                 ITagAccess access = holder.getAccess();
 
                 if (!access.isValid())
@@ -119,7 +119,7 @@ public class CommonCommands {
     public static Command createGetLibrary(String name) {
         return new Command(name) {
             @Override
-            public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception {
+            public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception {
                 return TagLibrary.instance.getLuaLibrary(arguments);
             }
         };
@@ -128,7 +128,7 @@ public class CommonCommands {
     public static Command createGetAccessName(String name, final IAccessHolder holder) {
         return new Command(name) {
             @Override
-            public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception {
+            public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception {
                 ITagAccess access = holder.getAccess();
                 return wrap(access.isValid(), access.name());
             }
@@ -138,7 +138,7 @@ public class CommonCommands {
     public static Command createGetInkLevel(String name, final Printer printer) {
         return new Command(name) {
             @Override
-            public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception {
+            public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception {
                 return wrap(printer.getInkLevel());
             }
         };
@@ -147,7 +147,7 @@ public class CommonCommands {
     public static Command createPrint(String name, final IAccessHolder holder, final Printer printer) {
         return new Command(name) {
             @Override
-            public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception {
+            public Object[] callMethod(IComputerAccess computer, int method, Object[] arguments) throws Exception {
                 ITagAccess access = holder.getAccess();
 
                 if (!access.isValid())

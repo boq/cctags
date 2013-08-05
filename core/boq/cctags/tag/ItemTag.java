@@ -121,25 +121,26 @@ public class ItemTag extends Item {
                     results.add(stack);
                 }
 
-        for (LibEntry e : TagLibrary.instance.getLibrary().values()) {
-            ItemStack stack = new ItemStack(id, 1, e.size.ordinal());
-            TagData data = new TagData();
-            data.color = e.color;
-            data.contents = e.contents;
-            data.label = e.label;
-            data.icon = e.icon;
+        if (CCTags.config.SHOW_LIBRARY)
+            for (LibEntry e : TagLibrary.instance.getLibrary().values()) {
+                ItemStack stack = new ItemStack(id, 1, e.size.ordinal());
+                TagData data = new TagData();
+                data.color = e.color;
+                data.contents = e.contents;
+                data.label = e.label;
+                data.icon = e.icon;
 
-            NBTTagCompound tag = ItemTagUtils.getItemTag(stack);
-            data.writeToNBT(tag, ItemTagUtils.nbtOnlySelector);
+                NBTTagCompound tag = ItemTagUtils.getItemTag(stack);
+                data.writeToNBT(tag, ItemTagUtils.nbtOnlySelector);
 
-            if (e.category != null)
-                tag.setString(CATEGORY_TAG, e.category);
+                if (e.category != null)
+                    tag.setString(CATEGORY_TAG, e.category);
 
-            if (e.comment != null)
-                tag.setString(COMMENT_TAG, e.comment);
+                if (e.comment != null)
+                    tag.setString(COMMENT_TAG, e.comment);
 
-            results.add(stack);
-        }
+                results.add(stack);
+            }
 
     }
 
