@@ -5,9 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.ForgeDirection;
-import boq.cctags.LuaInit;
-import boq.cctags.tag.TagData;
-import boq.cctags.tag.TagSize;
+import boq.cctags.tag.*;
 import boq.cctags.tag.access.*;
 import boq.cctags.tag.access.EntityAccess.IPositionProvider;
 import boq.cctags.tag.access.ItemAccess.IStackProvider;
@@ -110,7 +108,7 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
             }
 
             case 7: // library
-                return LuaInit.instance.getLuaLibrary(arguments);
+                return TagLibrary.instance.getLuaLibrary(arguments);
 
             case 8: // source
                 return wrap(tagAccess.name());
@@ -126,12 +124,12 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
 
     @Override
     public void attach(IComputerAccess computer) {
-        LuaInit.mount(computer, "rom/apis/tags", "tags-turtle");
+        MountHelper.mount(computer, "rom/apis/tags", "tags-turtle");
 
-        LuaInit.mount(computer, "rom/programs/follow", "follow");
+        MountHelper.mount(computer, "rom/programs/follow", "follow");
 
-        LuaInit.mount(computer, "rom/help/follow", "follow-help");
-        LuaInit.mount(computer, "rom/help/tag-writer", "turtle-writer-help");
+        MountHelper.mount(computer, "rom/help/follow", "follow-help");
+        MountHelper.mount(computer, "rom/help/tag-writer", "turtle-writer-help");
     }
 
     @Override

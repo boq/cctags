@@ -15,10 +15,11 @@ import net.minecraftforge.common.ForgeDirection;
 
 import org.lwjgl.input.Keyboard;
 
-import boq.cctags.*;
-import boq.cctags.LuaInit.LibEntry;
+import boq.cctags.CCTags;
+import boq.cctags.Constants;
 import boq.cctags.tag.EntityTagsListener.TagProperty;
 import boq.cctags.tag.TagIcons.IconData;
+import boq.cctags.tag.TagLibrary.LibEntry;
 import boq.utils.misc.PlayerOrientation;
 import boq.utils.misc.Rotation;
 
@@ -120,7 +121,7 @@ public class ItemTag extends Item {
                     results.add(stack);
                 }
 
-        for (LibEntry e : LuaInit.instance.getLibrary().values()) {
+        for (LibEntry e : TagLibrary.instance.getLibrary().values()) {
             ItemStack stack = new ItemStack(id, 1, e.size.ordinal());
             TagData data = new TagData();
             data.color = e.color;

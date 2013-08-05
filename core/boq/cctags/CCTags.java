@@ -1,5 +1,7 @@
 package boq.cctags;
 
+import com.google.common.base.Throwables;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
@@ -96,7 +98,12 @@ public class CCTags {
 
     @PostInit
     public void modsLoaded(FMLPostInitializationEvent evt) {
-        LuaInit.instance.setup();
+        try {
+            MountHelper.instance.copyFiles();
+            TagLibrary.instance.readLibrary();
+        } catch (Throwable t) {
+            Throwables.propagateIfPossible(t);
+        }
         for (PeripheralType type : PeripheralType.TYPES)
             TurtleAPI.registerUpgrade(type);
     }
