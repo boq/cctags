@@ -67,7 +67,7 @@ local function writeTag(type, contents, icon, label, side)
         local event, arg = os.pullEvent()
         
         if event == "tag" then
-            local p, t = tags.getPeripheral(arg)
+            local p, t = peripheral.wrap(arg)
             
             if type == "lib" then
                 contents, icon, label = p.library(contents)

@@ -2,7 +2,7 @@ local args = { ... }
 
 local reader_side = args[1]
 if not reader_side then
-    print("Usage: reader <peripheral side>, [<move forward on start = true>], [<max security level = 3>]")
+    print("Usage: follow <peripheral side>, [<move forward on start = true>]")
     return
 end
 
@@ -22,7 +22,12 @@ if reader_side == 'print' then
     return
 end
 
-workEnv["reader"] = reader_side
+local reader = peripheral.wrap(reader_side)
+if reader == nil or reader.contents == nil then
+    error("Invalid peripheral")
+end
+
+workEnv["reader"] = reader
 
 if forward_start then
     if not turtle.forward() then
@@ -143,7 +148,7 @@ end
 while not finished do
     workEnv.step = workEnv.step + 1
     if workEnv.readTags then
-        dir, contents, _, _, serial = tags.scanForTags(reader_side)
+        dir, contents, _, _, serial = tags.scanForTags(reader)
         
         if not dir then
             if not workEnv.ignoreMissing then

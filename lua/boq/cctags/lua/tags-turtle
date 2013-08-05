@@ -1,25 +1,10 @@
-local function isReader(t)
-    return t == "tag_writer" or t == "tag_printer"
-end
-
-function getPeripheral(side)
-    local t = peripheral.getType(side)
-    if t == nul then
-        error("No peripheral found")
-    elseif not isReader(t) then
-        error("Invalid peripheral type " .. t .. " on side " .. side)
-    end
-    return peripheral.wrap(side), t
-end
-
 DIRECTIONS = {"top", "bottom", "front", "back", "left", "right"}
-function scanForTags(side, dirs)
+function scanForTags(reader, dirs)
     local dirs = dirs or DIRECTIONS
-    local p = getPeripheral(side)
     for _,dir in pairs(dirs) do
-        if p.scanForTag(dir) then
-            local contents, size = p.contents()
-            return dir, contents, size, p.size(), p.serial()
+        if reader.scanForTag(dir) then
+            local contents, size = reader.contents()
+            return dir, contents, size, reader.size(), reader.serial()
         end
     end
 end
@@ -113,12 +98,12 @@ local function create_env(_self)
     sleep = os.sleep
     
     function writeTag(side, contents)
-        local p = getPeripheral(side)
+        local p = peripheral.wrap(side)
         p.write(contents)
     end
     
     function readTag(side)
-        local p = getPeripheral(side)
+        local p = peripheral.wrap(side)
         local contents, size = p.contents()
         return contents, size, p.size()
     end
