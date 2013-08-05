@@ -6,7 +6,7 @@ Arguments:
 If first argument is equal to 'print' instead of moving program will print all functions available on current level and return.
 
 Any executed code can use two additional variables:
-reader - peripheral side, copied program from parameters
+reader - wrapped peripheral used to read current tag
 tagDir - where is tag containing currently executed code
 serial - serial id of currently scanned tag
 prev() - call previous command

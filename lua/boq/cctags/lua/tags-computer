@@ -1,17 +1,9 @@
-function getPeripheral(side)
-    local type = peripheral.getType(side)
-    if  type ~= "tag_writer" and type~= "tag_printer" then
-        error(string.format("Invalid peripheral type '%s' on side '%s'", type, side))
-    end
-    return peripheral.wrap(side), type
-end
-
 function waitForTag(verbose)
     while true do
         local event, arg = os.pullEvent()
     
         if event == 'tag' then
-            local p = getPeripheral(arg)
+            local p = peripheral.wrap(arg)
             local contents,size = p.contents()
             local size_val, size_name = p.size()
             local serial = p.serial()
@@ -35,7 +27,7 @@ function writeLoop(contents, icon, label)
             break
         elseif event == 'tag' then
             print("New tag in peripheral  '" .. side .. "'")
-            p, p_type = getPeripheral(side)
+            p, p_type = peripheral.wrap(side)
 
             if contents then
                 result, err = p.write(contents)
