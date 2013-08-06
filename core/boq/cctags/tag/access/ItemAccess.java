@@ -26,7 +26,7 @@ public class ItemAccess implements ITagAccess {
 
     @Override
     public boolean isPrintable() {
-        return false;
+        return true;
     }
 
     @Override

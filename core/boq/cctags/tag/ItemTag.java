@@ -20,8 +20,7 @@ import boq.cctags.CCTags;
 import boq.cctags.Constants;
 import boq.cctags.tag.EntityTagsListener.TagProperty;
 import boq.cctags.tag.TagIcons.IconData;
-import boq.cctags.tag.access.TagLibrary;
-import boq.cctags.tag.access.TagLibrary.LibEntry;
+import boq.cctags.tag.TagLibrary.LibEntry;
 import boq.utils.misc.PlayerOrientation;
 import boq.utils.misc.Rotation;
 

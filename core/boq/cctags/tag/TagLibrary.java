@@ -1,4 +1,4 @@
-package boq.cctags.tag.access;
+package boq.cctags.tag;
 
 import static boq.utils.misc.Utils.checkArg;
 import static boq.utils.misc.Utils.wrap;
@@ -7,7 +7,6 @@ import java.io.*;
 
 import argo.jdom.*;
 import boq.cctags.CCTags;
-import boq.cctags.tag.TagSize;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;

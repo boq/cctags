@@ -5,7 +5,6 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import boq.cctags.cc.*;
 import boq.cctags.tag.*;
-import boq.cctags.tag.access.TagLibrary;
 import boq.utils.log.Log;
 
 import com.google.common.base.Throwables;

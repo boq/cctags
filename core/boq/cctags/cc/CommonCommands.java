@@ -6,6 +6,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import boq.cctags.cc.PrinterHelper.Printer;
 import boq.cctags.tag.TagData;
+import boq.cctags.tag.TagLibrary;
 import boq.cctags.tag.access.*;
 import boq.cctags.tag.access.EntityAccess.IPositionProvider;
 

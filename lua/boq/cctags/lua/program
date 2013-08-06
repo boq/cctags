@@ -107,7 +107,7 @@ local path = shell.resolve(args[1])
 local side = args[2]
 
 if not fs.exists(path) or fs.isDir(path) then
-    print("File " .. path .. " is directory")
+    print("File " .. path .. " doesn't exist or is directory")
     return
 end
 
