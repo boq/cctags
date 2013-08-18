@@ -38,7 +38,7 @@ public abstract class TileEntityPeripheral extends TileEntity implements IPeriph
         return type().peripheralType;
     }
 
-    protected final IAccessHolder holder = new IAccessHolder() {
+    public final IAccessHolder holder = new IAccessHolder() {
         @Override
         public void setAccess(ITagAccess access) {
             TileEntityPeripheral.this.access = access;
@@ -50,7 +50,7 @@ public abstract class TileEntityPeripheral extends TileEntity implements IPeriph
         }
     };
 
-    protected final IPositionProvider provider = new IPositionProvider() {
+    public final IPositionProvider provider = new IPositionProvider() {
         @Override
         public Vec3 getPosition() {
             return Vec3.createVectorHelper(xCoord, yCoord, zCoord);
@@ -64,6 +64,11 @@ public abstract class TileEntityPeripheral extends TileEntity implements IPeriph
         @Override
         public World getWorld() {
             return worldObj;
+        }
+
+        @Override
+        public boolean isValid() {
+            return !isInvalid();
         }
     };
 

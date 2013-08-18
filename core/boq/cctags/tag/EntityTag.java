@@ -257,6 +257,7 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
             if (held != null && (held.getItem() instanceof ItemReader || CCTags.instance.itemMisc.HANDHELD_OLD.checkItem(held))) {
                 Object[] params = data.tagDescription(this);
                 player.sendChatToPlayer(ChatMessageComponent.func_111082_b("handheld.desc", params));
+                ItemReader.trySignalTagRead(held, player, this);
             } else {
                 data.rotation = data.rotation.rotateCCW();
                 EntityPacketHandler.sendUpdateToAllTrackers(this);

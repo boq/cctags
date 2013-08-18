@@ -6,6 +6,7 @@ import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
 import boq.cctags.Constants;
+import boq.utils.misc.Utils;
 import boq.utils.serializable.ISelectableSerializableData.IFieldSelector;
 import boq.utils.serializable.SerializableField;
 
@@ -36,7 +37,7 @@ public class ItemTagUtils {
 
     public static TagData createFromStack(ItemStack stack) {
         TagData data = new TagData();
-        data.readFromNBT(getItemTag(stack), ItemTagUtils.nbtOnlySelector);
+        data.readFromNBT(Utils.getItemTag(stack), ItemTagUtils.nbtOnlySelector);
 
         data.tagSize = getSize(stack);
         data.tagType = getType(stack);
@@ -46,17 +47,6 @@ public class ItemTagUtils {
     public static int getColor(ItemStack stack) {
         final int black = ItemDye.dyeColors[0];
         return getTag(stack, TagData.TAG_COLOR, black);
-    }
-
-    public static NBTTagCompound getItemTag(ItemStack stack) {
-        NBTTagCompound result = stack.getTagCompound();
-
-        if (result == null) {
-            result = new NBTTagCompound("tag");
-            stack.setTagCompound(result);
-        }
-
-        return result;
     }
 
     public static TagSize getSize(int damage) {
@@ -73,7 +63,7 @@ public class ItemTagUtils {
 
     @SuppressWarnings({ "unchecked" })
     static <T extends NBTBase> T getTag(ItemStack stack, String name) {
-        NBTTagCompound tag = getItemTag(stack);
+        NBTTagCompound tag = Utils.getItemTag(stack);
         return (T)tag.getTag(name);
     }
 
@@ -113,7 +103,7 @@ public class ItemTagUtils {
     }
 
     public static void setupDefaultTags(ItemStack stack) {
-        NBTTagCompound tag = getItemTag(stack);
+        NBTTagCompound tag = Utils.getItemTag(stack);
         tag.setInteger(TagData.TAG_COLOR, Constants.COLOR_BLACK);
     }
 

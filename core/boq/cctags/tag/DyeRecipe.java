@@ -6,6 +6,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import boq.utils.misc.Dyes;
+import boq.utils.misc.Utils;
 
 public class DyeRecipe implements IRecipe {
 
@@ -61,7 +62,7 @@ public class DyeRecipe implements IRecipe {
     private static ItemStack createTag(ItemStack item, int dyeOreId) {
         ItemStack newItem = item.copy();
         newItem.stackSize = 1;
-        NBTTagCompound itemTag = ItemTagUtils.getItemTag(newItem);
+        NBTTagCompound itemTag = Utils.getItemTag(newItem);
         itemTag.setInteger(TagData.TAG_COLOR, dyeOreId);
         return newItem;
     }
