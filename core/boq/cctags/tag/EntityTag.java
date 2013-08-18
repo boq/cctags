@@ -254,9 +254,10 @@ public class EntityTag extends Entity implements IEntityAdditionalSpawnData {
                 return true;
             }
 
-            if (held != null && (held.getItem() instanceof ItemReader || CCTags.instance.itemMisc.HANDHELD_OLD.checkItem(held)))
+            if (held != null && (held.getItem() instanceof ItemReader || CCTags.instance.itemMisc.HANDHELD_OLD.checkItem(held))) {
                 player.sendChatToPlayer(data.tagDescription(this));
-            else {
+                ItemReader.trySignalTagRead(held, player, this);
+            } else {
                 data.rotation = data.rotation.rotateCCW();
                 EntityPacketHandler.sendUpdateToAllTrackers(this);
             }

@@ -20,8 +20,7 @@ import boq.cctags.Constants;
 import boq.cctags.tag.EntityTagsListener.TagProperty;
 import boq.cctags.tag.TagIcons.IconData;
 import boq.cctags.tag.TagLibrary.LibEntry;
-import boq.utils.misc.PlayerOrientation;
-import boq.utils.misc.Rotation;
+import boq.utils.misc.*;
 
 import com.google.common.base.Strings;
 
@@ -72,7 +71,7 @@ public class ItemTag extends Item {
         String sizeTemplate = reg.getStringLocalization("cctag.size");
         description.add(String.format(sizeTemplate, size.name));
 
-        NBTTagCompound tag = ItemTagUtils.getItemTag(stack);
+        NBTTagCompound tag = Utils.getItemTag(stack);
 
         if (tag.hasKey(CATEGORY_TAG)) {
             String category = "cctag.category." + tag.getString(CATEGORY_TAG);
@@ -130,7 +129,7 @@ public class ItemTag extends Item {
                 data.label = e.label;
                 data.icon = e.icon;
 
-                NBTTagCompound tag = ItemTagUtils.getItemTag(stack);
+                NBTTagCompound tag = Utils.getItemTag(stack);
                 data.writeToNBT(tag, ItemTagUtils.nbtOnlySelector);
 
                 if (e.category != null)

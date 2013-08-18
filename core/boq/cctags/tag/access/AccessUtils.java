@@ -36,6 +36,9 @@ public class AccessUtils {
     }
 
     public static ITagAccess selectTag(IPositionProvider provider, ForgeDirection direction) {
+        if (!provider.isValid())
+            return NULL;
+
         Vec3 position = provider.getPosition();
         World world = provider.getWorld();
         AxisAlignedBB turtleUnitBox = turtleSearchBounds.getAabbFromPool(position.xCoord, position.yCoord, position.zCoord);

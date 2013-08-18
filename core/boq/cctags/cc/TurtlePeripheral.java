@@ -72,6 +72,11 @@ public abstract class TurtlePeripheral implements IHostedPeripheral {
         public World getWorld() {
             return turtle.getWorld();
         }
+
+        @Override
+        public boolean isValid() {
+            return true;
+        }
     };
 
     private List<Command> commands;

@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
+import boq.cctags.Constants;
 import boq.cctags.tag.TagData;
 
 import com.google.common.base.Preconditions;
@@ -18,6 +19,8 @@ public abstract class EntityAccess<E extends Entity> implements ITagAccess {
         public ForgeDirection getOrientation();
 
         public World getWorld();
+
+        public boolean isValid();
     }
 
     private WeakReference<E> entity;
@@ -30,6 +33,9 @@ public abstract class EntityAccess<E extends Entity> implements ITagAccess {
 
     @Override
     public boolean isValid() {
+        if (!position.isValid())
+            return false;
+
         E e = entity.get();
 
         if (e == null)
@@ -39,7 +45,7 @@ public abstract class EntityAccess<E extends Entity> implements ITagAccess {
             Vec3 ownPos = position.getPosition();
             Vec3 tagPos = Vec3.createVectorHelper(e.posX, e.posY, e.posZ);
 
-            if (ownPos.distanceTo(tagPos) < 3.0)
+            if (ownPos.distanceTo(tagPos) < Constants.ENTITY_READ_DISTANCE)
                 return true;
         }
 
