@@ -22,9 +22,9 @@ public class BigTagRecipe extends ShapedRecipes {
 
     private final TagSize size;
 
-    public BigTagRecipe(ItemStack smallTag, TagSize size) {
+    public BigTagRecipe(ItemStack smallTag) {
         super(3, 3, bigTagPattern(smallTag), ItemTagUtils.upgradeToType(smallTag, TagType.BIG));
-        this.size = size;
+        size = ItemTagUtils.getSize(smallTag);
     }
 
     private static boolean isItemEqual(ItemStack expected, ItemStack received) {

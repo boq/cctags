@@ -2,6 +2,7 @@ package boq.cctags;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
+import boq.cctags.tag.ItemReader;
 
 public class CreativeTabTags extends CreativeTabs {
 
@@ -12,6 +13,6 @@ public class CreativeTabTags extends CreativeTabs {
     @Override
     public ItemStack getIconItemStack()
     {
-        return new ItemStack(CCTags.instance.itemTag);
+        return new ItemStack(CCTags.instance.itemReader, 1, ItemReader.READER_ADVANCED);
     }
 }

@@ -28,7 +28,7 @@ public class Recipes {
         ItemStack result = new ItemStack(item, count, damage);
         ItemTagUtils.setupDefaultTags(result);
 
-        recipes.add(new BigTagRecipe(result, size));
+        recipes.add(new BigTagRecipe(result));
         return result;
     }
 
@@ -59,7 +59,13 @@ public class Recipes {
         ItemStack itemTag64K = createTagStack(recipes, mod.itemTag, 8, TagSize.TAG_4K);
         addTagRecipes(recipes, itemTag64K, "PSP", "RRR", "PGP", 'S', Item.slimeBall, 'R', Item.redstone, 'G', Item.ingotGold);
 
+        int damage = ItemTagUtils.calculateDamage(TagType.NORMAL, TagSize.TAG_4G);
+        ItemStack infTag = new ItemStack(mod.itemTag, 1, damage);
+        ItemTagUtils.setupDefaultTags(infTag);
+        recipes.add(new BigTagRecipe(infTag));
+
         ItemStack itemHandheld = new ItemStack(mod.itemReader);
+        ItemStack itemHandheldAdvanced = new ItemStack(mod.itemReader, 1, ItemReader.READER_ADVANCED);
         recipes.add(new ShapedOreRecipe(itemHandheld, "WRW", "IDG", "WRW", 'W', "plankWood", 'R', Item.redstone, 'G', Block.thinGlass, 'D', "dyeGreen", 'I', Item.ingotIron));
 
         ItemStack itemManipulator = new ItemStack(mod.itemManipulator);
@@ -77,13 +83,15 @@ public class Recipes {
         TurtlePeripheralType.WRITER.craftingItem = itemPrinterPcb;
 
         ItemStack itemAntennaPcb = mod.itemMisc.ANTENA_UPGRADE.getStack();
-        manager.addRecipe(itemAntennaPcb, "GGG", "IRI", " I ", 'G', Item.goldNugget, 'R', Item.redstone, 'I', Item.ingotIron);
+        manager.addRecipe(itemAntennaPcb, "GGG", "IRI", " E ", 'G', Item.goldNugget, 'R', Item.redstone, 'I', Item.ingotIron, 'E', Item.enderPearl);
 
         ItemStack itemPrinter = mod.blockPeripheral.getDefaultItem(ComputerPeripheralType.WRITER);
         manager.addRecipe(itemPrinter, "SSS", "WRP", "SSS", 'S', Block.stone, 'R', Item.redstone, 'W', itemWriterPcb, 'P', itemPrinterPcb);
 
         ItemStack itemScanner = mod.blockPeripheral.getDefaultItem(ComputerPeripheralType.SCANNER);
         manager.addRecipe(itemScanner, "SSS", "WRA", "SSS", 'S', Block.stone, 'R', Item.redstone, 'W', itemWriterPcb, 'A', itemAntennaPcb);
+
+        manager.addShapelessRecipe(itemHandheldAdvanced, itemHandheld, itemAntennaPcb);
 
         recipes.add(new EmbeddedTagRecipe());
     }

@@ -24,5 +24,5 @@ public class Constants {
     public static final int TURTLE_MANIPULATOR = 9257;
 
     public static final double ENTITY_READ_DISTANCE = 3.0;
-    public static final double READER_READ_DISTANCE = 3.0;
+    public static final double READER_READ_DISTANCE = 64.0;
 }
