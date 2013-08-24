@@ -57,7 +57,7 @@ public class TileEntityPrinter extends TileEntityPeripheral implements IInventor
             public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws Exception {
                 String direction = checkArg(arguments, 0) ? arguments[0].toString() : null;
                 if (direction != null) {
-                    ForgeDirection dir = SidesHelper.localToWorld(front().getOpposite(), direction);
+                    ForgeDirection dir = SidesHelper.localToWorld(front(), direction);
                     return wrap(ejectTag(dir, true));
 
                 }
@@ -112,16 +112,15 @@ public class TileEntityPrinter extends TileEntityPeripheral implements IInventor
         TileEntity neighbor = worldObj.getBlockTileEntity(xCoord + side.offsetX,
                 yCoord + side.offsetY, zCoord + side.offsetZ);
 
-        if (neighbor instanceof IInventory)
+        if (neighbor instanceof IInventory) {
             ejected = InventoryUtils.insertStack((IInventory)neighbor, ejected, side.getOpposite());
-
-        if (ejected == null)
-            return true;
+            return ejected == null;
+        }
 
         if (worldObj.getGameRules().getGameRuleBooleanValue("doTileDrops"))
             Utils.dropItem(worldObj, xCoord, yCoord, zCoord, ejected);
 
-        return false;
+        return true;
     }
 
     public boolean ejectTag(boolean update) {

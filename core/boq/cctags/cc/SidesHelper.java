@@ -18,10 +18,10 @@ public class SidesHelper {
             return front.getOpposite();
 
         if ("left".equals(direction))
-            return front.getRotation(ForgeDirection.DOWN);
+            return front.getRotation(ForgeDirection.UP);
 
         if ("right".equals(direction))
-            return front.getRotation(ForgeDirection.UP);
+            return front.getRotation(ForgeDirection.DOWN);
 
         throw new IllegalArgumentException("Invalid direction, must be one of: top, down, front, back, left, right");
     }

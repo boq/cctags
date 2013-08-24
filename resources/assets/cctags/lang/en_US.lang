@@ -6,6 +6,7 @@ item.pcb-writer.name=Tag Writer Module
 item.pcb-printer.name=Tag Printer Module
 item.pcb-antenna.name=Antenna Upgrade
 item.tag-reader.old.name=Obsolete (update with crafting bench)
+item.tag-reader.advanced.name=Advanced Tag Reader
 item.tag-reader.name=Tag Reader
 item.tag-manipulator.name=Tag Manipulator
 
@@ -17,6 +18,8 @@ cctag.size=Size: %s
 cctag.empty=<empty>
 
 handheld.desc=%s (#%s, %s): %s
+handheld.paired=Reader paired with peripheral @ (%d,%d,%d)
+handheld.paired.short=Paired with (%d,%d,%d)
 
 cctag.category=Category: %s
 

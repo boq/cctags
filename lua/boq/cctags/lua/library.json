@@ -191,6 +191,13 @@
                 "contents" : "t.place()"
             },
             {
+                "name" : "dig",
+                "icon" : "out",
+                "label" : "Dig",
+                "comment" : "Dig block in front of turtle",
+                "contents" : "t.dig()"
+            },
+            {
                 "name" : "first-slot",
                 "category" : "inventory",
                 "icon" : "first",

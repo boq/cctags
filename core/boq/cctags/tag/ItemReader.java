@@ -14,8 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatMessageComponent;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import boq.cctags.CCTags;
@@ -36,7 +35,7 @@ public class ItemReader extends Item {
     private static final String IS_PAIRED_TAG = "IsPaired";
     private static final String UID_TAG_NAME = "UID";
     private static final int READER_NORMAL = 0;
-    private static final int READER_ADVANCED = 1;
+    public static final int READER_ADVANCED = 1;
 
     private final static Random RANDOM = new Random();
 
@@ -76,6 +75,8 @@ public class ItemReader extends Item {
 
     }
 
+    private Icon advancedIcon;
+
     public ItemReader(int id) {
         super(id);
         setMaxDamage(0);
@@ -92,6 +93,22 @@ public class ItemReader extends Item {
         return stack.hasTagCompound() && stack.stackTagCompound.getBoolean(IS_PAIRED_TAG);
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack stack, EntityPlayer player, List description, boolean extended) {
+        if (isAdvanced(stack) && stack.hasTagCompound()) {
+            NBTTagCompound data = stack.stackTagCompound;
+            if (data.getBoolean(IS_PAIRED_TAG)) {
+                int x = data.getInteger("PairedX");
+                int y = data.getInteger("PairedY");
+                int z = data.getInteger("PairedZ");
+                description.add(StatCollector.translateToLocalFormatted("handheld.paired.short", x, y, z));
+            }
+        }
+
+    }
+
     public static int getReaderSerial(ItemStack stack) {
         NBTTagCompound data = stack.stackTagCompound;
         if (data == null) {
@@ -103,7 +120,7 @@ public class ItemReader extends Item {
         if (uid != null)
             return uid.data;
 
-        int serial = RANDOM.nextInt();
+        int serial = Math.abs(RANDOM.nextInt());
         data.setInteger(UID_TAG_NAME, serial);
         return serial;
     }
@@ -167,10 +184,13 @@ public class ItemReader extends Item {
         if (world.isRemote)
             return false;
 
-        TileEntity te = world.getBlockTileEntity(x, y, z);
-        if (te instanceof TileEntityScanner) {
-            pairWithScanner((TileEntityScanner)te, stack);
-            return true;
+        if (isAdvanced(stack) && player.isSneaking()) {
+            TileEntity te = world.getBlockTileEntity(x, y, z);
+            if (te instanceof TileEntityScanner) {
+                pairWithScanner((TileEntityScanner)te, stack);
+                player.sendChatToPlayer(ChatMessageComponent.func_111082_b("handheld.paired", x, y, z));
+                return true;
+            }
         }
 
         return false;
@@ -180,6 +200,13 @@ public class ItemReader extends Item {
     @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister registry) {
         itemIcon = registry.registerIcon("cctags:handheld");
+        advancedIcon = registry.registerIcon("cctags:handheld-advanced");
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public Icon getIconFromDamage(int damage) {
+        return (damage == READER_ADVANCED) ? advancedIcon : itemIcon;
     }
 
     @Override

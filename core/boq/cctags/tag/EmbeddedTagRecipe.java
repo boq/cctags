@@ -22,16 +22,13 @@ public class EmbeddedTagRecipe implements IRecipe {
 
             if (is.getItem() instanceof ItemTag)
                 foundTag = true;
-            else if (!ItemTagUtils.hasEmbeddedTag(is))
+            else if (!foundItem && !ItemTagUtils.hasEmbeddedTag(is))
                 foundItem = true;
             else
                 return false;
-
-            if (foundItem && foundTag)
-                return true;
         }
 
-        return false;
+        return foundItem && foundTag;
     }
 
     @Override
