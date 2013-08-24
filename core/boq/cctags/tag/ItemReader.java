@@ -4,7 +4,6 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving;
@@ -55,7 +54,8 @@ public class ItemReader extends Item {
 
         @Override
         public Vec3 getPosition() {
-            return get().getPosition(1);
+            EntityPlayer player = get();
+            return Vec3.createVectorHelper(player.posX, player.posY, player.posZ);
         }
 
         @Override
@@ -223,7 +223,7 @@ public class ItemReader extends Item {
     }
 
     public boolean interact(ItemStack stack, EntityPlayer player, EntityLiving entity) {
-        if (player instanceof EntityPlayerSP)
+        if (!CCTags.proxy.isServer())
             return false;
 
         TagProperty prop = EntityTagsListener.getProperty(entity);
