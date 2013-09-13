@@ -5,7 +5,7 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import boq.cctags.cc.*;
 import boq.cctags.tag.*;
-import boq.utils.lang.LangList;
+import boq.utils.lang.Lang;
 import boq.utils.log.Log;
 
 import com.google.common.base.Throwables;
@@ -73,9 +73,15 @@ public class CCTags {
         }
     }
 
+    private static Lang[] languages = new Lang[] {
+        new Lang("en_US", false),
+        new Lang("de_DE", false),
+    };
+    
     @Init
     public void load(FMLInitializationEvent evt) {
-        LangList.loadAll("/mods/cctags/lang/", false);
+        for (Lang l : languages)
+            l.load("/mods/cctags/lang/");
 
         itemTag = new ItemTag(itemTagId);
         GameRegistry.registerItem(itemTag, "cctag");
