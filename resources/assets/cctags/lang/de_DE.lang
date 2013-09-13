@@ -1,0 +1,47 @@
+item.cctag.normal.name=Tag
+item.cctag.big.name=Poster
+item.cctag.glass.name=Glas-Tag
+
+item.pcb-writer.name=Tag-Beschreibungsmodul
+item.pcb-printer.name=Tag-Ausdrucksmodul
+item.pcb-antenna.name=Antennenupgrade
+item.tag-reader.old.name=Veraltet (Update mit einer Werkbank)
+item.tag-reader.advanced.name=Fortgeschrittenes Tag-Lesegerät
+item.tag-reader.name=Tag-Lesegerät
+item.tag-manipulator.name=Tag-Manipulator
+
+tile.tag-writer.name=Tag-Beschreibungsmodul
+tile.tag-printer.name=Tag-Ausdrucksmodul
+tile.tag-scanner.name=Tag-Scanner
+
+cctag.size=Größe: %s
+cctag.empty=<leer>
+
+handheld.desc=%s (#%s, %s): %s
+handheld.paired=Lesegerät verbunden mit Peripheral bei (%d,%d,%d)
+handheld.paired.short=Verbunden mit (%d,%d,%d)
+
+cctag.category=Kategorie: %s
+
+cctag.category.move=Bewegung
+cctag.category.control=Kontrolle
+cctag.category.inventory=Inventar
+cctag.category.condition=Bedingung
+cctag.category.branch=Zweig
+cctag.category.logic=Logik
+cctag.category.arithmetic=Arithmetik
+cctag.category.misc=Verschiedenes
+cctag.category.stack=Stapel
+cctag.category.redstone=Redstone
+cctag.category.control=Kontrolle
+cctag.category.relations=Verbindungen
+cctag.category.text=Text
+
+cctag.icon.none=Kein Icon
+cctag.icon.predefined=Icon: %s
+cctag.icon.text=Text: %s
+cctag.icon.bitmap=Bitmap-Icon
+
+cctag.printer-promo=Jetzt auch mit der Fähigkeit zu drucken!
+
+itemGroup.cctags=CCTags
