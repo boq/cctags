@@ -1,48 +1,48 @@
 #zh_CN
 
-item.cctag.normal.name=\u6807\u7b7e
-item.cctag.big.name=\u5927\u5e45\u6807\u7b7e
-item.cctag.glass.name=\u73bb\u7483\u6807\u7b7e
+item.cctag.normal.name=标签
+item.cctag.big.name=大幅标签
+item.cctag.glass.name=玻璃标签
 
-item.pcb-writer.name=\u6807\u7b7e\u5199\u5165\u6a21\u5757
-item.pcb-printer.name=\u6807\u7b7e\u5370\u5237\u6a21\u5757
-item.pcb-antenna.name=\u5929\u7ebf\u5347\u7ea7
-item.tag-reader.old.name=\u5df2\u5e9f\u5f03(\u8bf7\u5728\u5408\u6210\u53f0\u4e2d\u5408\u6210\u6765\u5347\u7ea7)
-item.tag-reader.advanced.name=\u9ad8\u7ea7\u6807\u7b7e\u8bfb\u51fa\u5668
-item.tag-reader.name=\u6807\u7b7e\u8bfb\u51fa\u5668
-item.tag-manipulator.name=\u6807\u7b7e\u8bfb\u5199\u5668
+item.pcb-writer.name=标签写入模块
+item.pcb-printer.name=标签印刷模块
+item.pcb-antenna.name=天线升级
+item.tag-reader.old.name=已废弃(请在合成台中合成来升级)
+item.tag-reader.advanced.name=高级标签读出器
+item.tag-reader.name=标签读出器
+item.tag-manipulator.name=标签读写器
 
-tile.tag-writer.name=\u6807\u7b7e\u5199\u5165\u5668
-tile.tag-printer.name=\u6807\u7b7e\u5370\u5237\u673a
-tile.tag-scanner.name=\u6807\u7b7e\u626b\u63cf\u4eea
+tile.tag-writer.name=标签写入器
+tile.tag-printer.name=标签印刷机
+tile.tag-scanner.name=标签扫描仪
 
-cctag.size=\u5927\u5c0f: %s
+cctag.size=大小: %s
 cctag.empty=<empty>
 
 handheld.desc=%s (#%s, %s): %s
-handheld.paired=\u8bfb\u51fa\u5668\u5df2\u7ecf\u4e0e\u4f4d\u7f6e\u4e3a@ (%d,%d,%d)\u7684\u5916\u8bbe\u914d\u5bf9
-handheld.paired.short=\u5df2\u7ecf\u4e0e(%d,%d,%d)\u914d\u5bf9
+handheld.paired=读出器已经与位置为@ (%d,%d,%d)的外设配对
+handheld.paired.short=已经与(%d,%d,%d)配对
 
-cctag.category=\u5206\u7c7b:%s
+cctag.category=分类:%s
 
-cctag.category.move=\u79fb\u52a8
-cctag.category.control=\u63a7\u5236
-cctag.category.inventory=\u7269\u54c1\u680f
-cctag.category.condition=\u6761\u4ef6
-cctag.category.branch=\u5206\u652f
-cctag.category.logic=\u903b\u8f91
-cctag.category.arithmetic=\u7b97\u6cd5
-cctag.category.misc=\u6742\u9879
-cctag.category.stack=\u5806\u53e0
-cctag.category.redstone=\u7ea2\u77f3
-cctag.category.relations=\u8054\u7cfb
-cctag.category.text=\u6587\u672c
+cctag.category.move=移动
+cctag.category.control=控制
+cctag.category.inventory=物品栏
+cctag.category.condition=条件
+cctag.category.branch=分支
+cctag.category.logic=逻辑
+cctag.category.arithmetic=算法
+cctag.category.misc=杂项
+cctag.category.stack=堆叠
+cctag.category.redstone=红石
+cctag.category.relations=联系
+cctag.category.text=文本
 
-cctag.icon.none=\u65e0\u56fe\u6807
-cctag.icon.predefined=\u56fe\u6807:%s
-cctag.icon.text=\u6587\u672c:%s
-cctag.icon.bitmap=\u4f4d\u56fe\u56fe\u6807
+cctag.icon.none=无图标
+cctag.icon.predefined=图标:%s
+cctag.icon.text=文本:%s
+cctag.icon.bitmap=位图图标
 
-cctag.printer-promo=\u73b0\u5df2\u5177\u6709\u5370\u5237\u80fd\u91cf!
+cctag.printer-promo=现已具有印刷功能!
 
-itemGroup.cctags=CC\u6807\u7b7e
+itemGroup.cctags=CC标签
