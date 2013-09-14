@@ -76,6 +76,7 @@ public class CCTags {
     private static Lang[] languages = new Lang[] {
         new Lang("en_US", false),
         new Lang("de_DE", false),
+        new Lang("zh_CN", false)
     };
     
     @Init
